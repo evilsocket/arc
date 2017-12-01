@@ -45,6 +45,10 @@ def create_record(token, store_id, title):
     }
     return requests.post(api_url + '/api/store/%s/records' % store_id, headers=headers, json=params)
 
+def delete_record(token, store_id, record_id):
+    headers = { "Authorization": "Bearer: %s" % token }
+    return requests.delete(api_url + '/api/store/%s/record/%s/' % (store_id, record_id), headers=headers)
+
 def effect(s,c,close=True):
     if os.getenv('c', '1') == 0:
         return s
@@ -123,6 +127,15 @@ if args.delete_store:
 if args.create_record:
     print "@ Creating record '%s' for store '%s' ..." % ( args.record_title, args.store_id )
     res = create_record(token, args.store_id, args.record_title)
+    if res.status_code != 200:
+        print "! Error %d: %s" % ( res.status_code, res.content )
+    else:
+        print res.json()
+    quit()
+
+if args.delete_record:
+    print "@ Deleting record '%s' for store '%s' ..." % ( args.record_id, args.store_id )
+    res = delete_record(token, args.store_id, args.record_id)
     if res.status_code != 200:
         print "! Error %d: %s" % ( res.status_code, res.content )
     else:
