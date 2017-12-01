@@ -9,8 +9,8 @@ type Record struct {
 	ID         uint `gorm:"primary_key"`
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
-	StoreID    uint
-	Store      Store
+	StoreID    uint   `json:"-"`
+	Store      Store  `json:"-"`
 	Title      string `gorm:"unique;not null"`
 	Name       string `gorm:"unique;not null"`
 	Encryption string `sql:"DEFAULT:'none'"`

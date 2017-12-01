@@ -9,9 +9,9 @@ type Store struct {
 	ID        uint `gorm:"primary_key"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	Title     string `gorm:"unique;not null"`
-	Name      string `gorm:"unique;not null"`
-	Records   []Record
+	Title     string   `gorm:"unique;not null"`
+	Name      string   `gorm:"unique;not null"`
+	Records   []Record `json:"-"`
 }
 
 func (s *Store) BeforeSave() error {
