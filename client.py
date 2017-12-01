@@ -69,6 +69,9 @@ def gray(s,close=True):
 def bold(s,close=True):
     return effect( s, 1, close )
 
+def dim(s,close=True):
+    return effect( s, 2, close )
+
 parser = ArgumentParser()
 parser.add_argument("--schema", "-S", dest="schema", default="http", help="GoSafe schema.")
 parser.add_argument("--port", dest="port", default=8081, help="GoSafe port.")
@@ -92,7 +95,7 @@ args = parser.parse_args()
 
 api_url = "%s://%s:%d" % ( args.schema, args.hostname, int(args.port) )
 
-print "@ Logging to %s ...\n" % api_url
+print "@ Logging to %s ..." % api_url
 
 token = login( args.username, args.password )
 if token is None:
@@ -137,9 +140,9 @@ print "@ Found %d stores:" % len(stores)
 
 for store in stores:
     print
-    print "[%d] (%s) %s" % ( store['ID'], store['CreatedAt'], store['Title'] )
+    print "%s %s" % ( bold(store['Title']), dim( "(id %d)" % store['ID'] ) )
     r = get_store_records( token, str(store['ID']) )
     if r.status_code == 200:
         r = r.json()
         for rec in r:
-            print "  [%d] %s" % (rec['ID'], rec['Title'])
+            print "  %s %s" % ( rec['Title'], dim( "(id %d)" % rec['ID'] ) )
