@@ -22,7 +22,7 @@ func Setup() error {
 		return err
 	}
 
-	log.Printf("Opened database %s\n", filename)
+	log.Printf("Using database %s\n", filename)
 
 	db.AutoMigrate(&Store{})
 	db.AutoMigrate(&Record{})

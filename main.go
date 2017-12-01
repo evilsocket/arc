@@ -8,6 +8,7 @@ import (
 	"github.com/evilsocket/gosafe/middlewares"
 	"github.com/evilsocket/gosafe/models"
 	"github.com/gin-gonic/gin"
+	"log"
 	"os"
 )
 
@@ -21,20 +22,23 @@ func init() {
 	flag.BoolVar(&no_auth, "no-auth", no_auth, "Disable authenticaion.")
 }
 
+func fatal(err error) {
+	log.Println(err)
+	os.Exit(1)
+}
+
 func main() {
 	flag.Parse()
 
 	if conf_file != "" {
 		if err := config.Load(conf_file); err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			fatal(err)
 		}
 
 	}
 
 	if err := models.Setup(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		fatal(err)
 	}
 
 	r := gin.Default()
@@ -43,6 +47,8 @@ func main() {
 	if no_auth == false {
 		api.Use(middlewares.AuthHandler())
 		r.POST("/auth", controllers.Auth)
+	} else {
+		log.Printf("WARNING - API authentication is disabled - WARNING\n")
 	}
 
 	api.GET("/stores", controllers.ListStores)
@@ -57,5 +63,8 @@ func main() {
 	api.PUT("/store/:id/record/:r_id", controllers.UpdateRecord)
 	api.DELETE("/store/:id/record/:r_id", controllers.DeleteRecord)
 
-	r.Run(fmt.Sprintf("%s:%d", config.Conf.Address, config.Conf.Port))
+	log.Printf("API server starting on %s:%d\n", config.Conf.Api.Address, config.Conf.Api.Port)
+	log.Printf("Web server starting on %s:%d for %s\n", config.Conf.Web.Address, config.Conf.Web.Port, config.Conf.WebApp)
+
+	r.Run(fmt.Sprintf("%s:%d", config.Conf.Api.Address, config.Conf.Api.Port))
 }
