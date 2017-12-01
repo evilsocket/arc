@@ -6,10 +6,10 @@ import (
 )
 
 const (
-	defApiAddress   = "127.0.0.1"
-	defApiPort      = 8080
 	defWebAddress   = "127.0.0.1"
-	defWebPort      = 8081
+	defWebPort      = 8080
+	defApiAddress   = "127.0.0.1"
+	defApiPort      = 8081
 	defWebApp       = "./app/"
 	defDatabaseName = "gosafe.db"
 	defHMacSecret   = ":°F_WQEùwqeflpùwa.pelfùkepwfùw,koefopwkepfwv"

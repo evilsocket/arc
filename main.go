@@ -7,9 +7,11 @@ import (
 	"github.com/evilsocket/gosafe/controllers"
 	"github.com/evilsocket/gosafe/middlewares"
 	"github.com/evilsocket/gosafe/models"
+	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	"log"
 	"os"
+	"sync"
 )
 
 var (
@@ -41,12 +43,16 @@ func main() {
 		fatal(err)
 	}
 
-	r := gin.Default()
+	web_router := gin.Default()
+	web_router.Use(static.Serve("/", static.LocalFile(config.Conf.WebApp, false)))
 
-	api := r.Group("/api")
+	api_router := gin.Default()
+
+	api := api_router.Group("/api")
+	api_router.POST("/auth", controllers.Auth)
+
 	if no_auth == false {
 		api.Use(middlewares.AuthHandler())
-		r.POST("/auth", controllers.Auth)
 	} else {
 		log.Printf("WARNING - API authentication is disabled - WARNING\n")
 	}
@@ -66,5 +72,19 @@ func main() {
 	log.Printf("API server starting on %s:%d\n", config.Conf.Api.Address, config.Conf.Api.Port)
 	log.Printf("Web server starting on %s:%d for %s\n", config.Conf.Web.Address, config.Conf.Web.Port, config.Conf.WebApp)
 
-	r.Run(fmt.Sprintf("%s:%d", config.Conf.Api.Address, config.Conf.Api.Port))
+	var wg sync.WaitGroup
+
+	wg.Add(2)
+
+	go func() {
+		defer wg.Done()
+		api_router.Run(fmt.Sprintf("%s:%d", config.Conf.Api.Address, config.Conf.Api.Port))
+	}()
+
+	go func() {
+		defer wg.Done()
+		web_router.Run(fmt.Sprintf("%s:%d", config.Conf.Web.Address, config.Conf.Web.Port))
+	}()
+
+	wg.Wait()
 }

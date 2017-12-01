@@ -71,7 +71,7 @@ def bold(s,close=True):
 
 parser = ArgumentParser()
 parser.add_argument("--schema", "-S", dest="schema", default="http", help="GoSafe schema.")
-parser.add_argument("--port", dest="port", default=8080, help="GoSafe port.")
+parser.add_argument("--port", dest="port", default=8081, help="GoSafe port.")
 parser.add_argument("--hostname", "-H", dest="hostname", default="localhost", help="GoSafe hostname.")
 parser.add_argument("--username", "-U", dest="username", default=None, help="GoSafe username.")
 parser.add_argument("--password", "-P", dest="password", default=None, help="GoSafe password.")
