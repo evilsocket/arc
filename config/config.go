@@ -10,7 +10,6 @@ const (
 	defWebPort      = 8080
 	defApiAddress   = "127.0.0.1"
 	defApiPort      = 8081
-	defWebApp       = "."
 	defDatabaseName = "gosafe.db"
 	defHMacSecret   = ":°F_WQEùwqeflpùwa.pelfùkepwfùw,koefopwkepfwv"
 	defUsername     = "gosafe"
@@ -25,7 +24,6 @@ type Listener struct {
 type Configuration struct {
 	Api      Listener `json:"api"`
 	Web      Listener `json:"web"`
-	WebApp   string   `json:"web_app"`
 	Database string   `json:"database"`
 	Secret   string   `json:"secret"`
 	Username string   `json:"username"`
@@ -35,7 +33,6 @@ type Configuration struct {
 var Conf = Configuration{
 	Api:      Listener{defApiAddress, defApiPort},
 	Web:      Listener{defWebAddress, defWebPort},
-	WebApp:   defWebApp,
 	Database: defDatabaseName,
 	Secret:   defHMacSecret,
 	Username: defUsername,

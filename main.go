@@ -15,11 +15,13 @@ import (
 )
 
 var (
+	webapp    = ""
 	conf_file = ""
 	no_auth   = false
 )
 
 func init() {
+	flag.StringVar(&webapp, "app", ".", "Path of the web application to serve.")
 	flag.StringVar(&conf_file, "config", "", "JSON configuration file.")
 	flag.BoolVar(&no_auth, "no-auth", no_auth, "Disable authenticaion.")
 }
@@ -44,10 +46,9 @@ func main() {
 	}
 
 	web_router := gin.Default()
-	web_router.Use(static.Serve("/", static.LocalFile(config.Conf.WebApp, false)))
+	web_router.Use(static.ServeRoot("/", webapp))
 
 	api_router := gin.Default()
-
 	api := api_router.Group("/api")
 	api_router.POST("/auth", controllers.Auth)
 
@@ -70,7 +71,7 @@ func main() {
 	api.DELETE("/store/:id/record/:r_id", controllers.DeleteRecord)
 
 	log.Printf("API server starting on %s:%d\n", config.Conf.Api.Address, config.Conf.Api.Port)
-	log.Printf("Web server starting on %s:%d for %s\n", config.Conf.Web.Address, config.Conf.Web.Port, config.Conf.WebApp)
+	log.Printf("Web server starting on %s:%d for %s\n", config.Conf.Web.Address, config.Conf.Web.Port, webapp)
 
 	var wg sync.WaitGroup
 
