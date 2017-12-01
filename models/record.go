@@ -13,7 +13,7 @@ type Record struct {
 	Store      Store
 	Title      string `gorm:"unique;not null"`
 	Name       string `gorm:"unique;not null"`
-	Encryption string
+	Encryption string `sql:"DEFAULT:'none'"`
 	Data       []byte
 }
 
