@@ -1,5 +1,5 @@
 # GoSafe
 
-API server for your secrets.
+GoSafe is an API and HTML+js application server for your secrets.
 
 
