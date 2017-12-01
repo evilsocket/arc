@@ -73,8 +73,8 @@ parser = ArgumentParser()
 parser.add_argument("--schema", "-S", dest="schema", default="http", help="GoSafe schema.")
 parser.add_argument("--port", dest="port", default=8081, help="GoSafe port.")
 parser.add_argument("--hostname", "-H", dest="hostname", default="localhost", help="GoSafe hostname.")
-parser.add_argument("--username", "-U", dest="username", default=None, help="GoSafe username.")
-parser.add_argument("--password", "-P", dest="password", default=None, help="GoSafe password.")
+parser.add_argument("--username", "-U", dest="username", default="gosafe", help="GoSafe username.")
+parser.add_argument("--password", "-P", dest="password", default="gosafe", help="GoSafe password.")
 
 parser.add_argument("--create-store", dest="create_store", action="store_true", default=False, help="Create a store, requires --store-title.")
 parser.add_argument("--delete-store", dest="delete_store", action="store_true", default=False, help="Delete a store, requires --store-id.")
@@ -133,7 +133,10 @@ if res.status_code != 200:
 else:
     stores = res.json()
 
+print "@ Found %d stores:" % len(stores)
+
 for store in stores:
+    print
     print "[%d] (%s) %s" % ( store['ID'], store['CreatedAt'], store['Title'] )
     r = get_store_records( token, str(store['ID']) )
     if r.status_code == 200:
