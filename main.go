@@ -8,7 +8,6 @@ import (
 	"github.com/evilsocket/gosafe/middlewares"
 	"github.com/evilsocket/gosafe/models"
 	"github.com/gin-gonic/gin"
-	"log"
 	"os"
 )
 
@@ -58,7 +57,5 @@ func main() {
 	api.PUT("/store/:id/record/:r_id", controllers.UpdateRecord)
 	api.DELETE("/store/:id/record/:r_id", controllers.DeleteRecord)
 
-	listen := fmt.Sprintf("%s:%d", config.Conf.Address, config.Conf.Port)
-	log.Printf("Listening on %s ...\n", listen)
-	r.Run(listen)
+	r.Run(fmt.Sprintf("%s:%d", config.Conf.Address, config.Conf.Port))
 }
