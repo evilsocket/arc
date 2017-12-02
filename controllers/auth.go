@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/evilsocket/gosafe/config"
-	"github.com/evilsocket/gosafe/middlewares"
+	"github.com/evilsocket/vault/config"
+	"github.com/evilsocket/vault/middlewares"
 	"github.com/gin-gonic/gin"
 )
 

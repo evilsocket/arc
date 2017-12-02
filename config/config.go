@@ -10,10 +10,10 @@ const (
 	defWebPort      = 8080
 	defApiAddress   = "127.0.0.1"
 	defApiPort      = 8081
-	defDatabaseName = "gosafe.db"
+	defDatabaseName = "vault.db"
 	defHMacSecret   = ":°F_WQEùwqeflpùwa.pelfùkepwfùw,koefopwkepfwv"
-	defUsername     = "gosafe"
-	defPassword     = "gosafe"
+	defUsername     = "vault"
+	defPassword     = "vault"
 )
 
 type Listener struct {

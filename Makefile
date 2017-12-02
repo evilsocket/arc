@@ -1,4 +1,4 @@
-TARGET=gosafed
+TARGET=vaultd
 
 all: build
 	@echo "@ Done"

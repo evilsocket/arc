@@ -77,11 +77,11 @@ def dim(s,close=True):
     return effect( s, 2, close )
 
 parser = ArgumentParser()
-parser.add_argument("--schema", "-S", dest="schema", default="http", help="GoSafe schema.")
-parser.add_argument("--port", dest="port", default=8081, help="GoSafe port.")
-parser.add_argument("--hostname", "-H", dest="hostname", default="localhost", help="GoSafe hostname.")
-parser.add_argument("--username", "-U", dest="username", default="gosafe", help="GoSafe username.")
-parser.add_argument("--password", "-P", dest="password", default="gosafe", help="GoSafe password.")
+parser.add_argument("--schema", "-S", dest="schema", default="http", help="Vault schema.")
+parser.add_argument("--port", dest="port", default=8081, help="Vault port.")
+parser.add_argument("--hostname", "-H", dest="hostname", default="localhost", help="Vault hostname.")
+parser.add_argument("--username", "-U", dest="username", default="vault", help="Vault username.")
+parser.add_argument("--password", "-P", dest="password", default="vault", help="Vault password.")
 
 parser.add_argument("--create-store", dest="create_store", action="store_true", default=False, help="Create a store, requires --store-title.")
 parser.add_argument("--delete-store", dest="delete_store", action="store_true", default=False, help="Delete a store, requires --store-id.")
