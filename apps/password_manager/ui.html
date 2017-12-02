@@ -31,22 +31,11 @@
       {{ errorMessage }}
     </small>
 
-    <div id="login" class="container" ng-if="!vault.IsLogged()">
-      <form class="form-signin">
-        <h2 class="form-signin-heading">Vault</h2>
-        <label for="username" class="sr-only">Username</label>
-        <input type="text" id="username" class="form-control" placeholder="Username" required autofocus>
-        <label for="password" class="sr-only">Password</label>
-        <input type="password" id="password" class="form-control" placeholder="Password" required>
-        <label for="key" class="sr-only">Encryption Key</label>
-        <input type="password" id="key" class="form-control" placeholder="Encryption key" required>
-        <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="doLogin()">Sign in</button>
-      </form>
-    </div>
+    <div id="login" class="container" ng-if="!vault.IsLogged()" ng-include src="'/views/login.html'"></div>
 
     <div class="row" ng-if="vault.HasStore()">
-        <div class="col">
           <small>Password store has been updated {{ vault.store.UpdatedAt | timeago }}.</small>
+          <!--
           <br/>
           <br/>
           <form name="secret_form" >
@@ -56,49 +45,14 @@
             <br/>
             <button type="button" class="btn btn-primary" style="width:100%" ng-click="doAdd()">Add</button>
           </form>
-        </div>
-
-        <div class="col">
+          -->
           <input type="text" id="search_filter" name="search_filter" ng-model="search" ng-change="updateFilter()" placeholder="Search ..." style="width:100%; margin-bottom:50px;"/>
 
           <span ng-repeat="r in vault.records">
-            <button type="button" class="btn btn-primary" style="width:100%; margin-bottom:10px;" ng-if="filterSecret(r)" ng-click="showSecret(r)">
-              <b>{{ r.Title }}</b>
-              <br/>
-              <small style="color:#ccc;">
-                <span class="badge badge-warning">
-                  <i class="fa fa-lock" aria-hidden="true"></i>
-                  {{ r.Encryption }}
-                </span>
-                Created {{ r.CreatedAt | timeago }}
-              </small>
-            </button>
-
+            <div ng-include src="'/views/secret_list_item.html'"></div>
           </span>
 
-          <div class="modal fade" id="secret_modal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="modal_title"></h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-
-                <div class="modal-body" id="modal_body">
-                </div>
-
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-primary" ng-click="saveSecret()">Save</button>
-                  <button type="button" class="btn btn-danger" ng-click="deleteSecret()">Delete</button>
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
+          <div ng-include src="'/views/secret_modal.html'"></div>
 
       </div>
     </div>
