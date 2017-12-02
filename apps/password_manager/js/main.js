@@ -6,12 +6,13 @@ function Entry(type, name, value) {
     this.value = value;
 }
 
-function RenderEntry(entry) {
-    if( entry.type == ENTRY_TYPE_PASSWORD ) {
-        return '<b>' + entry.name + '</b> <input type="password" name="' + entry.name + '" value="' + entry.value + '"/>';
+Entry.prototype.Render = function(){
+    // TODO: Use some template engine and also escape this.value.
+    if( this.type == ENTRY_TYPE_PASSWORD ) {
+        return '<b>' + this.name + '</b> <input type="password" name="' + this.name + '" value="' + this.value + '"/>';
     }
 
-    return "Unhandled entry type " + entry.type;
+    return "Unhandled entry type " + this.type;
 }
 
 function Record(title) {
@@ -204,7 +205,10 @@ app.controller('PMController', ['$scope', function (scope) {
 
         var rendered = "";
         for( var i = 0; i < record.entries.length; i++ ){
-            rendered += RenderEntry( record.entries[i] );
+            var raw = record.entries[i];
+            var e = new Entry( raw.type, raw.name, raw.value );
+
+            rendered += e.Render();
         }
 
         $('#modal_body').html(rendered);
