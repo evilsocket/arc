@@ -9,31 +9,100 @@
   <meta name="description" content="Vault Password Manager web application.">
   <meta name="author" content="Simone 'evilsocket' Margaritelli">
 
-  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
   <script type="text/javascript" src="/js/jquery.min.js"></script>
+  <script type="text/javascript" src="/js/jquery.timeago.js"></script>
   <script type="text/javascript" src="/js/angular.min.js"></script>
   <script type="text/javascript" src="/js/crypto-js/crypto-js.js"></script>
-  <script type="text/javascript" src="/js/vault.js"></script>
+  <script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
 
+  <script type="text/javascript" src="/js/vault.js"></script>
   <script type="text/javascript" src="/js/main.js"></script>
 </head>
 <body>
-  <div class="container-fluid" ng-app="PM" ng-controller="PMController">
-    <span ng-if="loginError" style="color:red;">
-      Error while authenticating with the provided credentials.
+  <div class="container" ng-app="PM" ng-controller="PMController">
+    <span ng-if="statusMessage">
+      {{ statusMessage }}
     </span>
-    <div id="login" ng-if="!vault.IsLogged()">
-      <form name="login_form">
-        <input type="text" name="username" id="username"/>
-        <input type="password" name="password" id="password"/>
-        <input type="submit" name="login" value="Log in" ng-click="doLogin()"/>
+    <small ng-if="errorMessage" style="color:red;">
+      {{ errorMessage }}
+    </small>
+
+    <div id="login" class="container" ng-if="!vault.IsLogged()">
+      <form class="form-signin">
+        <h2 class="form-signin-heading">Vault</h2>
+        <label for="username" class="sr-only">Username</label>
+        <input type="text" id="username" class="form-control" placeholder="Username" required autofocus>
+        <label for="password" class="sr-only">Password</label>
+        <input type="password" id="password" class="form-control" placeholder="Password" required>
+        <label for="key" class="sr-only">Encryption Key</label>
+        <input type="password" id="key" class="form-control" placeholder="Encryption key" required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="doLogin()">Sign in</button>
       </form>
     </div>
-    <div id="stores" ng-if="vault.IsLogged()">
-      Your token is {{ vault.token }}
-    </span>
-</span>
+
+    <div class="row" ng-if="vault.HasStore()">
+        <div class="col">
+          <small>Password store has been updated {{ vault.store.UpdatedAt | timeago }}.</small>
+          <br/>
+          <br/>
+          <form name="secret_form" >
+            <input placeholder="Title" type="text" name="pass_title" id="pass_title" style="width:100%" />
+            <input placeholder="Password" type="password" name="pass_data" id="pass_data" style="width:100%"/>
+            <br/>
+            <br/>
+            <button type="button" class="btn btn-primary" style="width:100%" ng-click="doAdd()">Add</button>
+          </form>
+        </div>
+
+        <div class="col">
+          <input type="text" id="search" name="search" placeholder="Search ..." style="width:100%; margin-bottom:50px;"/>
+
+          <span ng-repeat="r in vault.records">
+            <button type="button" class="btn btn-primary" style="width:100%; margin-bottom:10px;" ng-if="filterSecret(r)" ng-click="showSecret(r)">
+              <b>{{ r.Title }}</b>
+              <br/>
+              <small style="color:#ccc;">
+                <span class="badge badge-warning">
+                  <i class="fa fa-lock" aria-hidden="true"></i>
+                  {{ r.Encryption }}
+                </span>
+                Created {{ r.CreatedAt | timeago }}
+              </small>
+            </button>
+
+          </span>
+
+          <div class="modal fade" id="secret_modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="modal_title"></h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+
+                <div class="modal-body" id="modal_body">
+                </div>
+
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" ng-click="saveSecret()">Save</button>
+                  <button type="button" class="btn btn-danger" ng-click="deleteSecret()">Delete</button>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </body>
 </html

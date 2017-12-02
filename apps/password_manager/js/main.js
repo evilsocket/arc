@@ -1,88 +1,158 @@
-var username = "vault";
-var password = "vault";
-var store    = "passwords";
-
 var app = angular.module('PM', [], function($interpolateProvider) {
 
 });
 
+app.filter('timeago', function() {
+    return function(date) {
+       return $.timeago(date);
+    }
+});
+
 app.controller('PMController', ['$scope', function (scope) {
-    scope.loginError = false;
+    scope.statusMessage = null;
+    scope.errorMessage = null;
     scope.vault = new Vault();
+    scope.key = null;
+    scope.secret = null;
 
-    scope.doLogin = function() {
-        var username = $('#username').val();
-        var password = $('#password').val();
+    scope.setError = function(message) {
+        if( message ) 
+            console.log("error = " + message);
+        scope.setStatus(null);
+        scope.errorMessage = message;
+    };
 
-        scope.vault.Login( username, password, function(token) {
-            scope.loginError = false;
+    scope.setStatus = function(message) {
+        if( message ) 
+            console.log("status = " + message);
+        scope.statusMessage = message;
+    };
+
+    scope.setSecret = function(secret) {
+        if( secret )
+            console.log(secret);
+        scope.secret = secret;
+    }
+
+    scope.getStore = function(success) {
+        scope.setStatus("Loading passwords store ...");
+
+        scope.vault.SetStore( "passwords", function() {
+            scope.setError(null);
             scope.$apply();
         },
         function(error){
-            scope.loginError = true;
+            scope.setError(error);
             scope.$apply();
         });
-
     }
-    /*
-    scope.update = function() {
-        $.get('/targets', function(data) {
-            if( data.stats.Progress < 100.0 || scope.firstTimeUpdate == false ) {
-                var start = new Date(data.stats.Start),
-                    stop = new Date(data.stats.Stop),
-                    dur = new Date(null);
 
-                dur.setSeconds( (stop-start) / 1000 );
-                scope.duration = dur.toISOString().substr(11, 8);
-            }
-            
-            scope.ntargets = Object.keys(scope.targets).length;
-
-            scope.applyFilters(data);
-
-            scope.targets = data.targets;
-            scope.domain = data.domain;
-            scope.stats = data.stats;
-            
-            document.title = "XRAY ( " + scope.domain + " | " + scope.stats.Progress.toFixed(2) + "% )";
-
+    scope.setKey = function(key) {
+        key = $.trim(key)
+        if( key == "" ) {
+            scope.setError("Empty encryption key.");
             scope.$apply();
-            scope.firstTimeUpdate = true;
+            return false;
+        }
 
-            $('.htoggle').each(function() {
-                $(this).click(function(e){
-                    $( $(this).attr('href') ).toggle();
-                    return false;
+        scope.key = key;
+        return true;
+    }
+
+    scope.doLogin = function() {
+        scope.setStatus("Logging in ...");
+
+        var username = $('#username').val();
+        var password = $('#password').val();
+
+        if( scope.setKey( $('#key').val() ) == true ) { 
+            scope.vault.Login( username, password, function(token) {
+                scope.setError(null);
+                scope.$apply();
+                scope.getStore( function() {
+                    scope.$apply();
                 });
+            },
+            function(error){
+                scope.setError(error);
+                scope.$apply();
             });
+        }
+    }
+
+    scope.doAdd = function() {
+        scope.setStatus("Adding password ...");
+
+        var title = $('#pass_title').val();
+        var data = $('#pass_data').val();
+
+        console.log( "Encrypting " + data.length + " bytes of password. key = " + scope.key );
+        data = CryptoJS.AES.encrypt( data, scope.key ).toString(); 
+        console.log( "Encrypted data is " + data.length + " bytes." );
+        
+        scope.vault.AddRecord( title, data, 'aes', function(record) {
+            scope.setError(null);
+            scope.$apply();
+
+            scope.getStore( function() {
+                scope.$apply();
+            });
+        },
+        function(error){
+            scope.setError(error);
+            scope.$apply();
         });
     }
 
-    setInterval( scope.update, 500 );
-    */
+    scope.filterSecret = function(record) {
+        return true;
+    }
+
+    scope.deleteSecret = function() {
+        // this shouldn't happen, but better be safe than sorry :)
+        if( scope.secret == null ){
+            return;
+        }
+
+        if( confirm( "Delete this secret?" ) == true ) {
+            scope.vault.DeleteRecord(scope.secret, function(){ 
+                scope.setSecret(null)
+                $('#secret_modal').modal('hide');
+                scope.getStore( function() {
+                    scope.$apply();
+                });
+            },
+            function(err){
+                scope.setError(error);
+                scope.$apply();
+            });
+        }
+    }
+
+    scope.saveSecret = function() {
+        // this shouldn't happen, but better be safe than sorry :)
+        if( scope.secret == null ){
+            return;
+        }
+
+        alert("TODO");
+        
+        scope.setSecret(null)
+        $('#secret_modal').modal('hide');
+
+    }
+
+    scope.showSecret = function(record) {
+        scope.setSecret(record)
+
+        console.log( "Decrypting " + record.Data.length + " bytes of record. key = " + scope.key );
+        data = CryptoJS.AES.decrypt( record.Data, scope.key ) 
+        console.log(data);
+        data = data.toString(CryptoJS.enc.Utf8);
+        console.log( "Decrypted data is " + data.length + " bytes." );
+        $('#modal_title').html(record.Title);
+        $('#modal_body').html("data = " + data);
+
+        $('#secret_modal').modal();
+    }
 }]);
-
-/*
-$(function() {
-    console.log( "Document ready, starting main.js ..." );
-    
-
-    vault.Login( username, password, function(token) {
-        console.log( "Got token: " + vault.token )
-        vault.Stores(function(stores){
-            var nstores = stores.length;
-            console.log( "Found " + nstores + " stores:" );
-            for( var i = 0; i < nstores; i++ ) {
-                var s = stores[i];
-                console.log( "  " + s.Title );
-            }
-        }, function(err){
-            console.log("ERROR:");
-            console.log(err);
-        });
-    },
-    function(data){
-        console.log("Login error:\n" + data);
-    });
-})
-*/
