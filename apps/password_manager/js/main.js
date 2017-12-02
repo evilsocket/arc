@@ -1,3 +1,42 @@
+const ENTRY_TYPE_PASSWORD = 0;
+
+function Entry(type, name, value) {
+    this.type = type;
+    this.name = name;
+    this.value = value;
+}
+
+function PasswordEntry(name, value) {
+    this.type = ENTRY_TYPE_PASSWORD;
+    this.name = name;
+    this.value = value;
+}
+
+function Record(title) {
+    this.title = title
+    this.entries = [];
+}
+
+Record.prototype.AddEntry = function(entry) {
+    this.entries.push(entry);
+}
+
+Record.prototype.Encrypt = function( key ) {
+    var data = JSON.stringify(this.entries); 
+    console.log( "Encrypting " + data.length + " bytes of password." );
+    data = CryptoJS.AES.encrypt( data, key ).toString(); 
+    console.log( "Encrypted data is " + data.length + " bytes." );
+    return data
+}
+
+Record.prototype.Decrypt = function( key, data ) {
+    console.log( "Decrypting " + data.length + " bytes of record." );
+    data = CryptoJS.AES.decrypt( data, key ).toString(CryptoJS.enc.Utf8); 
+    console.log( "Decrypted data is " + data.length + " bytes." );
+    this.entries = JSON.parse(data);
+    console.log( "Loaded " + this.entries.length + " entries." );
+}
+
 var app = angular.module('PM', [], function($interpolateProvider) {
 
 });
@@ -86,10 +125,12 @@ app.controller('PMController', ['$scope', function (scope) {
 
         var title = $('#pass_title').val();
         var data = $('#pass_data').val();
+        
+        var record = new Record(title);
 
-        console.log( "Encrypting " + data.length + " bytes of password. key = " + scope.key );
-        data = CryptoJS.AES.encrypt( data, scope.key ).toString(); 
-        console.log( "Encrypted data is " + data.length + " bytes." );
+        record.AddEntry(new PasswordEntry( "password", data ));
+        
+        data = record.Encrypt( scope.key )
         
         scope.vault.AddRecord( title, data, 'aes', function(record) {
             scope.setError(null);
@@ -150,16 +191,15 @@ app.controller('PMController', ['$scope', function (scope) {
 
     }
 
-    scope.showSecret = function(record) {
-        scope.setSecret(record)
+    scope.showSecret = function(secret) {
+        scope.setSecret(secret)
+    
+        var record = new Record(secret.Title);
 
-        console.log( "Decrypting " + record.Data.length + " bytes of record. key = " + scope.key );
-        data = CryptoJS.AES.decrypt( record.Data, scope.key ) 
-        console.log(data);
-        data = data.toString(CryptoJS.enc.Utf8);
-        console.log( "Decrypted data is " + data.length + " bytes." );
-        $('#modal_title').html(record.Title);
-        $('#modal_body').html("data = " + data);
+        record.Decrypt( scope.key, secret.Data );
+
+        $('#modal_title').html(record.title);
+        $('#modal_body').html( "TODO: " + JSON.stringify(record.entries) );
 
         $('#secret_modal').modal();
     }
