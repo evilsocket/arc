@@ -59,7 +59,7 @@
         </div>
 
         <div class="col">
-          <input type="text" id="search" name="search" placeholder="Search ..." style="width:100%; margin-bottom:50px;"/>
+          <input type="text" id="search_filter" name="search_filter" ng-model="search" ng-change="updateFilter()" placeholder="Search ..." style="width:100%; margin-bottom:50px;"/>
 
           <span ng-repeat="r in vault.records">
             <button type="button" class="btn btn-primary" style="width:100%; margin-bottom:10px;" ng-if="filterSecret(r)" ng-click="showSecret(r)">

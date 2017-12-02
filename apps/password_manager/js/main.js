@@ -14,6 +14,7 @@ app.controller('PMController', ['$scope', function (scope) {
     scope.vault = new Vault();
     scope.key = null;
     scope.secret = null;
+    scope.filter = null;
 
     scope.setError = function(message) {
         if( message ) 
@@ -104,7 +105,14 @@ app.controller('PMController', ['$scope', function (scope) {
         });
     }
 
+    scope.updateFilter = function() {
+        scope.filter = $('#search_filter').val(); 
+    }
+
     scope.filterSecret = function(record) {
+        if( scope.filter != null ) {
+            return ( record.Title.toLowerCase().indexOf(scope.filter.toLowerCase()) != -1 );
+        }
         return true;
     }
 
