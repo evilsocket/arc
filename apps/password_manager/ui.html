@@ -1,21 +1,39 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-
   <title>Vault Password Manager</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Vault Password Manager web application.">
   <meta name="author" content="Simone 'evilsocket' Margaritelli">
 
   <link rel="stylesheet" href="/css/styles.css">
 
   <script type="text/javascript" src="/js/jquery.min.js"></script>
+  <script type="text/javascript" src="/js/angular.min.js"></script>
   <script type="text/javascript" src="/js/crypto-js/crypto-js.js"></script>
   <script type="text/javascript" src="/js/vault.js"></script>
 
   <script type="text/javascript" src="/js/main.js"></script>
 </head>
 <body>
-  Hello World
+  <div class="container-fluid" ng-app="PM" ng-controller="PMController">
+    <span ng-if="loginError" style="color:red;">
+      Error while authenticating with the provided credentials.
+    </span>
+    <div id="login" ng-if="!vault.IsLogged()">
+      <form name="login_form">
+        <input type="text" name="username" id="username"/>
+        <input type="password" name="password" id="password"/>
+        <input type="submit" name="login" value="Log in" ng-click="doLogin()"/>
+      </form>
+    </div>
+    <div id="stores" ng-if="vault.IsLogged()">
+      Your token is {{ vault.token }}
+    </span>
+</span>
+  </div>
 </body>
 </html
