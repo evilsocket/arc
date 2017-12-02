@@ -11,7 +11,7 @@ api_url = ""
 
 def login(username, password):
     auth = {
-        'user': username,
+        'username': username,
         'password': password
     }
     r = requests.post(api_url + '/auth', json=auth)
@@ -78,7 +78,7 @@ def dim(s,close=True):
 
 parser = ArgumentParser()
 parser.add_argument("--schema", "-S", dest="schema", default="http", help="Vault schema.")
-parser.add_argument("--port", dest="port", default=8081, help="Vault port.")
+parser.add_argument("--port", dest="port", default=8080, help="Vault port.")
 parser.add_argument("--hostname", "-H", dest="hostname", default="localhost", help="Vault hostname.")
 parser.add_argument("--username", "-U", dest="username", default="vault", help="Vault username.")
 parser.add_argument("--password", "-P", dest="password", default="vault", help="Vault password.")

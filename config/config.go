@@ -6,33 +6,26 @@ import (
 )
 
 const (
-	defWebAddress   = "127.0.0.1"
-	defWebPort      = 8080
-	defApiAddress   = "127.0.0.1"
-	defApiPort      = 8081
+	defAddress      = "127.0.0.1"
+	defPort         = 8080
 	defDatabaseName = "vault.db"
 	defHMacSecret   = ":°F_WQEùwqeflpùwa.pelfùkepwfùw,koefopwkepfwv"
 	defUsername     = "vault"
 	defPassword     = "vault"
 )
 
-type Listener struct {
-	Address string `json:"address"`
-	Port    int    `json:"port"`
-}
-
 type Configuration struct {
-	Api      Listener `json:"api"`
-	Web      Listener `json:"web"`
-	Database string   `json:"database"`
-	Secret   string   `json:"secret"`
-	Username string   `json:"username"`
-	Password string   `json:"password"`
+	Address  string `json:"address"`
+	Port     int    `json:"port"`
+	Database string `json:"database"`
+	Secret   string `json:"secret"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 var Conf = Configuration{
-	Api:      Listener{defApiAddress, defApiPort},
-	Web:      Listener{defWebAddress, defWebPort},
+	Address:  defAddress,
+	Port:     defPort,
 	Database: defDatabaseName,
 	Secret:   defHMacSecret,
 	Username: defUsername,

@@ -11,7 +11,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"os"
-	"sync"
 )
 
 var (
@@ -45,12 +44,11 @@ func main() {
 		fatal(err)
 	}
 
-	web_router := gin.Default()
-	web_router.Use(static.ServeRoot("/", webapp))
+	r := gin.Default()
+	r.Use(static.ServeRoot("/", webapp))
 
-	api_router := gin.Default()
-	api := api_router.Group("/api")
-	api_router.POST("/auth", controllers.Auth)
+	api := r.Group("/api")
+	r.POST("/auth", controllers.Auth)
 
 	if no_auth == false {
 		api.Use(middlewares.AuthHandler())
@@ -70,22 +68,7 @@ func main() {
 	api.PUT("/store/:id/record/:r_id", controllers.UpdateRecord)
 	api.DELETE("/store/:id/record/:r_id", controllers.DeleteRecord)
 
-	log.Printf("API server starting on %s:%d\n", config.Conf.Api.Address, config.Conf.Api.Port)
-	log.Printf("Web server starting on %s:%d for %s\n", config.Conf.Web.Address, config.Conf.Web.Port, webapp)
+	log.Printf("Vault server starting on %s:%d for %s\n", config.Conf.Address, config.Conf.Port, webapp)
 
-	var wg sync.WaitGroup
-
-	wg.Add(2)
-
-	go func() {
-		defer wg.Done()
-		api_router.Run(fmt.Sprintf("%s:%d", config.Conf.Api.Address, config.Conf.Api.Port))
-	}()
-
-	go func() {
-		defer wg.Done()
-		web_router.Run(fmt.Sprintf("%s:%d", config.Conf.Web.Address, config.Conf.Web.Port))
-	}()
-
-	wg.Wait()
+	r.Run(fmt.Sprintf("%s:%d", config.Conf.Address, config.Conf.Port))
 }
