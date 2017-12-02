@@ -6,10 +6,12 @@ function Entry(type, name, value) {
     this.value = value;
 }
 
-function PasswordEntry(name, value) {
-    this.type = ENTRY_TYPE_PASSWORD;
-    this.name = name;
-    this.value = value;
+function RenderEntry(entry) {
+    if( entry.type == ENTRY_TYPE_PASSWORD ) {
+        return '<b>' + entry.name + '</b> <input type="password" name="' + entry.name + '" value="' + entry.value + '"/>';
+    }
+
+    return "Unhandled entry type " + entry.type;
 }
 
 function Record(title) {
@@ -128,7 +130,7 @@ app.controller('PMController', ['$scope', function (scope) {
         
         var record = new Record(title);
 
-        record.AddEntry(new PasswordEntry( "password", data ));
+        record.AddEntry(new Entry( ENTRY_TYPE_PASSWORD, "password", data ));
         
         data = record.Encrypt( scope.key )
         
@@ -199,8 +201,13 @@ app.controller('PMController', ['$scope', function (scope) {
         record.Decrypt( scope.key, secret.Data );
 
         $('#modal_title').html(record.title);
-        $('#modal_body').html( "TODO: " + JSON.stringify(record.entries) );
 
+        var rendered = "";
+        for( var i = 0; i < record.entries.length; i++ ){
+            rendered += RenderEntry( record.entries[i] );
+        }
+
+        $('#modal_body').html(rendered);
         $('#secret_modal').modal();
     }
 }]);
