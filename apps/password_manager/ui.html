@@ -29,7 +29,7 @@
   <script type="text/javascript" src="/js/main.js"></script>
 </head>
 <body>
-  <div class="container " ng-app="PM" ng-controller="PMController">
+  <div class="container-fluid" ng-app="PM" ng-controller="PMController">
 
     <div ng-include src="'/views/modals/error.html'"></div>
 
@@ -37,7 +37,7 @@
 
     <div id="login" class="container" ng-if="!vault.IsLogged()" ng-include src="'/views/login.html?v=3'"></div>
 
-    <div class="row" ng-if="vault.HasStore()">
+    <div ng-if="vault.HasStore()">
           <div id="search_form" class="search-form form-group" ng-include src="'/views/search_form.html?v=2'"></div>
 
           <button type="button" class="btn btn-success form-control add-secret" ng-click="addSecret()">
