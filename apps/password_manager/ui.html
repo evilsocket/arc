@@ -9,6 +9,8 @@
   <meta name="description" content="Vault Password Manager web application.">
   <meta name="author" content="Simone 'evilsocket' Margaritelli">
 
+  <link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+
   <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/fontawesome/font-awesome.min.css">
@@ -24,12 +26,8 @@
 </head>
 <body>
   <div class="container" ng-app="PM" ng-controller="PMController">
-    <span ng-if="statusMessage">
-      {{ statusMessage }}
-    </span>
-    <small ng-if="errorMessage" style="color:red;">
-      {{ errorMessage }}
-    </small>
+
+    <div id="messages" ng-include src="'/views/messages.html'"></div>
 
     <div id="login" class="container" ng-if="!vault.IsLogged()" ng-include src="'/views/login.html?v=2'"></div>
 
@@ -45,11 +43,11 @@
           </form>
           -->
 
-          <div class="search-form form-group" ng-include src="'/views/search_form.html'"></div>
+          <div id="search_form" class="search-form form-group" ng-include src="'/views/search_form.html'"></div>
 
-          <ul class="list-group secrets-list">
+          <ul id="secrets_list" class="list-group secrets-list">
             <li class="list-group-item" ng-if="filterSecret(r)" ng-repeat="r in vault.records" ng-click="showSecret(r)">
-              <span ng-include src="'/views/secret_list_item.html?v=3'"></span>
+              <span ng-include src="'/views/secret_list_item.html?v=4'"></span>
             </li>
           </ul>
 
