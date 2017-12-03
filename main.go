@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/evilsocket/vault/app"
 	"github.com/evilsocket/vault/config"
 	"github.com/evilsocket/vault/controllers"
 	"github.com/evilsocket/vault/middlewares"
@@ -14,13 +15,13 @@ import (
 )
 
 var (
-	webapp    = ""
+	apppath   = ""
 	conf_file = ""
 	no_auth   = false
 )
 
 func init() {
-	flag.StringVar(&webapp, "app", ".", "Path of the web application to serve.")
+	flag.StringVar(&apppath, "app", ".", "Path of the web application to serve.")
 	flag.StringVar(&conf_file, "config", "", "JSON configuration file.")
 	flag.BoolVar(&no_auth, "no-auth", no_auth, "Disable authenticaion.")
 }
@@ -30,6 +31,25 @@ func fatal(err error) {
 	os.Exit(1)
 }
 
+func loadApp(r *gin.Engine) *app.App {
+	err, webapp := app.Open(apppath)
+	if err != nil {
+		fatal(err)
+	}
+	if webapp.Manifest.Store != "" {
+		if _, err := models.GetStoreByName(webapp.Manifest.Store); err != nil {
+			log.Printf("Creating default app store %s.\n", webapp.Manifest.Store)
+			if err := models.Create(&models.Store{Title: webapp.Manifest.Store}); err != nil {
+				fatal(err)
+			}
+		}
+	}
+
+	r.Use(static.Serve("/", static.LocalFile(webapp.Path, true)))
+
+	return webapp
+}
+
 func main() {
 	flag.Parse()
 
@@ -37,7 +57,6 @@ func main() {
 		if err := config.Load(conf_file); err != nil {
 			fatal(err)
 		}
-
 	}
 
 	if err := models.Setup(); err != nil {
@@ -46,7 +65,7 @@ func main() {
 
 	r := gin.Default()
 
-	r.Use(static.Serve("/", static.LocalFile(webapp, true)))
+	webapp := loadApp(r)
 
 	api := r.Group("/api")
 	r.POST("/auth", controllers.Auth)
@@ -69,7 +88,7 @@ func main() {
 	api.PUT("/store/:id/record/:r_id", controllers.UpdateRecord)
 	api.DELETE("/store/:id/record/:r_id", controllers.DeleteRecord)
 
-	log.Printf("Vault server starting on %s:%d for %s\n", config.Conf.Address, config.Conf.Port, webapp)
+	log.Printf("Vault server starting on %s:%d for %s\n", config.Conf.Address, config.Conf.Port, webapp.Manifest.Name)
 
 	r.Run(fmt.Sprintf("%s:%d", config.Conf.Address, config.Conf.Port))
 }

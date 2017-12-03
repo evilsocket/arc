@@ -34,6 +34,11 @@ func GetStore(id string) (store Store, err error) {
 	return
 }
 
+func GetStoreByName(name string) (store Store, err error) {
+	err = db.Where("name = ?", name).Find(&store).Error
+	return
+}
+
 func GetStoreWithRecords(id string) (store Store, err error) {
 	err = db.Where("id = ?", id).Find(&store).Error
 	if err == nil {
