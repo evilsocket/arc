@@ -31,7 +31,7 @@
       {{ errorMessage }}
     </small>
 
-    <div id="login" class="container" ng-if="!vault.IsLogged()" ng-include src="'/views/login.html'"></div>
+    <div id="login" class="container" ng-if="!vault.IsLogged()" ng-include src="'/views/login.html?v=2'"></div>
 
     <div class="row" ng-if="vault.HasStore()">
           <!--
@@ -44,8 +44,8 @@
             <button type="button" class="btn btn-primary" style="width:100%" ng-click="doAdd()">Add</button>
           </form>
           -->
-          <small style="font-size:9px;">Password store has been updated {{ vault.store.UpdatedAt | timeago }}.</small>
-          <input type="text" id="search_filter" name="search_filter" class="search-filter" ng-model="search" ng-change="updateFilter()" placeholder="Search ..."/>
+
+          <div ng-include src="'/views/search_form.html'"></div>
 
           <ul class="list-group secrets-list">
             <li class="list-group-item" ng-if="filterSecret(r)" ng-repeat="r in vault.records" ng-click="showSecret(r)">
@@ -53,7 +53,7 @@
             </li>
           </ul>
 
-          <div ng-include src="'/views/secret_modal.html'"></div>
+          <div ng-include src="'/views/show_secret_modal.html'"></div>
 
       </div>
     </div>

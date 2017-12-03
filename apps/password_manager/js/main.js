@@ -177,6 +177,10 @@ app.controller('PMController', ['$scope', function (scope) {
         return true;
     }
 
+    scope.addSecret = function() {
+        alert("TODO");
+    }
+
     scope.deleteSecret = function() {
         // this shouldn't happen, but better be safe than sorry :)
         if( scope.secret == null ){
