@@ -45,7 +45,8 @@ func main() {
 	}
 
 	r := gin.Default()
-	r.Use(static.ServeRoot("/", webapp))
+
+	r.Use(static.Serve("/", static.LocalFile(webapp, true)))
 
 	api := r.Group("/api")
 	r.POST("/auth", controllers.Auth)
