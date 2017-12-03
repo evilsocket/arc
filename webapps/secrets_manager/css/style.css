@@ -142,3 +142,15 @@ input.editable-input {
     max-height: 600px;
     overflow: auto;
 }
+
+button.btn-password {
+    border: 1px solid #ced4da;
+}
+
+.pwstrength_viewport_progress {
+    margin-top: -10px;
+    font-weight: bold;
+    font-size: 3px;
+}
+
+

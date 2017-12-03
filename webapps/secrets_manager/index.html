@@ -17,6 +17,8 @@
   <link rel="stylesheet" href="/css/style.css">
 
   <script type="text/javascript" src="/js/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/js/jquery/pwstrength.js"></script>
+  <script type="text/javascript" src="/js/jquery/clipboard.min.js"></script>
   <script type="text/javascript" src="/js/jquery/jquery.timeago.js"></script>
   <script type="text/javascript" src="/js/angular/angular.min.js"></script>
   <script type="text/javascript" src="/js/crypto-js/crypto-js.js"></script>
@@ -34,8 +36,6 @@
 
     <div ng-include src="'/views/modals/error.html?v=2'"></div>
 
-    <div id="messages" ng-include src="'/views/messages.html'"></div>
-
     <div id="login" class="container" ng-if="!vault.IsLogged()" ng-include src="'/views/login.html?v=3'"></div>
 
     <div ng-if="vault.HasStore()">
@@ -47,11 +47,11 @@
 
           <ul id="secrets_list" class="list-group secrets-list">
             <li class="list-group-item" ng-if="filterSecret(r)" ng-repeat="r in vault.records" ng-click="onShowSecret(r)">
-              <span ng-include src="'/views/secret_list_item.html?v=5'"></span>
+              <span ng-include src="'/views/secret_list_item.html?v=6'"></span>
             </li>
           </ul>
 
-          <div ng-include src="'/views/modals/secret.html?v=3'"></div>
+          <div ng-include src="'/views/modals/secret.html?v=4'"></div>
 
       </div>
     </div>

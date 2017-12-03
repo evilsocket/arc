@@ -28,6 +28,10 @@ Entry.prototype.formGroup = function(input, id) {
             '</div>';
 }
 
+Entry.prototype.passButton = function(id, name, icon) {
+    return '<button id="btn_pass_' + name + '_' + this.id(id) + '" type="button" class="btn btn-default btn-password"><span class="fa fa-' + icon + '"></span></button>';
+}
+
 Entry.prototype.input = function(type, with_value, id) {
     var val = '';
     var html = '';
@@ -36,7 +40,7 @@ Entry.prototype.input = function(type, with_value, id) {
         val = this.value;
     }
 
-    return '<input ' + 
+    html = '<input ' + 
              'class="form-control" ' +
              'data-entry-type="' + this.type + '" ' +
              'data-entry-name="' + this.name + '" ' +
@@ -44,6 +48,18 @@ Entry.prototype.input = function(type, with_value, id) {
              'name="' + this.name + '" ' + 
              'id="' + this.id(id) + '" ' +
              'value="' + val + '"/>';
+
+    if( type == 'password' ) {
+        html = '<div class="input-group mif">' +
+                    html +
+                    '<span class="input-group-btn">' +
+                        this.passButton( id, 'copy', 'clipboard' ) +
+                        this.passButton( id, 'make', 'refresh' ) +
+                    '</span>' +
+               '</div>';
+    }
+
+    return html;
 }
 
 Entry.prototype.textarea = function(with_md, with_value, id) {
@@ -87,6 +103,10 @@ Entry.prototype.RenderToList = function(list, idx) {
                      '<a href="javascript:removeEntry('+idx+')"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
                    '</div>' +
                    this.Render(true, idx);
+
+    if( this.type == ENTRY_TYPE_PASSWORD ) {
+        rendered += '<div class="pwstrength_viewport_progress"></div>';
+    }
     
     list.append( '<li id="secret_entry_' + idx + '">' + rendered + '</li>' );
 
@@ -123,7 +143,7 @@ Entry.prototype.RegisterCallbacks = function(id) {
 
         if( this.is_new == false ) {
             on_show = function(e) {
-                $('button[data-handler=bootstrap-markdown-cmdPreview]').click();
+                $('button[data-handler=bootstrdefaultTargetap-markdown-cmdPreview]').click();
                 // for some reason the width of the preview area is computed before
                 // it is actually visible, so it sticks to 100px if we call the preview
                 // here ... we need to refresh it -.-.
@@ -141,6 +161,48 @@ Entry.prototype.RegisterCallbacks = function(id) {
             },
             onShow: on_show,
         });
+    }
+    else if( this.type == ENTRY_TYPE_PASSWORD ) {
+        var options = {};
+        options.ui = {
+            bootstrap4: true,
+            container: "#secret_entry_" + id,
+            viewports: {
+                progress: ".pwstrength_viewport_progress"
+            },
+            showVerdictsInsideProgressBar: true
+        };
+        options.common = {
+            debug: true,
+            onLoad: function () {
+                $('#messages').text('Start typing password');
+            }
+        };
+
+        var btn_copy = '#btn_pass_copy_' + this.id(id);
+        var in_copy = '#' + this.id(id);
+
+        // we need this hack because clipboard.js can't
+        // read a password input using the data-clipboard-target
+        // property.
+        var clipboard = new Clipboard(btn_copy,{
+            text: function(trigger) {
+                return $(in_copy).val();
+            }
+        });
+
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+            if( e.action == 'copy' ) {
+                alert('Copied to clipboard.');
+            }
+        });
+
+        $('#btn_pass_make_' + this.id(id)).click(function(e){
+            alert("make");
+        });
+
+        $('#' + this.id(id) ).pwstrength(options);
     }
 }
 
