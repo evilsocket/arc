@@ -14,6 +14,8 @@ Vault.prototype.HasStore = function() {
 }
 
 Vault.prototype.Api = function( method, path, data, success, error ) {
+    console.log( method + ' ' + path );
+
     var vault = this;
     $.ajax({
         type: method,
@@ -58,7 +60,7 @@ Vault.prototype.Stores = function(success, error) {
 }
 
 Vault.prototype.Records = function( store, success, error ) {
-    console.log( "Loading store " + store.ID + " records ..." );
+    console.log( "Loading store-" + store.ID + " records ..." );
     var vault = this;
     this.Api( 'GET', '/api/store/' + store.ID + '/records', null, function(records){
         vault.records = records;

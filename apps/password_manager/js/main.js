@@ -1,4 +1,6 @@
-const ENTRY_TYPE_PASSWORD = 0;
+const ENTRY_TYPE_TEXT     = 0;
+const ENTRY_TYPE_PASSWORD = 1;
+const ENTRY_TYPE_MARKDOWN = 2;
 
 function Entry(type, name, value) {
     this.type = type;
@@ -6,10 +8,42 @@ function Entry(type, name, value) {
     this.value = value;
 }
 
-Entry.prototype.Render = function(){
+Entry.prototype.id = function(id) {
+    return 'new_entry_' + this.name.toLowerCase() + '_' + id;
+}
+
+Entry.prototype.formGroup = function(input, id) {
+    return '<div class="form-group">' + 
+             '<label for="' + this.id(id) + '">' + this.name + '</label>' + 
+             input +
+            '</div>';
+}
+
+Entry.prototype.input = function(type, with_value, id) {
+    var val = '';
+    var html = '';
+
+    if( with_value ) {
+        val = this.value;
+    }
+
+    return '<input ' + 
+             'class="form-control" ' +
+             'data-entry-type="' + this.type + '" ' +
+             'data-entry-name="' + this.name + '" ' +
+             'type="' + type + '" ' + 
+             'name="' + this.name + '" ' + 
+             'id="' + this.id(id) + '" ' +
+             'value="' + val + '"/>';
+}
+
+Entry.prototype.Render = function(with_value, id){
     // TODO: Use some template engine and also escape this.value.
-    if( this.type == ENTRY_TYPE_PASSWORD ) {
-        return '<b>' + this.name + '</b> <input type="password" name="' + this.name + '" value="' + this.value + '"/>';
+    if( this.type == ENTRY_TYPE_TEXT ) {
+        return this.formGroup( this.input('text', with_value, id), id ); 
+    }
+    else if( this.type == ENTRY_TYPE_PASSWORD ) {
+        return this.formGroup( this.input('password', with_value, id), id ); 
     }
 
     return "Unhandled entry type " + this.type;
@@ -53,7 +87,7 @@ Record.prototype.Decrypt = function( key, data ) {
         this.SetError( "Error while decrypting record data." );
     } else {
         this.entries = JSON.parse(data);
-        console.log( "Loaded " + this.entries.length + " entries." );
+        console.log( "Record has " + this.entries.length + " entries." );
     }
 }
 
@@ -78,6 +112,11 @@ app.filter('bytes', function() {
     }
 });
 
+function removeEntry(idx) {
+    console.log("Removing entry at position " + idx);
+    $('#secret_entry_' + idx).remove();
+}
+
 app.controller('PMController', ['$scope', function (scope) {
     scope.statusMessage = null;
     scope.errorMessage = null;
@@ -86,22 +125,37 @@ app.controller('PMController', ['$scope', function (scope) {
     scope.secret = null;
     scope.filter = null;
 
+    scope.registeredTypes = [
+        new Entry( ENTRY_TYPE_TEXT,     "URL", "https://" ),
+        new Entry( ENTRY_TYPE_TEXT,     "Login", "" ),
+        new Entry( ENTRY_TYPE_PASSWORD, "Password", "" ),
+        new Entry( ENTRY_TYPE_MARKDOWN, "Body", "" ),
+    ];
+
     scope.setError = function(message) {
-        if( message ) 
-            console.log("error = " + message);
         scope.setStatus(null);
         scope.errorMessage = message;
+
+        if( message ) {
+            if( typeof(message) == 'object' ) {
+                message = message.statusText;
+            }
+
+            console.log(message);
+            $('#error_body').html(message);
+            $('#error_modal').modal();
+        } else {
+            $('#error_modal').modal('hide');
+        }
     };
 
     scope.setStatus = function(message) {
         if( message ) 
-            console.log("status = " + message);
-        scope.statusMessage = message;
+            console.log(message);
+        // scope.statusMessage = message;
     };
 
     scope.setSecret = function(secret) {
-        if( secret )
-            console.log(secret);
         scope.secret = secret;
     }
 
@@ -151,15 +205,58 @@ app.controller('PMController', ['$scope', function (scope) {
         }
     }
 
-    scope.doAdd = function() {
-        scope.setStatus("Adding password ...");
+    scope.updateFilter = function() {
+        scope.filter = $('#search_filter').val(); 
+    }
 
-        var title = $('#pass_title').val();
-        var data = $('#pass_data').val();
+    scope.filterSecret = function(record) {
+        if( scope.filter != null ) {
+            return ( record.Title.toLowerCase().indexOf(scope.filter.toLowerCase()) != -1 );
+        }
+        return true;
+    }
+
+    scope.addSecretEntry = function() {
+        var entry_idx = $('#new_entry_type').val();
+        var entry = scope.registeredTypes[entry_idx];
+        var list = $('#add_secret_entry_list'); 
+        var nidx = list.find('li').length;
+
+        console.log( "Adding entry (idx=" + nidx + "):" );
+        console.log( entry );
+
+        var rendered = '<div style="float:right;">' + 
+                         '<a href="javascript:removeEntry(' + nidx + ')" class="badge badge-danger"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
+                       '</div>' +
+                       entry.Render(true, nidx);
         
-        var record = new Record(title);
+        list.append( '<li id="secret_entry_' + nidx + '">' + rendered + '</li>' );
+    }
 
-        record.AddEntry(new Entry( ENTRY_TYPE_PASSWORD, "password", data ));
+    scope.addSecret = function() {
+        $('#add_secret_entry_list').html('');
+        $('#add_secret_modal').modal();
+    }
+
+    scope.doAdd = function() {
+        scope.setStatus("Adding secret ...");
+
+        var title = $('#add_secret_title').val();
+        var entries = $('input[id^=new_entry_]');
+
+        if( entries.length == 0 ){
+            return alert("Please add at least one entry to your secret.");
+        }
+
+        var record = new Record(title);
+        for( var i = 0; i < entries.length; i++ ) {
+            var input = $(entries[i]);
+            var type = parseInt( input.attr('data-entry-type') );
+            var name = input.attr('data-entry-name');
+            var value = input.val();
+
+            record.AddEntry(new Entry( type, name, value ));
+        }
         
         data = record.Encrypt( scope.key )
         
@@ -175,21 +272,8 @@ app.controller('PMController', ['$scope', function (scope) {
             scope.setError(error);
             scope.$apply();
         });
-    }
 
-    scope.updateFilter = function() {
-        scope.filter = $('#search_filter').val(); 
-    }
-
-    scope.filterSecret = function(record) {
-        if( scope.filter != null ) {
-            return ( record.Title.toLowerCase().indexOf(scope.filter.toLowerCase()) != -1 );
-        }
-        return true;
-    }
-
-    scope.addSecret = function() {
-        $('#add_secret_modal').modal();
+        $('#add_secret_modal').modal('hide');
     }
 
     scope.deleteSecret = function() {
@@ -201,7 +285,6 @@ app.controller('PMController', ['$scope', function (scope) {
         if( confirm( "Delete this secret?" ) == true ) {
             scope.vault.DeleteRecord(scope.secret, function(){ 
                 scope.setSecret(null)
-                $('#show_secret_modal').modal('hide');
                 scope.getStore( function() {
                     scope.$apply();
                 });
@@ -210,6 +293,8 @@ app.controller('PMController', ['$scope', function (scope) {
                 scope.setError(error);
                 scope.$apply();
             });
+
+            $('#show_secret_modal').modal('hide');
         }
     }
 
@@ -241,7 +326,7 @@ app.controller('PMController', ['$scope', function (scope) {
                 var raw = record.entries[i];
                 var e = new Entry( raw.type, raw.name, raw.value );
 
-                rendered += e.Render();
+                rendered += e.Render(true);
             }
 
             $('#show_secret_body').html(rendered);

@@ -9,11 +9,12 @@
   <meta name="description" content="Vault Password Manager web application.">
   <meta name="author" content="Simone 'evilsocket' Margaritelli">
 
-  <link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+  <link rel="shortcut icon" type="image/png" href="/img/logo.png"/>
 
   <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/bootstrap/bootstrap-fs-modal.min.css">
   <link rel="stylesheet" href="/css/fontawesome/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/style.css">
 
   <script type="text/javascript" src="/js/jquery/jquery.min.js"></script>
   <script type="text/javascript" src="/js/jquery/jquery.timeago.js"></script>
@@ -25,25 +26,20 @@
   <script type="text/javascript" src="/js/main.js"></script>
 </head>
 <body>
-  <div class="container" ng-app="PM" ng-controller="PMController">
+  <div class="container " ng-app="PM" ng-controller="PMController">
+
+    <div ng-include src="'/views/modals/error.html'"></div>
 
     <div id="messages" ng-include src="'/views/messages.html'"></div>
 
-    <div id="login" class="container" ng-if="!vault.IsLogged()" ng-include src="'/views/login.html?v=2'"></div>
+    <div id="login" class="container" ng-if="!vault.IsLogged()" ng-include src="'/views/login.html?v=3'"></div>
 
     <div class="row" ng-if="vault.HasStore()">
-          <!--
-          <br/>
-          <form name="secret_form" >
-            <input placeholder="Title" type="text" name="pass_title" id="pass_title" style="width:100%" />
-            <input placeholder="Password" type="password" name="pass_data" id="pass_data" style="width:100%"/>
-            <br/>
-            <br/>
-            <button type="button" class="btn btn-primary" style="width:100%" ng-click="doAdd()">Add</button>
-          </form>
-          -->
+          <div id="search_form" class="search-form form-group" ng-include src="'/views/search_form.html?v=2'"></div>
 
-          <div id="search_form" class="search-form form-group" ng-include src="'/views/search_form.html'"></div>
+          <button type="button" class="btn btn-success form-control add-secret" ng-click="addSecret()">
+            Create Secret
+          </button>
 
           <ul id="secrets_list" class="list-group secrets-list">
             <li class="list-group-item" ng-if="filterSecret(r)" ng-repeat="r in vault.records" ng-click="showSecret(r)">
@@ -51,8 +47,8 @@
             </li>
           </ul>
 
-          <div ng-include src="'/views/modal_add_secret.html'"></div>
-          <div ng-include src="'/views/modal_show_secret.html'"></div>
+          <div ng-include src="'/views/modals/add_secret.html?v=4'"></div>
+          <div ng-include src="'/views/modals/show_secret.html'"></div>
 
       </div>
     </div>

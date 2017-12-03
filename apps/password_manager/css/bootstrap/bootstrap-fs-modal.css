@@ -1,0 +1,114 @@
+@media (max-width: 767px) {
+  .modal.modal-fullscreen, .bootstrap-fs-modal .modal {
+    box-shadow: 0px 0px 0px 100px white;
+  }
+  .modal.modal-fullscreen .modal-dialog, .bootstrap-fs-modal .modal .modal-dialog {
+    margin: 0;
+    height: 100%;
+    max-width: 100%;
+  }
+  .modal.modal-fullscreen .modal-dialog .modal-content, .bootstrap-fs-modal .modal .modal-dialog .modal-content {
+    border-style: none;
+    border-radius: 0;
+    height: 100%;
+  }
+  .modal.modal-fullscreen .modal-dialog .modal-content .modal-header, .bootstrap-fs-modal .modal .modal-dialog .modal-content .modal-header {
+    justify-content: flex-start;
+    min-height: 50px;
+    line-height: 50px;
+    padding: 0;
+    background-color: #f8f8f8;
+  }
+  .modal.modal-fullscreen .modal-dialog .modal-content .modal-header .modal-title, .bootstrap-fs-modal .modal .modal-dialog .modal-content .modal-header .modal-title {
+    white-space: nowrap;
+    line-height: 50px;
+    font-size: 1.1rem;
+  }
+  .modal.modal-fullscreen .modal-dialog .modal-content .modal-header .close, .bootstrap-fs-modal .modal .modal-dialog .modal-content .modal-header .close {
+    float: none;
+    order: -1;
+    margin: 0;
+    padding: 0;
+    margin-right: 12px;
+    height: 50px;
+    color: transparent;
+    text-shadow: none;
+    opacity: 1;
+  }
+  .modal.modal-fullscreen .modal-dialog .modal-content .modal-header .close:before, .bootstrap-fs-modal .modal .modal-dialog .modal-content .modal-header .close:before {
+    border-style: solid;
+    border-color: #007bff;
+    border-width: 0.15em 0.15em 0 0;
+    content: '';
+    display: inline-block;
+    height: 0.5em;
+    left: 0.55em;
+    position: relative;
+    top: 0.28em;
+    transform: rotate(-45deg);
+    vertical-align: top;
+    width: 0.5em;
+    transform: rotate(-135deg);
+  }
+  .modal.modal-fullscreen .modal-dialog .modal-content .modal-footer, .bootstrap-fs-modal .modal .modal-dialog .modal-content .modal-footer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0;
+    margin: 0 10px 0 0;
+    height: 50px;
+    min-height: 50px;
+    line-height: 50px;
+    background-color: #f8f8f8;
+  }
+  .modal.modal-fullscreen .modal-dialog .modal-content .modal-footer .btn, .bootstrap-fs-modal .modal .modal-dialog .modal-content .modal-footer .btn {
+    border: none;
+    background-color: transparent;
+    margin: 0 0 0 10px;
+    padding: 0;
+    outline: none;
+    box-shadow: none;
+    font-size: 1.0rem;
+    color: #007bff;
+  }
+  .modal.modal-fullscreen .modal-dialog .modal-content .modal-footer .btn:hover, .modal.modal-fullscreen .modal-dialog .modal-content .modal-footer .btn:active, .bootstrap-fs-modal .modal .modal-dialog .modal-content .modal-footer .btn:hover, .bootstrap-fs-modal .modal .modal-dialog .modal-content .modal-footer .btn:active {
+    text-decoration: underline;
+  }
+  .modal.modal-fullscreen .modal-dialog .modal-content .modal-footer .btn[data-dismiss="modal"], .bootstrap-fs-modal .modal .modal-dialog .modal-content .modal-footer .btn[data-dismiss="modal"] {
+    display: none;
+  }
+  .modal.modal-fullscreen .modal-dialog .modal-content .modal-footer .material-icons, .bootstrap-fs-modal .modal .modal-dialog .modal-content .modal-footer .material-icons {
+    vertical-align: middle;
+  }
+  .modal.modal-fullscreen .modal-dialog .modal-content .modal-footer .fa, .bootstrap-fs-modal .modal .modal-dialog .modal-content .modal-footer .fa {
+    vertical-align: middle;
+    font-size: 1.25em;
+  }
+  .modal.modal-fullscreen .modal-dialog .modal-content .modal-body, .bootstrap-fs-modal .modal .modal-dialog .modal-content .modal-body {
+    flex-shrink: 3;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .modal.modal-fullscreen-bottom-footer .modal-dialog .modal-content .modal-footer, .modal-fullscreen-bottom-footer .modal .modal-dialog .modal-content .modal-footer {
+    position: inherit;
+    top: inherit;
+    right: inherit;
+    padding: 15px;
+    margin: 0;
+  }
+  .modal.modal-fullscreen-bottom-footer .modal-dialog .modal-content .modal-footer .btn, .modal-fullscreen-bottom-footer .modal .modal-dialog .modal-content .modal-footer .btn {
+    margin: 0 0 0 18px;
+  }
+}
+@media (min-width: 768px) {
+  .modal.modal-fullscreen .modal-dialog .modal-content, .bootstrap-fs-modal .modal .modal-dialog .modal-content {
+    max-height: calc(100vh - 60px);
+  }
+  .modal.modal-fullscreen .modal-dialog .modal-content .modal-body, .bootstrap-fs-modal .modal .modal-dialog .modal-content .modal-body {
+    flex-shrink: 3;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/*# sourceMappingURL=bootstrap-fs-modal.css.map */
