@@ -45,12 +45,13 @@
           </form>
           -->
           <small style="font-size:9px;">Password store has been updated {{ vault.store.UpdatedAt | timeago }}.</small>
-          <br/><br/><br/>
-          <input type="text" id="search_filter" name="search_filter" ng-model="search" ng-change="updateFilter()" placeholder="Search ..." style="width:100%; margin-bottom:50px;"/>
+          <input type="text" id="search_filter" name="search_filter" class="search-filter" ng-model="search" ng-change="updateFilter()" placeholder="Search ..."/>
 
-          <span ng-repeat="r in vault.records">
-            <div ng-include src="'/views/secret_list_item.html'"></div>
-          </span>
+          <ul class="list-group secrets-list">
+            <li class="list-group-item" ng-if="filterSecret(r)" ng-repeat="r in vault.records" ng-click="showSecret(r)">
+              <span ng-include src="'/views/secret_list_item.html?v=3'"></span>
+            </li>
+          </ul>
 
           <div ng-include src="'/views/secret_modal.html'"></div>
 

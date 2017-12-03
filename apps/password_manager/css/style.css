@@ -40,3 +40,18 @@ a:hover {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+
+.search-filter {
+    width: 100%;
+    margin-bottom:10px;
+}
+
+.secrets-list {
+    width: 100%;
+    margin: 0;
+}
+
+.secrets-list > li:hover {
+    background-color: #eee;
+    cursor: pointer;
+}

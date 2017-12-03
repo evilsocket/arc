@@ -18,10 +18,21 @@ Entry.prototype.Render = function(){
 function Record(title) {
     this.title = title
     this.entries = [];
+    this.error = null;
 }
 
 Record.prototype.AddEntry = function(entry) {
     this.entries.push(entry);
+}
+
+Record.prototype.SetError = function(error) {
+    console.log( "RECORD ERROR: " + error);
+    this.entries = [];
+    this.error = error;
+}
+
+Record.prototype.HasError = function() {
+    return ( this.error != null );
 }
 
 Record.prototype.Encrypt = function( key ) {
@@ -36,8 +47,14 @@ Record.prototype.Decrypt = function( key, data ) {
     console.log( "Decrypting " + data.length + " bytes of record." );
     data = CryptoJS.AES.decrypt( data, key ).toString(CryptoJS.enc.Utf8); 
     console.log( "Decrypted data is " + data.length + " bytes." );
-    this.entries = JSON.parse(data);
-    console.log( "Loaded " + this.entries.length + " entries." );
+
+    // quick and dirty check
+    if( data.indexOf('"value"') == -1 ) {
+        this.SetError( "Error while decrypting record data." );
+    } else {
+        this.entries = JSON.parse(data);
+        console.log( "Loaded " + this.entries.length + " entries." );
+    }
 }
 
 var app = angular.module('PM', [], function($interpolateProvider) {
@@ -91,7 +108,7 @@ app.controller('PMController', ['$scope', function (scope) {
     }
 
     scope.setKey = function(key) {
-        key = $.trim(key)
+        key = $.trim(key) 
         if( key == "" ) {
             scope.setError("Empty encryption key.");
             scope.$apply();
@@ -201,17 +218,25 @@ app.controller('PMController', ['$scope', function (scope) {
 
         record.Decrypt( scope.key, secret.Data );
 
-        $('#modal_title').html(record.title);
 
-        var rendered = "";
-        for( var i = 0; i < record.entries.length; i++ ){
-            var raw = record.entries[i];
-            var e = new Entry( raw.type, raw.name, raw.value );
+        if( record.HasError() == false ) {
+            $('#modal_title').html(record.title);
 
-            rendered += e.Render();
+            var rendered = "";
+            for( var i = 0; i < record.entries.length; i++ ){
+                var raw = record.entries[i];
+                var e = new Entry( raw.type, raw.name, raw.value );
+
+                rendered += e.Render();
+            }
+
+            $('#modal_body').html(rendered);
+        } else {
+            $('#modal_title').html( '<span class="badge badge-warning"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span> ' + record.title );
+
+            $('#modal_body').html( '<span style="color:red">' + record.error + '</span>' );
         }
 
-        $('#modal_body').html(rendered);
         $('#secret_modal').modal();
     }
 }]);
