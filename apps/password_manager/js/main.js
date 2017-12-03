@@ -70,7 +70,7 @@ Entry.prototype.textarea = function(with_md, with_value, id) {
 Entry.prototype.Render = function(with_value, id){
     // TODO: Use some template engine and also escape this.value.
     if( this.type == ENTRY_TYPE_INPUT ) {
-        return this.formgroup( this.input('text', with_value, id), id ); 
+        return this.formGroup( this.input('text', with_value, id), id ); 
     }
     else if( this.type == ENTRY_TYPE_PASSWORD ) {
         return this.formGroup( this.input('password', with_value, id), id ); 
