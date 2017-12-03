@@ -94,6 +94,18 @@ Entry.prototype.RenderToList = function(list, idx) {
 Entry.prototype.RegisterCallbacks = function(id) {
     if( this.type == ENTRY_TYPE_MARKDOWN ) {
         var elem_id = this.id(id);
+        var on_show = undefined;
+
+        if( this.is_new == false ) {
+            on_show = function(e) {
+                $('button[data-handler=bootstrap-markdown-cmdPreview]').click();
+                // for some reason the width of the preview area is computed before
+                // it is actually visible, so it sticks to 100px if we call the preview
+                // here ... we need to refresh it -.-.
+                $('.md-preview').css('width', '');
+            };
+        }
+
         console.log( "Registering markdown textarea " + elem_id );
         $('#' + elem_id).markdown({
             autofocus:true,
@@ -102,8 +114,10 @@ Entry.prototype.RegisterCallbacks = function(id) {
             fullscreen:{
                 'enable': false,
                 'icons': 'fa'
-            }
+            },
+            onShow: on_show
         });
+
     }
 }
 
