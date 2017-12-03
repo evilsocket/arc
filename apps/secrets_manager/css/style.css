@@ -101,6 +101,15 @@ button:hover {
 .search-filter {
 }
 
+div.entry-edit {
+    float: right; 
+    margin-bottom: 5px;
+}
+
+div.entry-edit > a {
+    color: #212529;
+}
+
 .add-secret {
     margin-bottom: 5px;
 }
@@ -117,7 +126,19 @@ button:hover {
     cursor: pointer;
 }
 
+.add-entry-row {
+    border-top: 1px solid #eee;
+    margin-top: 25px;
+    padding-top: 25px;
+}
+
+input.editable-input {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
 .md-editor {
+    width: 100%;
     max-height: 600px;
     overflow: auto;
 }

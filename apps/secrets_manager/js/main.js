@@ -22,7 +22,8 @@ Entry.prototype.id = function(id) {
 
 Entry.prototype.formGroup = function(input, id) {
     return '<div class="form-group">' + 
-             '<label for="' + this.id(id) + '">' + this.name + '</label>' + 
+             '<span class="label label-default" id="editable_' + this.id(id) + '" for="name_of_' + this.id(id) + '">' + this.name + '</span>' +
+             '<input class="blur editable-input hidden" type="text" id="name_of_' + this.id(id) + '" value="' + this.name + '">' + 
              input +
             '</div>';
 }
@@ -81,8 +82,9 @@ Entry.prototype.Render = function(with_value, id){
 }
 
 Entry.prototype.RenderToList = function(list, idx) {
-    var rendered = '<div style="float:right;">' + 
-                     '<a href="javascript:removeEntry('+idx+')" class="badge badge-danger"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
+    var rendered = '<div class="entry-edit">' + 
+                     '<a href="javascript:editEntryFor(\''+this.id(idx)+'\')"><i class="fa fa-edit" aria-hidden="true"></i></a> ' +
+                     '<a href="javascript:removeEntry('+idx+')"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
                    '</div>' +
                    this.Render(true, idx);
     
@@ -92,6 +94,29 @@ Entry.prototype.RenderToList = function(list, idx) {
 }
 
 Entry.prototype.RegisterCallbacks = function(id) {
+    $('#name_of_' + this.id(id)).hide();
+
+    $('#editable_' + this.id(id) ).click(function () {
+        $(this).hide();
+
+        var target = $(this).attr('for');
+        $('#' + target)
+            .val($(this).text())
+            .toggleClass("form-control")
+            .show()
+            .focus();
+    });
+
+    $('.blur').blur(function () {
+        $(this)
+            .hide()
+            .toggleClass("form-control");
+        var myid = (this).id;
+        $('span[for=' + myid + ']')
+            .text($(this).val())
+            .show();
+    });
+
     if( this.type == ENTRY_TYPE_MARKDOWN ) {
         var elem_id = this.id(id);
         var on_show = undefined;
@@ -194,8 +219,14 @@ app.filter('bytes', function() {
 });
 
 function removeEntry(idx) {
-    console.log("Removing entry at position " + idx );
-    $('#secret_entry_' + idx).remove();
+    if( confirm("Remove this field?") ) {
+        console.log("Removing entry at position " + idx );
+        $('#secret_entry_' + idx).remove();
+    }
+}
+
+function editEntryFor(id) {
+    $('#editable_' + id ).click();
 }
 
 app.controller('PMController', ['$scope', function (scope) {
@@ -349,19 +380,21 @@ app.controller('PMController', ['$scope', function (scope) {
         scope.setStatus("Adding secret ...");
 
         var title = $('#secret_title').val();
+        var names = $('input[id^=name_of_]');
         var entries = $('*[id^=entry_value_]');
 
         if( entries.length == 0 ){
             return alert("Please add at least one entry to your secret.");
         }
-
-        console.log(entries);
+        else if( entries.length != names.length ) {
+            return alert("WTF?!");
+        }
 
         var record = new Record(title);
         for( var i = 0; i < entries.length; i++ ) {
             var input = $(entries[i]);
             var type = parseInt( input.attr('data-entry-type') );
-            var name = input.attr('data-entry-name');
+            var name = $(names[i]).val();
             var value = input.val();
 
             record.AddEntry(new Entry( type, name, value ));
@@ -416,19 +449,21 @@ app.controller('PMController', ['$scope', function (scope) {
         scope.setStatus("Updating secret ...");
 
         var title = $('#secret_title').val();
+        var names = $('input[id^=name_of_]');
         var entries = $('*[id^=entry_value_]');
 
         if( entries.length == 0 ){
             return alert("Please add at least one entry to your secret.");
+        } 
+        else if( entries.length != names.length ) {
+            return alert("WTF?!");
         }
-
-        // console.log(entries);
 
         var record = new Record(title);
         for( var i = 0; i < entries.length; i++ ) {
             var input = $(entries[i]);
             var type = parseInt( input.attr('data-entry-type') );
-            var name = input.attr('data-entry-name');
+            var name = $(names[i]).val();
             var value = input.val();
 
             record.AddEntry(new Entry( type, name, value ));
