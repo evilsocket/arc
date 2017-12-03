@@ -45,7 +45,7 @@
           </form>
           -->
 
-          <div ng-include src="'/views/search_form.html'"></div>
+          <div class="search-form form-group" ng-include src="'/views/search_form.html'"></div>
 
           <ul class="list-group secrets-list">
             <li class="list-group-item" ng-if="filterSecret(r)" ng-repeat="r in vault.records" ng-click="showSecret(r)">
