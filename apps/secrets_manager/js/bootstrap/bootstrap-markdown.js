@@ -1021,7 +1021,7 @@
     width: 'inherit',
     height: 'inherit',
     resize: 'none',
-    iconlibrary: 'glyph',
+    iconlibrary: 'fa',
     language: 'en',
     initialstate: 'editor',
     parser: null,

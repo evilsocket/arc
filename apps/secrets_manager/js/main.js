@@ -105,19 +105,17 @@ Entry.prototype.RegisterCallbacks = function(id) {
                 $('.md-preview').css('width', '');
             };
         }
-
         console.log( "Registering markdown textarea " + elem_id );
         $('#' + elem_id).markdown({
             autofocus:true,
             savable:false,
             iconlibrary:'fa',
             fullscreen:{
-                'enable': false,
+                'enable': true,
                 'icons': 'fa'
             },
-            onShow: on_show
+            onShow: on_show,
         });
-
     }
 }
 
@@ -169,6 +167,7 @@ Record.prototype.Decrypt = function( key, data ) {
 
         for( var i = 0; i < objects.length; i++ ) {
             this.entries.push( EntryFromObject(objects[i]) );
+            this.entries.is_new = false;
         }
     }
 }

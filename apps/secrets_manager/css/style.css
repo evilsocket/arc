@@ -116,3 +116,8 @@ button:hover {
     background-color: #eee;
     cursor: pointer;
 }
+
+.md-editor {
+    max-height: 600px;
+    overflow: auto;
+}
