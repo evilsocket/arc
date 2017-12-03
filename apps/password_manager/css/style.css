@@ -39,6 +39,16 @@ a:hover {
   border-top-right-radius: 0;
 }
 
+.modal-dialog {
+  width: 98%;
+  height: 92%;
+  padding: 0;
+}
+
+.modal-content {
+  height: 99%;
+}
+
 .search-form {
     width: 100%;
     margin-bottom:10px;

@@ -189,7 +189,7 @@ app.controller('PMController', ['$scope', function (scope) {
     }
 
     scope.addSecret = function() {
-        alert("TODO");
+        $('#add_secret_modal').modal();
     }
 
     scope.deleteSecret = function() {
@@ -201,7 +201,7 @@ app.controller('PMController', ['$scope', function (scope) {
         if( confirm( "Delete this secret?" ) == true ) {
             scope.vault.DeleteRecord(scope.secret, function(){ 
                 scope.setSecret(null)
-                $('#secret_modal').modal('hide');
+                $('#show_secret_modal').modal('hide');
                 scope.getStore( function() {
                     scope.$apply();
                 });
@@ -222,7 +222,7 @@ app.controller('PMController', ['$scope', function (scope) {
         alert("TODO");
         
         scope.setSecret(null)
-        $('#secret_modal').modal('hide');
+        $('#show_secret_modal').modal('hide');
 
     }
 
@@ -233,9 +233,8 @@ app.controller('PMController', ['$scope', function (scope) {
 
         record.Decrypt( scope.key, secret.Data );
 
-
         if( record.HasError() == false ) {
-            $('#modal_title').html(record.title);
+            $('#show_secret_title').html(record.title);
 
             var rendered = "";
             for( var i = 0; i < record.entries.length; i++ ){
@@ -245,13 +244,13 @@ app.controller('PMController', ['$scope', function (scope) {
                 rendered += e.Render();
             }
 
-            $('#modal_body').html(rendered);
+            $('#show_secret_body').html(rendered);
         } else {
-            $('#modal_title').html( '<span class="badge badge-warning"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span> ' + record.title );
+            $('#show_secret_title').html( '<span class="badge badge-warning"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span> ' + record.title );
 
-            $('#modal_body').html( '<span style="color:red">' + record.error + '</span>' );
+            $('#show_secret_body').html( '<span style="color:red">' + record.error + '</span>' );
         }
 
-        $('#secret_modal').modal();
+        $('#show_secret_modal').modal();
     }
 }]);
