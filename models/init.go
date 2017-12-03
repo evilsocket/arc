@@ -31,7 +31,7 @@ func Setup() error {
 }
 
 func Save(obj interface{}) error {
-	return db.Delete(obj).Error
+	return db.Save(obj).Error
 }
 
 func Create(obj interface{}) error {

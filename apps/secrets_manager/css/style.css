@@ -55,15 +55,11 @@ button:hover {
     margin-bottom: 5px;
 }
 
-#add_secret_entry_list {
+#secret_entry_list {
+    width: 100%;
     list-style-type: none;
     margin: 0;
     padding: 0;
-}
-
-.secrets-list {
-    width: 100%;
-    margin: 0;
 }
 
 .secrets-list > li:hover {

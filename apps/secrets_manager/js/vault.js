@@ -106,6 +106,20 @@ Vault.prototype.AddRecord = function( title, data, encryption, success, error ) 
     this.Api( 'POST', '/api/store/' + this.store.ID + '/records', record, success, error );
 }
 
+Vault.prototype.UpdateRecord = function( id, title, data, encryption, success, error) {
+    if( this.HasStore() == false ) {
+        return error("No store has been selected.");
+    }
+    var record = {
+        'ID': id,
+        'StoreID': this.store.ID,
+        'Title': title,
+        'Data': data,
+        'Encryption': encryption,
+    };
+    this.Api( 'PUT', '/api/store/' + this.store.ID + '/record/' + id, record, success, error );
+}
+
 Vault.prototype.DeleteRecord = function( record, success, error ) {
     if( this.HasStore() == false ) {
         return error("No store has been selected.");

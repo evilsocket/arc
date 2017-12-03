@@ -60,6 +60,6 @@ func UpdateRecord(c *gin.Context) {
 	} else if err := models.Save(&record); err != nil {
 		c.AbortWithStatus(404)
 	} else {
-		c.JSON(200, gin.H{"msg": "Record updated."})
+		c.JSON(200, record)
 	}
 }

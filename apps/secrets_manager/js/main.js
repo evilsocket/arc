@@ -17,11 +17,7 @@ function EntryFromObject(o) {
 }
 
 Entry.prototype.id = function(id) {
-    if( this.is_new == true ) {
-        return 'new_entry_value_' + this.name.toLowerCase() + '_' + id;
-    } else {
-        return 'edt_entry_value_' + this.name.toLowerCase() + '_' + id;
-    }
+    return 'entry_value_' + this.name.toLowerCase() + '_' + id;
 }
 
 Entry.prototype.formGroup = function(input, id) {
@@ -68,7 +64,6 @@ Entry.prototype.textarea = function(with_md, with_value, id) {
 }
 
 Entry.prototype.Render = function(with_value, id){
-    // TODO: Use some template engine and also escape this.value.
     if( this.type == ENTRY_TYPE_INPUT ) {
         return this.formGroup( this.input('text', with_value, id), id ); 
     }
@@ -83,6 +78,17 @@ Entry.prototype.Render = function(with_value, id){
     }
 
     return "Unhandled entry type " + this.type;
+}
+
+Entry.prototype.RenderToList = function(list, idx) {
+    var rendered = '<div style="float:right;">' + 
+                     '<a href="javascript:removeEntry('+idx+')" class="badge badge-danger"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
+                   '</div>' +
+                   this.Render(true, idx);
+    
+    list.append( '<li id="secret_entry_' + idx + '">' + rendered + '</li>' );
+
+    this.RegisterCallbacks(idx);
 }
 
 Entry.prototype.RegisterCallbacks = function(id) {
@@ -175,7 +181,7 @@ app.filter('bytes', function() {
 });
 
 function removeEntry(idx) {
-    console.log("Removing entry at position " + idx);
+    console.log("Removing entry at position " + idx );
     $('#secret_entry_' + idx).remove();
 }
 
@@ -282,33 +288,55 @@ app.controller('PMController', ['$scope', function (scope) {
     scope.addSecretEntry = function() {
         var entry_idx = $('#new_entry_type').val();
         var entry = scope.registeredTypes[entry_idx];
-        var list = $('#add_secret_entry_list'); 
+        var list = $('#secret_entry_list'); 
         var nidx = list.find('li').length;
 
         console.log( "Adding entry (idx=" + nidx + "):" );
         console.log( entry );
 
-        var rendered = '<div style="float:right;">' + 
-                         '<a href="javascript:removeEntry(' + nidx + ')" class="badge badge-danger"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
-                       '</div>' +
-                       entry.Render(true, nidx);
-        
-        list.append( '<li id="secret_entry_' + nidx + '">' + rendered + '</li>' );
-
-        entry.RegisterCallbacks(nidx);
+        entry.RenderToList( list, nidx );
     }
 
-    scope.addSecret = function() {
-        $('#add_secret_title').val('');
-        $('#add_secret_entry_list').html('');
-        $('#add_secret_modal').modal();
+    scope.onNewSecret = function() {
+        $('#secret_title').val('');
+        $('#secret_entry_list').html('');
+        $('#new_secret_buttons').show();
+        $('#edt_secret_buttons').hide();
+        $('#secret_modal').modal();
     }
 
-    scope.doAdd = function() {
+    scope.onShowSecret = function(secret) {
+        $('#secret_title').val('');
+        $('#secret_entry_list').html('');
+        $('#new_secret_buttons').hide();
+        $('#edt_secret_buttons').show();
+
+        var record = new Record(secret.Title);
+        var list = $('#secret_entry_list'); 
+
+        scope.setSecret(secret)
+
+        $('#secret_title').val(record.title);
+
+        record.Decrypt( scope.key, secret.Data );
+
+        if( record.HasError() == false ) {
+            var nidx = list.find('li').length;
+            for( var i = 0; i < record.entries.length; i++ ){
+                record.entries[i].RenderToList( list, i );
+            }
+        } else {
+            $('#secret_body').html( '<span style="color:red">' + record.error + '</span>' );
+        }
+
+        $('#secret_modal').modal();
+    }
+
+    scope.onAdd = function() {
         scope.setStatus("Adding secret ...");
 
-        var title = $('#add_secret_title').val();
-        var entries = $('*[id^=new_entry_value_]');
+        var title = $('#secret_title').val();
+        var entries = $('*[id^=entry_value_]');
 
         if( entries.length == 0 ){
             return alert("Please add at least one entry to your secret.");
@@ -341,10 +369,10 @@ app.controller('PMController', ['$scope', function (scope) {
             scope.$apply();
         });
 
-        $('#add_secret_modal').modal('hide');
+        $('#secret_modal').modal('hide');
     }
 
-    scope.deleteSecret = function() {
+    scope.onDelete = function() {
         // this shouldn't happen, but better be safe than sorry :)
         if( scope.secret == null ){
             return;
@@ -352,7 +380,7 @@ app.controller('PMController', ['$scope', function (scope) {
 
         if( confirm( "Delete this secret?" ) == true ) {
             scope.vault.DeleteRecord(scope.secret, function(){ 
-                scope.setSecret(null)
+                scope.setSecret(null);
                 scope.getStore( function() {
                     scope.$apply();
                 });
@@ -362,52 +390,53 @@ app.controller('PMController', ['$scope', function (scope) {
                 scope.$apply();
             });
 
-            $('#show_secret_modal').modal('hide');
+            $('#secret_modal').modal('hide');
         }
     }
 
-    scope.updateSecret = function() {
+    scope.onUpdate = function() {
         // this shouldn't happen, but better be safe than sorry :)
         if( scope.secret == null ){
             return;
         }
 
-        alert("TODO");
-        
-        scope.setSecret(null)
-        $('#show_secret_modal').modal('hide');
+        scope.setStatus("Updating secret ...");
 
-    }
+        var title = $('#secret_title').val();
+        var entries = $('*[id^=entry_value_]');
 
-    scope.showSecret = function(secret) {
-        scope.setSecret(secret)
-    
-        var record = new Record(secret.Title);
-
-        record.Decrypt( scope.key, secret.Data );
-
-        if( record.HasError() == false ) {
-            $('#show_secret_title').html(record.title);
-
-            var entries = [];
-            var rendered = "";
-            for( var i = 0; i < record.entries.length; i++ ){
-                var e = record.entries[i];
-                rendered += e.Render(true, i);
-                entries.push(e);
-            }
-
-            $('#show_secret_body').html(rendered);
-
-            for( var i = 0; i < entries.length; i++ ) {
-                entries[i].RegisterCallbacks(i);
-            }
-        } else {
-            $('#show_secret_title').html( '<span class="badge badge-warning"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span> ' + record.title );
-
-            $('#show_secret_body').html( '<span style="color:red">' + record.error + '</span>' );
+        if( entries.length == 0 ){
+            return alert("Please add at least one entry to your secret.");
         }
 
-        $('#show_secret_modal').modal();
+        // console.log(entries);
+
+        var record = new Record(title);
+        for( var i = 0; i < entries.length; i++ ) {
+            var input = $(entries[i]);
+            var type = parseInt( input.attr('data-entry-type') );
+            var name = input.attr('data-entry-name');
+            var value = input.val();
+
+            record.AddEntry(new Entry( type, name, value ));
+        }
+        
+        var data = record.Encrypt( scope.key )
+        
+        scope.vault.UpdateRecord( scope.secret.ID, title, data, 'aes', function(record) {
+            scope.setSecret(null);
+            scope.setError(null);
+            scope.$apply();
+
+            scope.getStore( function() {
+                scope.$apply();
+            });
+        },
+        function(error){
+            scope.setError(error);
+            scope.$apply();
+        });
+
+        $('#secret_modal').modal('hide');
     }
 }]);
