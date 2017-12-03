@@ -1,6 +1,7 @@
-const ENTRY_TYPE_TEXT     = 0;
+const ENTRY_TYPE_INPUT    = 0;
 const ENTRY_TYPE_PASSWORD = 1;
-const ENTRY_TYPE_MARKDOWN = 2;
+const ENTRY_TYPE_TEXT     = 2;
+const ENTRY_TYPE_MARKDOWN = 3;
 
 function Entry(type, name, value) {
     this.type = type;
@@ -48,7 +49,7 @@ Entry.prototype.input = function(type, with_value, id) {
              'value="' + val + '"/>';
 }
 
-Entry.prototype.textarea = function(with_value, id) {
+Entry.prototype.textarea = function(with_md, with_value, id) {
     var val = '';
     var html = '';
 
@@ -58,7 +59,7 @@ Entry.prototype.textarea = function(with_value, id) {
 
     return '<textarea ' + 
              'class="form-control" ' +
-             'data-provide="markdown" ' +
+             ( with_md ? 'data-provide="markdown" ' : '' ) +
              'data-entry-type="' + this.type + '" ' +
              'data-entry-name="' + this.name + '" ' +
              'name="' + this.name + '" ' + 
@@ -68,14 +69,17 @@ Entry.prototype.textarea = function(with_value, id) {
 
 Entry.prototype.Render = function(with_value, id){
     // TODO: Use some template engine and also escape this.value.
-    if( this.type == ENTRY_TYPE_TEXT ) {
-        return this.formGroup( this.input('text', with_value, id), id ); 
+    if( this.type == ENTRY_TYPE_INPUT ) {
+        return this.formgroup( this.input('text', with_value, id), id ); 
     }
     else if( this.type == ENTRY_TYPE_PASSWORD ) {
         return this.formGroup( this.input('password', with_value, id), id ); 
     } 
+    else if( this.type == ENTRY_TYPE_TEXT ) {
+        return this.formGroup( this.textarea(false, with_value, id), id );
+    }
     else if( this.type == ENTRY_TYPE_MARKDOWN ) {
-        return this.formGroup( this.textarea(with_value, id), id );
+        return this.formGroup( this.textarea(true, with_value, id), id );
     }
 
     return "Unhandled entry type " + this.type;
@@ -184,10 +188,11 @@ app.controller('PMController', ['$scope', function (scope) {
     scope.filter = null;
 
     scope.registeredTypes = [
-        new Entry( ENTRY_TYPE_TEXT,     "URL", "https://" ),
-        new Entry( ENTRY_TYPE_TEXT,     "Login", "" ),
+        new Entry( ENTRY_TYPE_INPUT,    "URL", "https://" ),
+        new Entry( ENTRY_TYPE_INPUT,    "Login", "" ),
         new Entry( ENTRY_TYPE_PASSWORD, "Password", "" ),
-        new Entry( ENTRY_TYPE_MARKDOWN, "Body", "" ),
+        new Entry( ENTRY_TYPE_TEXT,     "Text", "" ),
+        new Entry( ENTRY_TYPE_MARKDOWN, "Markdown", "" ),
     ];
 
     scope.setError = function(message) {
