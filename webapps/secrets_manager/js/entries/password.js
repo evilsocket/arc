@@ -1,6 +1,5 @@
 $.getCSS("/css/bootstrap/bootstrap-slider.min.css");
 $.getScript("/js/libs/jquery/pwstrength.js");
-$.getScript("/js/libs/jquery/clipboard.min.js");
 $.getScript("/js/libs/bootstrap/bootstrap-slider.min.js");
 
 const ENTRY_TYPE_PASSWORD = 1;
@@ -30,6 +29,64 @@ function generatePassword( length, charset ) {
     return pass;
 }
 
+// taken from https://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript/30810322
+function copyTextToClipboard(text) {
+  var textArea = document.createElement("textarea");
+
+  //
+  // *** This styling is an extra step which is likely not required. ***
+  //
+  // Why is it here? To ensure:
+  // 1. the element is able to have focus and selection.
+  // 2. if element was to flash render it has minimal visual impact.
+  // 3. less flakyness with selection and copying which **might** occur if
+  //    the textarea element is not visible.
+  //
+  // The likelihood is the element won't even render, not even a flash,
+  // so some of these are just precautions. However in IE the element
+  // is visible whilst the popup box asking the user for permission for
+  // the web page to copy to the clipboard.
+  //
+
+  // Place in top-left corner of screen regardless of scroll position.
+  textArea.style.position = 'fixed';
+  textArea.style.top = 0;
+  textArea.style.left = 0;
+
+  // Ensure it has a small width and height. Setting to 1px / 1em
+  // doesn't work as this gives a negative w/h on some browsers.
+  textArea.style.width = '2em';
+  textArea.style.height = '2em';
+
+  // We don't need padding, reducing the size if it does flash render.
+  textArea.style.padding = 0;
+
+  // Clean up any borders.
+  textArea.style.border = 'none';
+  textArea.style.outline = 'none';
+  textArea.style.boxShadow = 'none';
+
+  // Avoid flash of white box if rendered for any reason.
+  textArea.style.background = 'transparent';
+
+
+  textArea.value = text;
+
+  document.body.appendChild(textArea);
+
+  textArea.select();
+
+  try {
+    var successful = document.execCommand('copy');
+    var msg = successful ? 'successful' : 'unsuccessful';
+    console.log('Copying text command was ' + msg);
+  } catch (err) {
+    console.log('Oops, unable to copy');
+  }
+
+  document.body.removeChild(textArea);
+}
+
 function PasswordEntry(name, value) {
     Entry.call( this, ENTRY_TYPE_PASSWORD, name, value );
 }
@@ -42,7 +99,9 @@ PasswordEntry.prototype.TypeName = function() {
 }
 
 PasswordEntry.prototype.btn = function(id, name, icon) {
-    return '<button id="btn_pass_' + name + '_' + this.id(id) + '" type="button" class="btn btn-default btn-password"><span class="fa fa-' + icon + '"></span></button>';
+    return '<button id="btn_pass_' + name + '_' + this.id(id) + '" type="button" class="btn btn-default btn-password">' +
+             '<span class="fa fa-' + icon + '"></span>' + 
+           '</button>';
 }
 
 PasswordEntry.prototype.input = function(with_value, id) {
@@ -85,8 +144,6 @@ PasswordEntry.prototype.OnRendered = function(id) {
 
     var elem_id = this.id(id);
     var elem = $('#' + elem_id);
-    var btn_pass_copy_id = '#btn_pass_copy_' + elem_id;
-    var btn_pass_make_id = '#btn_pass_make_' + elem_id;
     var options = {
         ui: {
             bootstrap4: true,
@@ -100,22 +157,15 @@ PasswordEntry.prototype.OnRendered = function(id) {
 
     elem.pwstrength(options);
 
-    // console.log( "Attach clipboard to " + btn_pass_copy_id );
-    // we need this hack because clipboard.js can't
-    // read a password input using the data-clipboard-target
-    // property.
-    var clipboard = new Clipboard( btn_pass_copy_id,{
-        text: function(trigger) {
-            // console.log( "#" + elem_id + ".val() => '" + elem.val() + "' => clipboard" );
-            return elem.val();
-        }
+    var btn_pass_copy_id = '#btn_pass_copy_' + elem_id;
+    $(btn_pass_copy_id).click(function() {
+        var pass = elem.val();
+        copyTextToClipboard(pass);
+        console.log( "Copied " + pass.length + " characters to clipboard." );
+        alert( "Password copied." );
     });
 
-    clipboard.on('success', function(e) {
-        e.clearSelection();
-        // console.log('Copied to clipboard.'); 
-    });
-
+    var btn_pass_make_id = '#btn_pass_make_' + elem_id;
     $(btn_pass_make_id).click(function(e){
         g_SelectedEntryId = elem_id;
         $('#pass_n').html( PASSW_SIZE_DEFAULT );
