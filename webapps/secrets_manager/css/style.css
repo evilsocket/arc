@@ -157,6 +157,7 @@ button.btn-password {
 
 .pwstrength_viewport_progress {
     margin-top: -10px;
+    margin-bottom: 15px;
     font-weight: bold;
     font-size: 3px;
 }
