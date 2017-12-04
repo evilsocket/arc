@@ -47,13 +47,15 @@ Record.prototype.Decrypt = function( key, data ) {
         this.SetError( "Error while decrypting record data." );
     } else {
         var objects = JSON.parse(data);
-        
-        this.entries = [];
-        console.log( "Record has " + objects.length + " entries." );
 
+        console.log( "Record has " + objects.length + " entries." );
+        // console.log(data);
+
+        this.entries = [];
         for( var i = 0; i < objects.length; i++ ) {
-            this.entries.push( EntryFromObject(objects[i]) );
-            this.entries.is_new = false;
+            var entry = TypeFactory(objects[i]);
+            // console.log( "record.entries[" + i + "] = " + entry.TypeName() );
+            this.entries.push(entry);
         }
     }
 }

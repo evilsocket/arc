@@ -14,7 +14,6 @@ function downloadFor(id) {
     var name = name_of.val();
     var data = g_FilesMap[id];
 
-
     console.log( "Dowloading " + data.length + " bytes of data as " + name );
 
     // https://stackoverflow.com/questions/23795034/creating-a-blob-or-a-file-from-javascript-binary-string-changes-the-number-of-by
@@ -96,6 +95,7 @@ app.filter('bytes', function() {
         return bytesFormat(bytes, precision);
     }
 });
+
 app.controller('PMController', ['$scope', function (scope) {
     scope.statusMessage = null;
     scope.errorMessage = null;
@@ -103,15 +103,7 @@ app.controller('PMController', ['$scope', function (scope) {
     scope.key = null;
     scope.secret = null;
     scope.filter = null;
-
-    scope.registeredTypes = [
-        new Entry( ENTRY_TYPE_INPUT,    "URL", "https://" ),
-        new Entry( ENTRY_TYPE_INPUT,    "Login", "" ),
-        new Entry( ENTRY_TYPE_PASSWORD, "Password", "" ),
-        new Entry( ENTRY_TYPE_TEXT,     "Text", "" ),
-        new Entry( ENTRY_TYPE_MARKDOWN, "Markdown", "" ),
-        new Entry( ENTRY_TYPE_FILE,     "File", "" ),
-    ];
+    scope.registeredTypes = REGISTERED_TYPES;
 
     scope.setError = function(message) {
         scope.setStatus(null);
@@ -292,7 +284,9 @@ app.controller('PMController', ['$scope', function (scope) {
 
             var list = $('#secret_entry_list'); 
             for( var i = 0; i < record.entries.length; i++ ){
-                record.entries[i].RenderToList( list, i );
+                var e = record.entries[i];
+                // console.log( "Rendering entry " + e.TypeName() );
+                e.RenderToList( list, i );
             }
 
             $('#secret_modal').modal();
@@ -364,7 +358,7 @@ app.controller('PMController', ['$scope', function (scope) {
                 });
             },
             function(err){
-                scope.setError(error);
+                scope.setError(err);
                 scope.$apply();
             });
 

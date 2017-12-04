@@ -31,7 +31,8 @@ Vault.prototype.Api = function( method, path, data, success, error ) {
         success: success,
         error: error,
         contentType: "application/json",
-        dataType: 'json'
+        dataType: 'json',
+        timeout: 60 * 60 * 100
     });
 }
 

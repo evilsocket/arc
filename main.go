@@ -63,6 +63,8 @@ func main() {
 		fatal(err)
 	}
 
+	gin.SetMode(gin.ReleaseMode)
+
 	r := gin.New()
 
 	webapp := loadApp(r)

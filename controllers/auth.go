@@ -5,7 +5,6 @@ import (
 	"github.com/evilsocket/vault/config"
 	"github.com/evilsocket/vault/middlewares"
 	"github.com/gin-gonic/gin"
-	"time"
 )
 
 type AuthRequest struct {
@@ -36,8 +35,6 @@ func Auth(c *gin.Context) {
 		panic(err)
 	}
 
-	token_expiration_date := time.Now().Add(time.Duration(config.Conf.TokenDuration) * time.Minute)
-
-	logEvent(c, "Logged in, token will be valid until %s (%d minutes).", token_expiration_date, config.Conf.TokenDuration)
+	logEvent(c, "User '%s' requested new API token (will expire in %d minutes).", auth.Username, config.Conf.TokenDuration)
 	c.JSON(200, gin.H{"token": token})
 }
