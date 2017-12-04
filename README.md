@@ -22,6 +22,15 @@ Run the `Secrets Manager` web application, the first time `vaultd` will automati
 
 Browse `http://localhost:8080/` and login with the credentials you specified in the `config.json` file.
 
+## Screenshots
+
+Both `vaultd` and the `Secrets Manager` app are work in progress, you might experience some differences with the following screenshots.
+
+![multikey](https://pbs.twimg.com/media/DQN8W1KWsAEP6bd.jpg:large)
+![files](https://pbs.twimg.com/media/DQN8vAtW0AEho6Z.jpg:large)
+![passgen](https://pbs.twimg.com/media/DQN8W1KWsAEP6bd.jpg:large)
+[!notepad](https://pbs.twimg.com/media/DQOmJ8tW4AE7W_H.jpg:large)
+
 ## License
 
 `vaultd` and the `Secrets Manager` app were made with ♥  by [Simone Margaritelli](https://www.evilsocket.net/) and they're released under the GPL 3 license.
