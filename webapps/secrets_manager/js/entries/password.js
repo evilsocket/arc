@@ -144,6 +144,7 @@ PasswordEntry.prototype.OnRendered = function(id) {
 
     var elem_id = this.id(id);
     var elem = $('#' + elem_id);
+
     var options = {
         ui: {
             bootstrap4: true,
@@ -154,11 +155,11 @@ PasswordEntry.prototype.OnRendered = function(id) {
             showVerdictsInsideProgressBar: true
         }
     };
-
     elem.pwstrength(options);
 
     var btn_pass_copy_id = '#btn_pass_copy_' + elem_id;
     $(btn_pass_copy_id).click(function() {
+        elem.select().focus();
         var pass = elem.val();
         copyTextToClipboard(pass);
         console.log( "Copied " + pass.length + " characters to clipboard." );
