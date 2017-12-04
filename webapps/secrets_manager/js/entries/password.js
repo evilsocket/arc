@@ -11,6 +11,25 @@ const PASSW_SIZE_DEFAULT = 32;
 
 var g_SelectedEntryId = "";
 
+function generatePassword( length, charset ) {
+    // console.log( "Generating password of " + length );
+
+    var pass = "";
+    var nsymbols = charset.length;
+
+    for(var i = 0; i < length; i++) {
+        // Math.random() is not cryptographically secure, while CryptoJS
+        // is using Donald Knuth's linear congruential pseudo-random 
+        // number generator -> https://github.com/brix/crypto-js/issues/7
+        var random_word = CryptoJS.lib.WordArray.random(1).words[0]
+        var random_index = Math.abs(random_word) % nsymbols;
+
+        pass += charset.charAt(random_index);
+    }
+
+    return pass;
+}
+
 function PasswordEntry(name, value) {
     Entry.call( this, ENTRY_TYPE_PASSWORD, name, value );
 }

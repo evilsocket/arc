@@ -60,17 +60,6 @@ function onGenerate(n) {
     $('#generated_password').val(new_pass);
 }
 
-function generatePassword( length, charset ) {
-    var pass = "";
-
-    for(var i = 0; i < length; i++) {
-        // TODO: Use a better random generator.
-        pass += charset.charAt(Math.floor(Math.random() * charset.length));
-    }
-
-    return pass;
-}
-
 function bytesFormat(bytes, precision) {
     if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
     if (typeof precision === 'undefined') precision = 1;
