@@ -36,7 +36,7 @@ Password complexity audit and generator.
 ![passgen](https://pbs.twimg.com/media/DQN8vAiXkAA9x1z.jpg:large)
 
 Markdown notepad.
-[!notepad](https://pbs.twimg.com/media/DQOmJ8tW4AE7W_H.jpg:large)
+![notepad](https://pbs.twimg.com/media/DQOmJ8tW4AE7W_H.jpg:large)
 
 ## License
 
