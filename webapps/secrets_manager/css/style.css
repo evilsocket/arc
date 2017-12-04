@@ -160,11 +160,12 @@ div.entry-edit > a:hover {
 }
 
 .status-locked {
-    color:#bbb; 
+    color:#bbb;
 }
 
 .status-unlocked {
-    color: #28a745;
+    /* color: #28a745; */
+    color:#bbb;
 }
 
 .status-error {
