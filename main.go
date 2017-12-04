@@ -76,6 +76,9 @@ func main() {
 		log.Printf("WARNING - API authentication is disabled - WARNING\n")
 	}
 
+	controllers.App = webapp
+
+	api.GET("/manifest", controllers.GetManifest)
 	api.GET("/config", controllers.GetConfig)
 
 	api.GET("/stores", controllers.ListStores)
