@@ -4,6 +4,13 @@ function Entry(type, name, value) {
     this.value = value;
     this.is_new = true;
 }
+$.getCSS = function(path) {
+    $('<link/>', {
+       rel: 'stylesheet',
+       type: 'text/css',
+       href: path
+    }).appendTo('head');
+};
 
 Entry.prototype.TypeName = function() {
     return "Entry";

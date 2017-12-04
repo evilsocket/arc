@@ -1,3 +1,8 @@
+$.getCSS("/css/bootstrap/bootstrap-markdown.min.css");
+$.getScript("/js/libs/jquery/markdown.min.js");
+$.getScript("/js/libs/jquery/to-markdown.js");
+$.getScript("/js/libs/bootstrap/bootstrap-markdown.js");
+
 const ENTRY_TYPE_MARKDOWN = 3;
 
 function MarkdownEntry(name, value) {

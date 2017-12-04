@@ -1,3 +1,8 @@
+$.getCSS("/css/bootstrap/bootstrap-slider.min.css");
+$.getScript("/js/libs/jquery/pwstrength.js");
+$.getScript("/js/libs/jquery/clipboard.min.js");
+$.getScript("/js/libs/bootstrap/bootstrap-slider.min.js");
+
 const ENTRY_TYPE_PASSWORD = 1;
 
 const PASSW_SIZE_MIN = 5;
