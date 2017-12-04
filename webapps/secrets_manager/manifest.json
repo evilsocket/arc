@@ -1,4 +1,5 @@
 {
     "name": "Secrets Manager",
+    "version": "1.0.0",
     "store": "passwords"
 }

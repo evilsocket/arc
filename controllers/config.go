@@ -6,5 +6,6 @@ import (
 )
 
 func GetConfig(c *gin.Context) {
+	logEvent(c, "Requested configuration.")
 	c.JSON(200, config.Conf)
 }

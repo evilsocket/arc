@@ -4,7 +4,6 @@ import (
 	"github.com/evilsocket/vault/config"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
-	"log"
 	"os/user"
 	"path"
 )
@@ -21,8 +20,6 @@ func Setup() error {
 	if db, err = gorm.Open("sqlite3", filename); err != nil {
 		return err
 	}
-
-	log.Printf("Using database %s\n", filename)
 
 	db.AutoMigrate(&Store{})
 	db.AutoMigrate(&Record{})

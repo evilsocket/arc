@@ -9,8 +9,9 @@ import (
 )
 
 type Manifest struct {
-	Name  string `json:"name"`
-	Store string `json:"store"`
+	Name    string `json:"name"`
+	Store   string `json:"store"`
+	Version string `json:"version"`
 }
 
 type App struct {
@@ -58,4 +59,8 @@ func Open(path string) (err error, app *App) {
 	}
 
 	return nil, app
+}
+
+func (app *App) String() string {
+	return fmt.Sprintf("%s v%s", app.Manifest.Name, app.Manifest.Version)
 }

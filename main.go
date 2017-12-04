@@ -63,7 +63,7 @@ func main() {
 		fatal(err)
 	}
 
-	r := gin.Default()
+	r := gin.New()
 
 	webapp := loadApp(r)
 
@@ -90,7 +90,7 @@ func main() {
 	api.PUT("/store/:id/record/:r_id", controllers.UpdateRecord)
 	api.DELETE("/store/:id/record/:r_id", controllers.DeleteRecord)
 
-	log.Printf("Vault server starting on %s:%d for %s\n", config.Conf.Address, config.Conf.Port, webapp.Manifest.Name)
+	log.Printf("vaultd is serving %s on %s:%d ...\n\n", webapp, config.Conf.Address, config.Conf.Port)
 
 	r.Run(fmt.Sprintf("%s:%d", config.Conf.Address, config.Conf.Port))
 }
