@@ -90,7 +90,7 @@ func main() {
 	api.PUT("/store/:id/record/:r_id", controllers.UpdateRecord)
 	api.DELETE("/store/:id/record/:r_id", controllers.DeleteRecord)
 
-	log.Printf("vaultd is serving %s on %s:%d ...\n\n", webapp, config.Conf.Address, config.Conf.Port)
+	log.Printf("vaultd is serving the app '%s' on %s:%d ...\n\n", webapp, config.Conf.Address, config.Conf.Port)
 
 	r.Run(fmt.Sprintf("%s:%d", config.Conf.Address, config.Conf.Port))
 }
