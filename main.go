@@ -8,6 +8,7 @@ import (
 	"github.com/evilsocket/vault/controllers"
 	"github.com/evilsocket/vault/middlewares"
 	"github.com/evilsocket/vault/models"
+	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -66,6 +67,7 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 
 	r := gin.New()
+	r.Use(gzip.Gzip(gzip.DefaultCompression))
 
 	webapp := loadApp(r)
 
