@@ -260,7 +260,14 @@ Record.prototype.Encrypt = function( key ) {
 
 Record.prototype.Decrypt = function( key, data ) {
     console.log( "Decrypting " + data.length + " bytes of record." );
-    data = CryptoJS.AES.decrypt( data, key ).toString(CryptoJS.enc.Utf8); 
+    try {
+        data = CryptoJS.AES.decrypt( data, key ).toString(CryptoJS.enc.Utf8); 
+    }
+    catch(err) {
+        this.SetError( "Error while decrypting record data." );
+        return;
+    }
+
     console.log( "Decrypted data is " + data.length + " bytes." );
 
     // quick and dirty check
@@ -489,30 +496,31 @@ app.controller('PMController', ['$scope', function (scope) {
     }
 
     scope.onShowSecret = function(secret) {
-        $('#secret_title').val('');
-        $('#secret_entry_list').html('');
-        $('#new_secret_buttons').hide();
-        $('#edt_secret_buttons').show();
-
         var record = new Record(secret.Title);
-        var list = $('#secret_entry_list'); 
-
-        scope.setSecret(secret)
-
-        $('#secret_title').val(record.title);
 
         record.Decrypt( scope.key, secret.Data );
 
-        if( record.HasError() == false ) {
-            var nidx = list.find('li').length;
+        if( record.HasError() == true ) {
+            $('#record_error_' + secret.ID).html(record.error);
+            //alert(record.error);
+            // $('#secret_body').html( '<span style="color:red">' + record.error + '</span>' );
+        }
+        else {
+            scope.setSecret(secret)
+
+            $('#secret_title').val('');
+            $('#secret_entry_list').html('');
+            $('#new_secret_buttons').hide();
+            $('#edt_secret_buttons').show();
+            $('#secret_title').val(record.title);
+
+            var list = $('#secret_entry_list'); 
             for( var i = 0; i < record.entries.length; i++ ){
                 record.entries[i].RenderToList( list, i );
             }
-        } else {
-            $('#secret_body').html( '<span style="color:red">' + record.error + '</span>' );
-        }
 
-        $('#secret_modal').modal();
+            $('#secret_modal').modal();
+        }
     }
 
     scope.onAdd = function() {

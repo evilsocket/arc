@@ -48,8 +48,8 @@
           </button>
 
           <ul id="secrets_list" class="list-group secrets-list">
-            <li class="list-group-item" ng-if="filterSecret(r)" ng-repeat="r in vault.records" ng-click="onShowSecret(r)">
-              <span ng-include src="'/views/secret_list_item.html?v=6'"></span>
+            <li class="list-group-item" id="secret_list_item_{{ r.ID }}" ng-if="filterSecret(r)" ng-repeat="r in vault.records" ng-click="onShowSecret(r)">
+              <span ng-include src="'/views/secret_list_item.html?v=9'"></span>
             </li>
           </ul>
 
