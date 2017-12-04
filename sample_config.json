@@ -1,0 +1,7 @@
+{
+    "address": "127.0.0.1",
+    "port": 8080,
+    "username": "vault",
+    "password": "vault",
+    "token_duration": 60
+}
