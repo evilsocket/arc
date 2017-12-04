@@ -139,8 +139,10 @@ div.entry-edit > a {
 }
 
 input.editable-input {
-    width: 100%;
+    display: inline;
+    width: auto;
     margin-bottom: 10px;
+    line-height: 10px;
 }
 
 .md-editor {
@@ -160,7 +162,7 @@ button.btn-password {
 }
 
 #pass_length .slider-selection {
-	background: #BABABA;
+	background: #BABABA;this.id(idx)
 }
 
 .slider {
@@ -171,4 +173,22 @@ button.btn-password {
     margin-top: 20px;
     width: 100%;
     font-size: 10px;
+}
+
+span.label-4 {
+    /* font-weight: bold; */
+}
+
+label.upload {
+    float: left;
+    border: 1px solid #ccc;
+    display: inline-block;
+    cursor: pointer;
+    padding: 5px 9px;
+    margin-right: 10px;
+    font-size: 10px;
+}
+
+input[type=file] {
+    display: none;
 }
