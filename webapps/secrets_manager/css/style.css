@@ -113,7 +113,11 @@ div.entry-edit {
 }
 
 div.entry-edit > a {
-    color: #212529;
+    color: #eee;
+}
+
+div.entry-edit > a:hover {
+    color: #aaa;
 }
 
 .add-secret {
