@@ -41,6 +41,8 @@
     <div id="login" class="container" ng-if="!vault.IsLogged()" ng-include src="'/views/login.html?v=3'"></div>
 
     <div ng-if="vault.HasStore()">
+          <div id="session_time_left" class="alert alert-warning" style="display:none"></div>
+
           <div id="search_form" class="search-form form-group" ng-include src="'/views/search_form.html?v=2'"></div>
 
           <button type="button" class="btn btn-success form-control add-secret" ng-click="onNewSecret()">

@@ -438,6 +438,9 @@ app.controller('PMController', ['$scope', function (scope) {
 
         if( scope.setKey( $('#key').val() ) == true ) { 
             scope.vault.Login( username, password, function(token) {
+                
+                setInterval( function(){ scope.updateSessionTime(); }, 1000 );
+
                 scope.setError(null);
                 scope.$apply();
                 scope.getStore( function() {
@@ -502,8 +505,6 @@ app.controller('PMController', ['$scope', function (scope) {
 
         if( record.HasError() == true ) {
             $('#record_error_' + secret.ID).html(record.error);
-            //alert(record.error);
-            // $('#secret_body').html( '<span style="color:red">' + record.error + '</span>' );
         }
         else {
             scope.setSecret(secret)
@@ -633,5 +634,27 @@ app.controller('PMController', ['$scope', function (scope) {
         });
 
         $('#secret_modal').modal('hide');
-    }
+    };
+
+    scope.updateSessionTime = function() {
+        if( scope.vault.config != null ) {
+            var token_duration_minutes = scope.vault.config.token_duration;
+            var token_life = Date.now() - scope.vault.token_time;
+            var token_life_date = new Date(token_life);
+            var token_life_left = token_duration_minutes - token_life_date.getMinutes();
+            
+            if( token_life_left <= 5 ) {
+                $('#session_time_left').html( "The session will expire in " + token_life_left + " minutes." );
+                $('#session_time_left').show();
+            }
+
+            if( token_life_left == 0 ) {
+                console.log( "Sesssion token expired." );
+                location.reload();
+            }
+        }
+        else {
+            $('#session_time').html( "Session started " + $.timeago(scope.vault.token_time) );
+        }
+    };
 }]);

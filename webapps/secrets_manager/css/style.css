@@ -93,6 +93,12 @@ button:hover {
   border-top-right-radius: 0;
 }
 
+#session_time_left {
+    display:none;
+    margin-top: 10px;
+    margin-bottom: -10px;
+}
+
 .search-form {
     width: 100%;
     margin-bottom:10px;

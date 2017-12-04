@@ -1,5 +1,7 @@
 function Vault() {
     this.token = null;
+    this.token_time = null;
+    this.config = null;
     this.store = null;
     this.records = null;
 }
@@ -36,6 +38,7 @@ Vault.prototype.Api = function( method, path, data, success, error ) {
 Vault.prototype.Logout = function() {
     console.log( "Logging out, deleting token " + this.token );
     this.token = null;
+    this.token_time = null;
 }
 
 Vault.prototype.Login = function(username, password, success, error) {
@@ -47,6 +50,12 @@ Vault.prototype.Login = function(username, password, success, error) {
     this.Api( 'POST', '/auth', login, function(resp) {
         if( resp.token != null ) {
             v.token = resp.token;
+            v.token_time = Date.now();
+
+            v.Api( 'GET', '/api/config', null, function(resp) {
+                v.config = resp;
+            }, error);
+
             success(resp.token);
         } else {
             error(resp);
