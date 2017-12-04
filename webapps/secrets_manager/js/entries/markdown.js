@@ -27,11 +27,13 @@ MarkdownEntry.prototype.OnRendered = function(id) {
     // enable preview
     if( this.is_new == false ) {
         on_show = function(e) {
+            /*
             $('button[data-handler=bootstrdefaultTargetap-markdown-cmdPreview]').click();
             // for some reason the width of the preview area is computed before
             // it is actually visible, so it sticks to 100px if we call the preview
             // here ... we need to refresh it -.-.
             $('.md-preview').css('width', '');
+            */
         };
     }
 
@@ -39,11 +41,13 @@ MarkdownEntry.prototype.OnRendered = function(id) {
     var elem = $('#' + elem_id);
     elem.markdown({
         autofocus:true,
-        savable:false,
         iconlibrary:'fa',
         fullscreen:{
             'enable': true,
-            'icons': 'fa'
+            'icons': {
+                fullscreenOn: 'fa fa-arrows-alt',
+                fullscreenOff: 'fa fa-window-close'
+            }
         },
         onShow: on_show,
     });
