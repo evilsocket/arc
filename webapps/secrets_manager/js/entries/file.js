@@ -75,4 +75,8 @@ FileEntry.prototype.OnRendered = function(id) {
         reader.readAsBinaryString(file);
     };
     fileInput.addEventListener('change', readFile);
+
+    if( this.is_new ) {
+        fileInput.click();
+    }
 }
