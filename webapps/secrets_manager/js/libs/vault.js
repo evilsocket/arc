@@ -134,5 +134,5 @@ Vault.prototype.DeleteRecord = function( record, success, error ) {
     if( this.HasStore() == false ) {
         return error("No store has been selected.");
     }
-    this.Api( 'DELETE', '/api/store/' + this.store.ID + '/record/' + record.ID, record, success, error );
+    this.Api( 'DELETE', '/api/store/' + this.store.ID + '/record/' + record.ID, null, success, error );
 }
