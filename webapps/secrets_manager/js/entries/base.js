@@ -54,13 +54,6 @@ Entry.prototype.input = function(type, with_value, id) {
 }
 
 Entry.prototype.textarea = function(with_md, with_value, id) {
-    var val = '';
-    var html = '';
-
-    if( with_value ) {
-        val = this.value;
-    }
-
     return '<textarea ' + 
              'class="form-control" ' +
              ( with_md ? 'data-provide="markdown" ' : '' ) +
@@ -68,7 +61,7 @@ Entry.prototype.textarea = function(with_md, with_value, id) {
              'data-entry-name="' + this.name + '" ' +
              'name="' + this.name + '" ' + 
              'id="' + this.id(id) + '" ' +
-             '>' + val + '</textarea>';
+             '>' + ( with_value ? this.value : '' ) + '</textarea>';
 }
 
 Entry.prototype.RenderToList = function(list, idx) {
