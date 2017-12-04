@@ -1,5 +1,9 @@
 {
     "name": "Secrets Manager",
     "version": "1.0.0",
+    "author": {
+        "name": "Simone Margaritelli",
+        "email": "evilsocket@gmail.com"
+    },
     "store": "passwords"
 }
