@@ -232,6 +232,8 @@ span.label-4 {
     padding: 5px 9px;
     margin-right: 10px;
     font-size: 10px;
+    background: #eee;
+    border: 1px solid #ccc;
 }
 
 input[type=file] {
