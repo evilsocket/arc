@@ -3,5 +3,6 @@
     "port": 8080,
     "username": "vault",
     "password": "vault",
+    "database": "~/vault.db",
     "token_duration": 60
 }
