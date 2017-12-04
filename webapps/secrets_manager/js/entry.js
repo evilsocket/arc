@@ -40,7 +40,7 @@ Entry.prototype.formGroup = function(input, id) {
              '<span class="label label-default label-' + this.type + '" id="editable_' + id + '" for="name_of_' + id + '">' + this.name + '</span>' +
              '<input class="blur editable-input hidden" type="text" id="name_of_' + id + '" value="' + this.name + '">' + 
 
-             ( this.type == ENTRY_TYPE_FILE ? '<label class="upload"><i class="fa fa-upload" aria-hidden="true"></i>' : '' ) +
+             ( this.type == ENTRY_TYPE_FILE ? '<label class="upload action-button btn btn-default" for="' + id + '"><i class="fa fa-upload" aria-hidden="true"></i>' : '' ) +
              input +
              ( this.type == ENTRY_TYPE_FILE ? '</label>' : '' ) +
             '</div>';

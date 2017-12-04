@@ -112,6 +112,15 @@ div.entry-edit {
     margin-bottom: 5px;
 }
 
+.action-button {
+    color: #aaa;
+}
+
+.action-button:hover {
+    cursor: pointer;
+    color: #555;
+}
+
 div.entry-edit > a {
     color: #eee;
 }
@@ -184,11 +193,9 @@ span.label-4 {
     /* font-weight: bold; */
 }
 
-label.upload {
+.upload {
     float: left;
-    border: 1px solid #ccc;
     display: inline-block;
-    cursor: pointer;
     padding: 5px 9px;
     margin-right: 10px;
     font-size: 10px;

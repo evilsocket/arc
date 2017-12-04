@@ -48,17 +48,18 @@
 
           <div id="search_form" class="search-form form-group" ng-include src="'/views/search_form.html?v=2'"></div>
 
-          <button type="button" class="btn btn-success form-control add-secret" ng-click="onNewSecret()">
-            Create Secret
-          </button>
-
           <ul id="secrets_list" class="list-group secrets-list">
+            <li class="list-group-item" ng-click="onNewSecret()">
+              <center class="action-button">
+                <i class="fa fa-file" aria-hidden="true"></i>
+              </center>
+            </li>
             <li class="list-group-item" id="secret_list_item_{{ r.ID }}" ng-if="filterSecret(r)" ng-repeat="r in vault.records" ng-click="onShowSecret(r)">
               <span ng-include src="'/views/secret_list_item.html?v=10'"></span>
             </li>
           </ul>
 
-          <div ng-include src="'/views/modals/secret.html?v=7'"></div>
+          <div ng-include src="'/views/modals/secret.html?v=8'"></div>
 
       </div>
     </div>
