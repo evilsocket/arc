@@ -254,17 +254,22 @@ app.controller('PMController', ['$scope', function (scope) {
 
         if( record.HasError() == true ) {
             $('#record_error_' + secret.ID).html(record.error);
+
+            $('#record_status_' + secret.ID ).addClass("status-error");
         }
         else {
             scope.setSecret(secret)
 
+            $('#record_lock_' + secret.ID ).removeClass("fa-lock").addClass("fa-unlock");
+            $('#record_status_' + secret.ID ).removeClass("status-locked").addClass("status-unlocked");
+
             $('#cleartext-warning').hide();
-            $('#secret_title').val('');
             $('#secret_title').hide();
-            $('#secret_title_label').html('');
-            $('#secret_entry_list').html('');
             $('#new_secret_buttons').hide();
             $('#edt_secret_buttons').show();
+
+            $('#secret_title_label').html('');
+            $('#secret_entry_list').html('');
             $('#secret_title').val(record.title);
             $('#secret_title_label').html(record.title);
 

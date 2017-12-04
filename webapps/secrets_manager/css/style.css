@@ -153,6 +153,24 @@ div.entry-edit > a:hover {
     cursor: pointer;
 }
 
+.record-status {
+    float:right; 
+    font-size:11px; 
+    text-align:right;
+}
+
+.status-locked {
+    color:#bbb; 
+}
+
+.status-unlocked {
+    color: #28a745;
+}
+
+.status-error {
+    color: red;
+}
+
 .add-entry-row {
     border-top: 1px solid #eee;
     margin-top: 25px;
