@@ -215,6 +215,12 @@ button.btn-password {
     font-size: 10px;
 }
 
+.entry-title {
+    font-size: 1.2rem;
+    font-weight:500;
+    font-family: inherit;
+}
+
 span.label-4 {
     /* font-weight: bold; */
 }
@@ -229,4 +235,8 @@ span.label-4 {
 
 input[type=file] {
     display: none;
+}
+
+.md-editor > .md-preview {
+    padding: 10px;
 }
