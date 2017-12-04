@@ -14,7 +14,7 @@ button:hover {
     cursor: pointer;
 }
 
-.modal {
+.modal-full {
   position: fixed;
   top: 0;
   right: 0;
@@ -24,7 +24,7 @@ button:hover {
   width: 100%;
 }
 
-.modal-dialog {
+.modal-dialog-full {
   position: fixed;
   margin: 0;
   width: 100%;
@@ -33,7 +33,7 @@ button:hover {
   padding: 0;
 }
 
-.modal-content {
+.modal-content-full {
   position: absolute;
   top: 0;
   right: 0;
@@ -41,19 +41,19 @@ button:hover {
   left: 0;
 }
 
-.modal-header {
+.modal-header-full {
   position: absolute;
   top: 0;
   right: 0;
   left: 0;
 }
 
-.modal-body {
+.modal-body-full {
   position: absolute;
   width: 100%;
 }
 
-.modal-footer {
+.modal-footer-full {
   position: absolute;
   right: 0;
   bottom: 0;
@@ -153,4 +153,16 @@ button.btn-password {
     font-size: 3px;
 }
 
+#pass_length .slider-selection {
+	background: #BABABA;
+}
 
+.slider {
+    width: 100% !important;
+}
+
+#generated_password {
+    margin-top: 20px;
+    width: 100%;
+    font-size: 10px;
+}

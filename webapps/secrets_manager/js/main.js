@@ -1,7 +1,13 @@
+var g_SelectedEntryId = "";
+
 const ENTRY_TYPE_INPUT    = 0;
 const ENTRY_TYPE_PASSWORD = 1;
 const ENTRY_TYPE_TEXT     = 2;
 const ENTRY_TYPE_MARKDOWN = 3;
+
+const PASSW_SIZE_MIN = 5;
+const PASSW_SIZE_MAX = 128;
+const PASSW_SIZE_DEFAULT = 32;
 
 function Entry(type, name, value) {
     this.type = type;
@@ -178,6 +184,7 @@ Entry.prototype.RegisterCallbacks = function(id) {
                 $('#messages').text('Start typing password');
             }
         };
+        $('#' + this.id(id) ).pwstrength(options);
 
         var btn_copy = '#btn_pass_copy_' + this.id(id);
         var in_copy = '#' + this.id(id);
@@ -198,11 +205,24 @@ Entry.prototype.RegisterCallbacks = function(id) {
             }
         });
 
-        $('#btn_pass_make_' + this.id(id)).click(function(e){
-            alert("make");
+        var entry_id = this.id(id);
+        $('#btn_pass_make_' + entry_id).click(function(e){
+            g_SelectedEntryId = entry_id;
+            $('#pass_n').html( PASSW_SIZE_DEFAULT );
+            $('#pass_length').slider({
+                min: PASSW_SIZE_MIN,
+                max: PASSW_SIZE_MAX,
+                value: PASSW_SIZE_DEFAULT,
+                step: 1,
+                tooltip: 'always',
+                formatter: function(value) {
+                    var n = parseInt(value);
+                    onGenerate(n);
+                }
+            });
+            $('#password_generator_modal').css('z-index', '1500');
+            $('#password_generator_modal').modal();
         });
-
-        $('#' + this.id(id) ).pwstrength(options);
     }
 }
 
@@ -289,6 +309,50 @@ function removeEntry(idx) {
 
 function editEntryFor(id) {
     $('#editable_' + id ).click();
+}
+
+function onGenerate(n) {
+    $('#pass_n').html(n);
+
+    var charset = "";
+
+    if( $('#pass_lower').is(":checked") ) {
+        for( var c = 0x61; c <= 0x7a; c++ ) {
+            charset += String.fromCharCode(c);
+        }
+    }   
+
+    if( $('#pass_upper').is(":checked") ) {
+        for( var c = 0x41; c <= 0x5a; c++ ) {
+            charset += String.fromCharCode(c);
+        }
+    }   
+
+    if( $('#pass_digits').is(":checked") ) {
+        for( var c = 0x30; c <= 0x39; c++ ) {
+            charset += String.fromCharCode(c);
+        }
+    }  
+
+    if( $('#pass_symbols').is(":checked") ) {
+        for( var c = 0x21; c <= 0x2f; c++ ) {
+            charset += String.fromCharCode(c);
+        }
+    }  
+
+    var new_pass = generatePassword(n, charset);
+    $('#generated_password').val(new_pass);
+}
+
+function generatePassword( length, charset ) {
+    var pass = "";
+
+    for(var i = 0; i < length; i++) {
+        // TODO: Use a better random generator.
+        pass += charset.charAt(Math.floor(Math.random() * charset.length));
+    }
+
+    return pass;
 }
 
 app.controller('PMController', ['$scope', function (scope) {
@@ -391,6 +455,19 @@ app.controller('PMController', ['$scope', function (scope) {
         return true;
     }
 
+    scope.onGeneratePassword = function() {
+        var value = $('#pass_n').html();
+        var n = parseInt(value);
+        onGenerate(n);
+    }
+
+    scope.onUsePassword = function() { 
+        var pass = $('#generated_password').val();
+        $('#'+g_SelectedEntryId).val(pass);
+        $('#password_generator_modal').modal('hide');
+        $('#'+g_SelectedEntryId).pwstrength('forceUpdate');
+    }
+
     scope.addSecretEntry = function() {
         var entry_idx = $('#new_entry_type').val();
         var entry = scope.registeredTypes[entry_idx];
@@ -461,7 +538,7 @@ app.controller('PMController', ['$scope', function (scope) {
 
             record.AddEntry(new Entry( type, name, value ));
         }
-        
+        markdown
         data = record.Encrypt( scope.key )
         
         scope.vault.AddRecord( title, data, 'aes', function(record) {
