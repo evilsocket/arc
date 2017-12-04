@@ -11,7 +11,7 @@ func ListStores(c *gin.Context) {
 		logEvent(c, "Error requesting stores: %s.", err)
 		c.AbortWithStatus(404)
 	} else {
-		logEvent(c, "Requested stores.")
+		// logEvent(c, "Requested stores.")
 		c.JSON(200, stores)
 	}
 }
@@ -36,7 +36,7 @@ func GetStore(c *gin.Context) {
 		logEvent(c, "Requested not existing store %s.", c.Params.ByName("id"))
 		c.AbortWithStatus(404)
 	} else {
-		logEvent(c, "Requested store %s.", c.Params.ByName("id"))
+		// logEvent(c, "Requested store %s.", c.Params.ByName("id"))
 		c.JSON(200, store)
 	}
 }
