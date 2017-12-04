@@ -11,8 +11,8 @@ type Record struct {
 	UpdatedAt  time.Time
 	StoreID    uint   `json:"-"`
 	Store      Store  `json:"-"`
-	Title      string `gorm:"unique;not null"`
-	Name       string `gorm:"unique;not null"`
+	Title      string `gorm:"not null"`
+	Name       string `gorm:"not null"`
 	Encryption string `sql:"DEFAULT:'none'"`
 	Data       []byte
 }

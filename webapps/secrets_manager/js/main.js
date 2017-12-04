@@ -1,9 +1,11 @@
 var g_SelectedEntryId = "";
+var g_FilesMap = {};
 
 const ENTRY_TYPE_INPUT    = 0;
 const ENTRY_TYPE_PASSWORD = 1;
 const ENTRY_TYPE_TEXT     = 2;
 const ENTRY_TYPE_MARKDOWN = 3;
+const ENTRY_TYPE_FILE     = 4;
 
 const PASSW_SIZE_MIN = 5;
 const PASSW_SIZE_MAX = 128;
@@ -23,13 +25,20 @@ function EntryFromObject(o) {
 }
 
 Entry.prototype.id = function(id) {
-    return 'entry_value_' + this.name.toLowerCase() + '_' + id;
+    return 'entry_value_' + this.name.toLowerCase()
+        .replace(/\s+/g, '_')           // Replace spaces with -
+        .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+        .replace(/\-\-+/g, '_')         // Replace multiple - with single -
+        .replace(/^-+/, '')             // Trim - from start of text
+        .replace(/-+$/, ''); // Trim - from end of text + '_' + id;
 }
 
 Entry.prototype.formGroup = function(input, id) {
+    id = this.id(id);
+
     return '<div class="form-group">' + 
-             '<span class="label label-default" id="editable_' + this.id(id) + '" for="name_of_' + this.id(id) + '">' + this.name + '</span>' +
-             '<input class="blur editable-input hidden" type="text" id="name_of_' + this.id(id) + '" value="' + this.name + '">' + 
+             '<span class="label label-default" id="editable_' + id + '" for="name_of_' + id + '">' + this.name + '</span>' +
+             '<input class="blur editable-input hidden" type="text" id="name_of_' + id + '" value="' + this.name + '">' + 
              input +
             '</div>';
 }
@@ -99,13 +108,28 @@ Entry.prototype.Render = function(with_value, id){
     else if( this.type == ENTRY_TYPE_MARKDOWN ) {
         return this.formGroup( this.textarea(true, with_value, id), id );
     }
+    else if( this.type == ENTRY_TYPE_FILE ) {
+        return this.formGroup( this.input('file', false, id), id ); 
+    }
 
     return "Unhandled entry type " + this.type;
 }
 
 Entry.prototype.RenderToList = function(list, idx) {
-    var rendered = '<div class="entry-edit">' + 
-                     '<a href="javascript:editEntryFor(\''+this.id(idx)+'\')"><i class="fa fa-edit" aria-hidden="true"></i></a> ' +
+    var rendered = '<div class="entry-edit">';
+    
+    if( this.type == ENTRY_TYPE_FILE ) {
+        if( this.is_new == false ) {
+            var entry_id = this.id(idx);
+
+            console.log("FILE_MAP["+entry_id+"] => " + this.value.length + " bytes." );
+            g_FilesMap[entry_id] = this.value;
+
+            rendered += '<a href="javascript:downloadFor(\''+entry_id+'\')"><i class="fa fa-download" aria-hidden="true"></i></a> '; 
+        }
+    }
+ 
+    rendered +=      '<a href="javascript:editEntryFor(\''+this.id(idx)+'\')"><i class="fa fa-edit" aria-hidden="true"></i></a> ' +
                      '<a href="javascript:removeEntry('+idx+')"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
                    '</div>' +
                    this.Render(true, idx);
@@ -113,7 +137,7 @@ Entry.prototype.RenderToList = function(list, idx) {
     if( this.type == ENTRY_TYPE_PASSWORD ) {
         rendered += '<div class="pwstrength_viewport_progress"></div>';
     }
-    
+
     list.append( '<li id="secret_entry_' + idx + '">' + rendered + '</li>' );
 
     this.RegisterCallbacks(idx);
@@ -143,7 +167,27 @@ Entry.prototype.RegisterCallbacks = function(id) {
             .show();
     });
 
-    if( this.type == ENTRY_TYPE_MARKDOWN ) {
+    if( this.type == ENTRY_TYPE_FILE ) {
+        var elem_id = this.id(id);
+        var editable = $('#editable_' + elem_id);
+        var name_of = $('#name_of_' + elem_id);
+        var fileInput = document.getElementById(elem_id);
+        var readFile = function () {
+            var file = fileInput.files[0];
+            var reader = new FileReader();
+            reader.onload = function () {
+                console.log( "FILES_MAP['" + elem_id + "'] => " + reader.result.length + " bytes." );
+                g_FilesMap[elem_id] = reader.result;
+            };
+
+            editable.html( file.name );
+            name_of.val( file.name );
+
+            reader.readAsBinaryString(file);
+        };
+        fileInput.addEventListener('change', readFile);
+    }
+    else if( this.type == ENTRY_TYPE_MARKDOWN ) {
         var elem_id = this.id(id);
         var on_show = undefined;
 
@@ -194,15 +238,15 @@ Entry.prototype.RegisterCallbacks = function(id) {
         // property.
         var clipboard = new Clipboard(btn_copy,{
             text: function(trigger) {
-                return $(in_copy).val();
+                var txt = $(in_copy).val();
+                console.log( "  clipboard => '" + txt + "'" );
+                return txt;
             }
         });
 
         clipboard.on('success', function(e) {
             e.clearSelection();
-            if( e.action == 'copy' ) {
-                alert('Copied to clipboard.');
-            }
+            console.log('Copied to clipboard.'); 
         });
 
         var entry_id = this.id(id);
@@ -318,6 +362,25 @@ function editEntryFor(id) {
     $('#editable_' + id ).click();
 }
 
+function downloadFor(id) {
+    var name_of = $('#name_of_' + id);
+    var name = name_of.val();
+    var data = g_FilesMap[id];
+
+
+    console.log( "Dowloading " + data.length + " bytes of data as " + name );
+
+    // https://stackoverflow.com/questions/23795034/creating-a-blob-or-a-file-from-javascript-binary-string-changes-the-number-of-by
+    var bytes = new Uint8Array(data.length);
+    for (var i=0; i<data.length; i++)
+        bytes[i] = data.charCodeAt(i);
+    data = bytes;
+
+    var file = new File([data], name, {type: "application/octect-stream"});
+    console.log(file);
+    saveAs(file);
+}
+
 function onGenerate(n) {
     $('#pass_n').html(n);
 
@@ -376,6 +439,7 @@ app.controller('PMController', ['$scope', function (scope) {
         new Entry( ENTRY_TYPE_PASSWORD, "Password", "" ),
         new Entry( ENTRY_TYPE_TEXT,     "Text", "" ),
         new Entry( ENTRY_TYPE_MARKDOWN, "Markdown", "" ),
+        new Entry( ENTRY_TYPE_FILE,     "File", "" ),
     ];
 
     scope.setError = function(message) {
@@ -480,9 +544,13 @@ app.controller('PMController', ['$scope', function (scope) {
 
     scope.addSecretEntry = function() {
         var entry_idx = $('#new_entry_type').val();
-        var entry = scope.registeredTypes[entry_idx];
+        var entry = $.extend( true, {}, scope.registeredTypes[entry_idx] );
         var list = $('#secret_entry_list'); 
         var nidx = list.find('li').length;
+    
+        if( nidx > 0 ) {
+            entry.name = entry.name + " " + ( nidx + 1 );
+        }
 
         console.log( "Adding entry (idx=" + nidx + "):" );
         console.log( entry );
@@ -541,13 +609,22 @@ app.controller('PMController', ['$scope', function (scope) {
         var record = new Record(title);
         for( var i = 0; i < entries.length; i++ ) {
             var input = $(entries[i]);
+            var entry_id = input.attr('id');
             var type = parseInt( input.attr('data-entry-type') );
             var name = $(names[i]).val();
             var value = input.val();
 
+            if( type == ENTRY_TYPE_FILE ) {
+                console.log( "Reading item " + entry_id + " from file map." );
+                value = g_FilesMap[entry_id];
+                console.log( "  " + entry_id + " => " + value.length + " bytes." );
+                // free the memory!
+                delete g_FilesMap[entry_id];
+            }
+
             record.AddEntry(new Entry( type, name, value ));
         }
-        markdown
+
         data = record.Encrypt( scope.key )
         
         scope.vault.AddRecord( title, data, 'aes', function(record) {
@@ -610,9 +687,18 @@ app.controller('PMController', ['$scope', function (scope) {
         var record = new Record(title);
         for( var i = 0; i < entries.length; i++ ) {
             var input = $(entries[i]);
+            var entry_id = input.attr('id');
             var type = parseInt( input.attr('data-entry-type') );
             var name = $(names[i]).val();
             var value = input.val();
+
+            if( type == ENTRY_TYPE_FILE ) {
+                console.log( "Reading item " + entry_id + " from file map." );
+                value = g_FilesMap[entry_id];
+                console.log( "  " + entry_id + " => " + value.length + " bytes." );
+                // free the memory!
+                delete g_FilesMap[entry_id];
+            }
 
             record.AddEntry(new Entry( type, name, value ));
         }
