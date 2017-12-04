@@ -230,11 +230,29 @@ app.controller('PMController', ['$scope', function (scope) {
     }
 
     scope.onNewSecret = function() {
+        $('#cleartext-warning').show();
         $('#secret_title').val('');
+        $('#secret_title').show();
+        $('#secret_title_label').html('');
+        $('#secret_title_label').hide('');
         $('#secret_entry_list').html('');
         $('#new_secret_buttons').show();
         $('#edt_secret_buttons').hide();
         $('#secret_modal').modal();
+
+        $('#secret_title_label').click(function () {
+            $(this).hide();
+            $('#secret_title')
+                .val($(this).text())
+                .toggleClass("form-control")
+                .show()
+                .focus();
+        });
+
+        $('#secret_title').blur(function () {
+            $(this).hide().toggleClass("form-control");
+            $('#secret_title_label').html( $(this).val() ).show();
+        });
     }
 
     scope.onShowSecret = function(secret) {
@@ -248,11 +266,29 @@ app.controller('PMController', ['$scope', function (scope) {
         else {
             scope.setSecret(secret)
 
+            $('#cleartext-warning').hide();
             $('#secret_title').val('');
+            $('#secret_title').hide();
+            $('#secret_title_label').html('');
             $('#secret_entry_list').html('');
             $('#new_secret_buttons').hide();
             $('#edt_secret_buttons').show();
             $('#secret_title').val(record.title);
+            $('#secret_title_label').html(record.title);
+
+            $('#secret_title_label').click(function () {
+                $(this).hide();
+                $('#secret_title')
+                    .val($(this).text())
+                    .toggleClass("form-control")
+                    .show()
+                    .focus();
+            });
+
+            $('#secret_title').blur(function () {
+                $(this).hide().toggleClass("form-control");
+                $('#secret_title_label').html( $(this).val() ).show();
+            });
 
             var list = $('#secret_entry_list'); 
             for( var i = 0; i < record.entries.length; i++ ){

@@ -129,6 +129,13 @@ div.entry-edit > a:hover {
     color: #aaa;
 }
 
+#secret_title {
+    line-height: 35px;
+    font-size: 35px;
+    padding: 5px;
+    width: 100%;
+}
+
 .add-secret {
     margin-bottom: 5px;
 }
