@@ -1,3 +1,10 @@
+/*
+ * Vault - Copyleft of Simone 'evilsocket' Margaritelli.
+ * evilsocket at protonmail dot com
+ * https://www.evilsocket.net/
+ *
+ * See LICENSE.
+ */
 function Vault(on_req_executed) {
     this.token = null;
     this.token_time = null;
@@ -13,7 +20,6 @@ function Vault(on_req_executed) {
 }
 
 Vault.prototype.IsLogged = function() {
-    // TODO: Validate token?
     return ( this.token != null );
 }
 

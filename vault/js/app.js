@@ -1,3 +1,10 @@
+/*
+ * Vault - Copyleft of Simone 'evilsocket' Margaritelli.
+ * evilsocket at protonmail dot com
+ * https://www.evilsocket.net/
+ *
+ * See LICENSE.
+ */
 function removeEntry(idx) {
     if( confirm("Remove this field?") ) {
         console.log("Removing entry at position " + idx );

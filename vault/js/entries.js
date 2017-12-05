@@ -1,3 +1,10 @@
+/*
+ * Vault - Copyleft of Simone 'evilsocket' Margaritelli.
+ * evilsocket at protonmail dot com
+ * https://www.evilsocket.net/
+ *
+ * See LICENSE.
+ */
 var REGISTERED_TYPES = [
     new InputEntry( "URL", "https://" ),
     new InputEntry( "Login", "" ),

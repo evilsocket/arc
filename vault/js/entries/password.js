@@ -1,3 +1,10 @@
+/*
+ * Vault - Copyleft of Simone 'evilsocket' Margaritelli.
+ * evilsocket at protonmail dot com
+ * https://www.evilsocket.net/
+ *
+ * See LICENSE.
+ */
 $.getCSS("/css/bootstrap/bootstrap-slider.min.css");
 $.getScript("/js/libs/jquery/pwstrength.js");
 $.getScript("/js/libs/bootstrap/bootstrap-slider.min.js");

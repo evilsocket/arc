@@ -1,3 +1,10 @@
+/*
+ * Vault - Copyleft of Simone 'evilsocket' Margaritelli.
+ * evilsocket at protonmail dot com
+ * https://www.evilsocket.net/
+ *
+ * See LICENSE.
+ */
 $.getScript("/js/libs/jquery/filesaver.min.js");
 
 const ENTRY_TYPE_FILE = 4;
