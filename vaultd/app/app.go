@@ -10,6 +10,7 @@ package app
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/evilsocket/vault/vaultd/models"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -31,6 +32,7 @@ type Manifest struct {
 type App struct {
 	Path     string
 	Manifest Manifest
+	Seeds    []models.Store
 }
 
 func Open(path string) (err error, app *App) {
@@ -48,8 +50,10 @@ func Open(path string) (err error, app *App) {
 		return
 	}
 
+	seeds_filename := path + "/seeds.json"
 	manifest_filename := path + "/manifest.json"
 
+	seeds := make([]models.Store, 0)
 	manifest := Manifest{
 		Name:        "?",
 		Version:     "0.0.0",
@@ -68,9 +72,22 @@ func Open(path string) (err error, app *App) {
 		}
 	}
 
+	if _, err = os.Stat(seeds_filename); err == nil {
+		raw, ferr := ioutil.ReadFile(seeds_filename)
+		if ferr != nil {
+			err = ferr
+			return
+		}
+
+		if err = json.Unmarshal(raw, &seeds); err != nil {
+			return
+		}
+	}
+
 	app = &App{
 		Path:     path,
 		Manifest: manifest,
+		Seeds:    seeds,
 	}
 
 	return nil, app

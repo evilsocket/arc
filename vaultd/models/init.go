@@ -12,6 +12,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"log"
+	"os"
 	"os/user"
 	"path/filepath"
 	"strings"
@@ -30,21 +31,27 @@ func expand(path string) (string, error) {
 	return filepath.Abs(path)
 }
 
-func Setup() (err error) {
+func Setup() (created bool, err error) {
 	if config.Conf.Database, err = expand(config.Conf.Database); err != nil {
-		return err
+		return false, err
 	}
 
-	log.Printf("Loading database %s ...\n", config.Conf.Database)
+	if _, err = os.Stat(config.Conf.Database); os.IsNotExist(err) {
+		created = true
+		log.Printf("Creating database %s ...\n", config.Conf.Database)
+	} else {
+		created = false
+		log.Printf("Loading database %s ...\n", config.Conf.Database)
+	}
 
 	if db, err = gorm.Open("sqlite3", config.Conf.Database); err != nil {
-		return err
+		return false, err
 	}
 
 	db.AutoMigrate(&Store{})
 	db.AutoMigrate(&Record{})
 
-	return nil
+	return created, nil
 }
 
 func Save(obj interface{}) error {

@@ -32,6 +32,7 @@ var (
 	import_fn = ""
 	store_id  = ""
 	output    = "vault.json"
+	dbIsNew   = false
 )
 
 func init() {
@@ -62,25 +63,27 @@ func loadApp(r *gin.Engine) *app.App {
 }
 
 func main() {
+	var err error
+
 	flag.Parse()
 
 	if conf_file != "" {
-		if err := config.Load(conf_file); err != nil {
+		if err = config.Load(conf_file); err != nil {
 			fatal(err)
 		}
 	}
 
-	if err := models.Setup(); err != nil {
+	if dbIsNew, err = models.Setup(); err != nil {
 		fatal(err)
 	}
 
 	if export == true {
-		if err := models.Export(store_id, output); err != nil {
+		if err = models.Export(store_id, output); err != nil {
 			fatal(err)
 		}
 		return
 	} else if import_fn != "" {
-		if err := models.Import(import_fn); err != nil {
+		if err = models.Import(import_fn); err != nil {
 			fatal(err)
 		}
 		return
@@ -92,6 +95,13 @@ func main() {
 	r.Use(gzip.Gzip(gzip.DefaultCompression))
 
 	webapp := loadApp(r)
+
+	if dbIsNew && len(webapp.Seeds) > 0 {
+		log.Printf("Seeding database with %d store(s) ...\n", len(webapp.Seeds))
+		if err = models.ImportStores(webapp.Seeds); err != nil {
+			fatal(err)
+		}
+	}
 
 	api := r.Group("/api")
 	r.POST("/auth", controllers.Auth)

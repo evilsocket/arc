@@ -86,6 +86,18 @@ func Export(store_id string, filename string) (err error) {
 	return nil
 }
 
+func ImportStores(stores []Store) (err error) {
+	tx := db.Begin()
+	for _, store := range stores {
+		if err = db.Create(&store).Error; err != nil {
+			tx.Rollback()
+			return
+		}
+	}
+	tx.Commit()
+	return nil
+}
+
 func Import(filename string) (err error) {
 	var stores []Store
 
@@ -102,14 +114,5 @@ func Import(filename string) (err error) {
 
 	log.Printf("Importing %d stores ...\n", len(stores))
 
-	tx := db.Begin()
-	for _, store := range stores {
-		if err = db.Create(&store).Error; err != nil {
-			tx.Rollback()
-			return
-		}
-	}
-	tx.Commit()
-
-	return nil
+	return ImportStores(stores)
 }
