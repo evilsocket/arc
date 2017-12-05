@@ -13,9 +13,11 @@
 
   <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
   <link rel="stylesheet" href="/css/fontawesome/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/jquery.editable.css">
   <link rel="stylesheet" href="/css/style.css">
 
   <script type="text/javascript" src="/js/libs/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="/js/libs/jquery/jquery.editable.js"></script>
   <script type="text/javascript" src="/js/libs/jquery/jquery.timeago.js"></script>
   <script type="text/javascript" src="/js/libs/jquery/jquery-sortable.js"></script>
   <script type="text/javascript" src="/js/libs/bootstrap/bootstrap.bundle.min.js"></script>
@@ -35,11 +37,15 @@
 </head>
 <body>
   <div class="container-fluid" ng-app="PM" ng-controller="PMController">
-
     <div ng-include src="'/views/modals/error.html?v=2'"></div>
 
     <!-- if user is not logged, show login -->
     <div id="login" class="container" ng-if="!vault.IsLogged()" ng-include src="'/views/login.html?v=3'"></div>
+
+    <!-- user logged but empty encryption key -->
+    <div ng-if="vault.IsLogged() && !key" style="margin-bottom:-10px; margin-top:10px;" class="alert alert-warning">
+      No key provided, encryption and decryption disabled.
+    </div>
 
     <!-- if user is logged instead -->
     <span ng-if="vault.IsLogged()" ng-switch on="vault.HasStore()">
@@ -47,10 +53,19 @@
       <div ng-switch-when="false">
         <br/>
         <ul id="stores_list" class="list-group stores-list">
-          <li class="list-group-item" ng-click="onNewStore()">
-            <center class="action-button">
-              <i class="fa fa-file" aria-hidden="true"></i>
-            </center>
+          <li class="list-group-item">
+            <div class="row">
+              <div class="col-6" style="border-left: 1px solid #eee">
+                <center class="action-button" ng-click="onNewStore()">
+                  <i class="fa fa-file" aria-hidden="true"></i>
+                </center>
+              </div>
+              <div class="col-6">
+                <center class="action-button" onclick="location.reload();">
+                  <i class="fa fa-sign-out" aria-hidden="true"></i>
+                </center>    
+              </div>
+            </div>
           </li>
 
           <li class="list-group-item store-list-item" ng-repeat="s in stores" ng-click="onShowStore(s.ID)">
@@ -88,7 +103,7 @@
           </li>
         </ul>
 
-        <div ng-include src="'/views/modals/secret.html?v=10'"></div>
+        <div ng-include src="'/views/modals/secret.html?v=11'"></div>
       </div>
     </span>
 

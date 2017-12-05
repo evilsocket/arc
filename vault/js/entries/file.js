@@ -18,8 +18,7 @@ FileEntry.prototype.TypeName = function() {
 FileEntry.prototype.formGroup = function(input, id) {
     var id = this.id(id);
     return '<div class="form-group">' + 
-             '<span class="label entry-title label-default label-' + this.type + '" id="editable_' + id + '" for="name_of_' + id + '">' + this.name + '</span>' +
-             '<input class="blur editable-input hidden" type="text" id="name_of_' + id + '" value="' + this.name + '">' + 
+             '<span class="editable label entry-title label-default label-' + this.type + '" id="editable_' + id + '">' + this.name + '</span>' +
              '<label class="upload btn btn-default" for="' + id + '"><i class="fa fa-upload" aria-hidden="true"></i>' +
                 input +
              '</label>' +
@@ -43,8 +42,7 @@ FileEntry.prototype.RenderToList = function(list, idx) {
         rendered += '<a href="javascript:downloadFor(\''+entry_id+'\')"><i class="fa fa-download" aria-hidden="true"></i></a> '; 
     }
  
-    rendered +=  '<a href="javascript:editEntryFor(\''+entry_id+'\')"><i class="fa fa-edit" aria-hidden="true"></i></a> ' +
-                 '<a href="javascript:removeEntry('+idx+')"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
+    rendered +=   '<a href="javascript:removeEntry('+idx+')"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
                 '</div>' +
                 this.Render(true, idx);
 

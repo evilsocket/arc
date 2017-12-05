@@ -36,8 +36,7 @@ Entry.prototype.id = function(id) {
 Entry.prototype.formGroup = function(input, id) {
     var id = this.id(id);
     return '<div class="form-group">' + 
-             '<span class="label label-default entry-title label-' + this.type + '" id="editable_' + id + '" for="name_of_' + id + '">' + this.name + '</span>' +
-             '<input class="blur editable-input hidden" type="text" id="name_of_' + id + '" value="' + this.name + '">' + 
+             '<span class="editable label label-default entry-title label-' + this.type + '" id="editable_' + id + '">' + this.name + '</span>' +
              input +
             '</div>';
 }
@@ -67,7 +66,6 @@ Entry.prototype.textarea = function(with_md, with_value, id) {
 Entry.prototype.RenderToList = function(list, idx) {
     var entry_id = this.id(idx);
     var rendered = '<div class="entry-edit">' +
-                     '<a href="javascript:editEntryFor(\''+entry_id+'\')"><i class="fa fa-edit" aria-hidden="true"></i></a> ' +
                      '<a href="javascript:removeEntry('+idx+')"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
                     '</div>' +
                     this.Render(true, idx);

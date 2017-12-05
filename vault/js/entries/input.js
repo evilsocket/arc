@@ -18,7 +18,6 @@ InputEntry.prototype.Render = function(with_value, id){
 InputEntry.prototype.RenderToList = function(list, idx) {
     var entry_id = this.id(idx);
     var rendered = '<div class="entry-edit">' +
-                     '<a href="javascript:editEntryFor(\''+entry_id+'\')"><i class="fa fa-edit" aria-hidden="true"></i></a> ' +
                      '<a href="javascript:removeEntry('+idx+')"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
                     '</div>' +
                     this.Render(true, idx);

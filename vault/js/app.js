@@ -121,7 +121,7 @@ app.controller('PMController', ['$scope', function (scope) {
 
     scope.setSecret = function(secret) {
         scope.secret = secret;
-    }
+    };
 
     scope.getStore = function(success) {
         if( scope.vault.HasStore() == false ) {
@@ -138,19 +138,12 @@ app.controller('PMController', ['$scope', function (scope) {
                 scope.$apply();
             });
         }
-    }
+    };
 
     scope.setKey = function(key) {
-        key = $.trim(key) 
-        if( key == "" ) {
-            scope.setError("Empty encryption key.");
-            scope.$apply();
-            return false;
-        }
-
-        scope.key = key;
+        scope.key = $.trim(key);
         return true;
-    }
+    };
 
     scope.onNewStore = function() {
         var store_title = $.trim( prompt("Please enter the store title:") );
@@ -198,7 +191,6 @@ app.controller('PMController', ['$scope', function (scope) {
 
         if( scope.setKey( $('#key').val() ) == true ) { 
             scope.vault.Login( username, password, function(token) {
-                
                 setInterval( function(){ scope.updateSessionTime(); }, 1000 );
 
                 scope.setError(null);
@@ -210,31 +202,31 @@ app.controller('PMController', ['$scope', function (scope) {
                 scope.$apply();
             });
         }
-    }
+    };
 
     scope.updateFilter = function() {
         scope.filter = $('#search_filter').val(); 
-    }
+    };
 
     scope.filterSecret = function(record) {
         if( scope.filter != null ) {
             return ( record.Title.toLowerCase().indexOf(scope.filter.toLowerCase()) != -1 );
         }
         return true;
-    }
+    };
 
     scope.onGeneratePassword = function() {
         var value = $('#pass_n').html();
         var n = parseInt(value);
         onGenerate(n);
-    }
+    };
 
     scope.onUsePassword = function() { 
         var pass = $('#generated_password').val();
         $('#'+g_SelectedEntryId).val(pass);
         $('#password_generator_modal').modal('hide');
         $('#'+g_SelectedEntryId).pwstrength('forceUpdate');
-    }
+    };
 
     scope.addSecretEntry = function() {
         var entry_idx = $('#new_entry_type').val();
@@ -246,11 +238,8 @@ app.controller('PMController', ['$scope', function (scope) {
             entry.name = entry.name + " " + ( nidx + 1 );
         }
 
-        console.log( "Adding entry (idx=" + nidx + "):" );
-        console.log( entry );
-
         entry.RenderToList( list, nidx );
-    }
+    };
 
     scope.onBack = function() {
         scope.vault.store = null;
@@ -259,32 +248,26 @@ app.controller('PMController', ['$scope', function (scope) {
         scope.doSelectStore();
     };
 
-    scope.onNewSecret = function() {
-        $('#cleartext-warning').show();
-        $('#secret_title').val('');
-        $('#secret_title').show();
-        $('#secret_title_label').html('');
-        $('#secret_title_label').hide('');
-        $('#secret_entry_list').html('');
-        $('#new_secret_buttons').show();
-        $('#edt_secret_buttons').hide();
-        $('#secret_entry_list').sortable();
+    scope.showSecretModal = function(is_new, title) {
+        if( is_new == true ) {
+            $('#secret_title').text(title);
+            $('#cleartext-warning').show();
+            $('#new_secret_buttons').show();
+            $('#edt_secret_buttons').hide();
+        } else {
+            $('#cleartext-warning').hide();
+            $('#new_secret_buttons').hide();
+            $('#edt_secret_buttons').show();
+        }
+
+        $('#secret_title').text(title);
+        $('#secret_entry_list').html('').sortable();
         $('#secret_modal').modal();
+    };
 
-        $('#secret_title_label').click(function () {
-            $(this).hide();
-            $('#secret_title')
-                .val($(this).text())
-                .toggleClass("form-control")
-                .show()
-                .focus();
-        });
-
-        $('#secret_title').blur(function () {
-            $(this).hide().toggleClass("form-control");
-            $('#secret_title_label').html( $(this).val() ).show();
-        });
-    }
+    scope.onNewSecret = function() {
+        scope.showSecretModal( true, "Put a title ..." );
+    };
 
     scope.onShowSecret = function(secret) {
         var record = new Record(secret.Title);
@@ -293,7 +276,6 @@ app.controller('PMController', ['$scope', function (scope) {
 
         if( record.HasError() == true ) {
             $('#record_error_' + secret.ID).html(record.error);
-
             $('#record_status_' + secret.ID ).addClass("status-error");
         }
         else {
@@ -302,47 +284,20 @@ app.controller('PMController', ['$scope', function (scope) {
             $('#record_lock_' + secret.ID ).removeClass("fa-lock").addClass("fa-unlock");
             $('#record_status_' + secret.ID ).removeClass("status-locked").addClass("status-unlocked");
 
-            $('#cleartext-warning').hide();
-            $('#secret_title').hide();
-            $('#new_secret_buttons').hide();
-            $('#edt_secret_buttons').show();
-
-            $('#secret_title_label').html('');
-            $('#secret_entry_list').html('');
-            $('#secret_title').val(record.title);
-            $('#secret_title_label').html(record.title);
-
-            $('#secret_title_label').click(function () {
-                $(this).hide();
-                $('#secret_title')
-                    .val($(this).text())
-                    .toggleClass("form-control")
-                    .show()
-                    .focus();
-            });
-
-            $('#secret_title').blur(function () {
-                $(this).hide().toggleClass("form-control");
-                $('#secret_title_label').html( $(this).val() ).show();
-            });
+            scope.showSecretModal(false, record.title);
 
             var list = $('#secret_entry_list'); 
             for( var i = 0; i < record.entries.length; i++ ){
-                var e = record.entries[i];
-                // console.log( "Rendering entry " + e.TypeName() );
-                e.RenderToList( list, i );
+                record.entries[i].RenderToList( list, i );
             }
-
-            $('#secret_entry_list').sortable();
-            $('#secret_modal').modal();
         }
-    }
+    };
 
     scope.onAdd = function() {
         scope.setStatus("Adding secret ...");
 
-        var title = $('#secret_title').val();
-        var names = $('input[id^=name_of_]');
+        var title = $('#secret_title').text();
+        var names = $('.editable.entry-title');
         var entries = $('*[id^=entry_value_]');
 
         if( entries.length == 0 ){
@@ -357,7 +312,7 @@ app.controller('PMController', ['$scope', function (scope) {
             var input = $(entries[i]);
             var entry_id = input.attr('id');
             var type = parseInt( input.attr('data-entry-type') );
-            var name = $(names[i]).val();
+            var name = $(names[i]).text();
             var value = input.val();
 
             if( type == ENTRY_TYPE_FILE ) {
@@ -387,7 +342,7 @@ app.controller('PMController', ['$scope', function (scope) {
         });
 
         $('#secret_modal').modal('hide');
-    }
+    };
 
     scope.onDelete = function() {
         // this shouldn't happen, but better be safe than sorry :)
@@ -409,7 +364,7 @@ app.controller('PMController', ['$scope', function (scope) {
 
             $('#secret_modal').modal('hide');
         }
-    }
+    };
 
     scope.onUpdate = function() {
         // this shouldn't happen, but better be safe than sorry :)
@@ -419,8 +374,8 @@ app.controller('PMController', ['$scope', function (scope) {
 
         scope.setStatus("Updating secret ...");
 
-        var title = $('#secret_title').val();
-        var names = $('input[id^=name_of_]');
+        var title = $('#secret_title').text();
+        var names = $('.editable.entry-title');
         var entries = $('*[id^=entry_value_]');
 
         if( entries.length == 0 ){
@@ -435,7 +390,7 @@ app.controller('PMController', ['$scope', function (scope) {
             var input = $(entries[i]);
             var entry_id = input.attr('id');
             var type = parseInt( input.attr('data-entry-type') );
-            var name = $(names[i]).val();
+            var name = $(names[i]).text();
             var value = input.val();
 
             if( type == ENTRY_TYPE_FILE ) {
