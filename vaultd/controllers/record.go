@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"github.com/evilsocket/vault/models"
+	"github.com/evilsocket/vault/vaultd/models"
 	"github.com/gin-gonic/gin"
 )
 

@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/evilsocket/vault/config"
-	"github.com/evilsocket/vault/middlewares"
+	"github.com/evilsocket/vault/vaultd/config"
+	"github.com/evilsocket/vault/vaultd/middlewares"
 	"github.com/gin-gonic/gin"
 )
 

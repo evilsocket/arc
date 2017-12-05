@@ -3,16 +3,17 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/evilsocket/vault/app"
-	"github.com/evilsocket/vault/config"
-	"github.com/evilsocket/vault/controllers"
-	"github.com/evilsocket/vault/middlewares"
-	"github.com/evilsocket/vault/models"
+	"log"
+	"os"
+
+	"github.com/evilsocket/vault/vaultd/app"
+	"github.com/evilsocket/vault/vaultd/config"
+	"github.com/evilsocket/vault/vaultd/controllers"
+	"github.com/evilsocket/vault/vaultd/middlewares"
+	"github.com/evilsocket/vault/vaultd/models"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
-	"log"
-	"os"
 )
 
 var (

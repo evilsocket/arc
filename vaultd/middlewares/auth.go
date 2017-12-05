@@ -2,7 +2,7 @@ package middlewares
 
 import (
 	"github.com/dgrijalva/jwt-go"
-	"github.com/evilsocket/vault/config"
+	"github.com/evilsocket/vault/vaultd/config"
 	"github.com/gin-gonic/gin"
 	"strings"
 )

@@ -6,9 +6,9 @@ Vault is an API and HTML+js application server for your secrets.
 
 ## Usage
 
-Compile the vault server:
+Compile the `vaultd` server:
     
-    cd vault-repo-path
+    cd vault-repo-path/vaultd
     make
 
 Customize access credentials:
@@ -18,7 +18,7 @@ Customize access credentials:
 
 Run the `Secrets Manager` web application, the first time `vaultd` will automatically create its encrypted store:
 
-    ./vaultd -config config.json -app webapps/secrets_manager
+    ./vaultd -config config.json -app ../vault
 
 Browse `http://localhost:8080/` and login with the credentials you specified in the `config.json` file.
 
@@ -40,5 +40,5 @@ Markdown notepad.
 
 ## License
 
-`vaultd` and the `Secrets Manager` app were made with ♥  by [Simone Margaritelli](https://www.evilsocket.net/) and they're released under the GPL 3 license.
+Vault was made with ♥  by [Simone Margaritelli](https://www.evilsocket.net/) and it is released under the GPL 3 license.
 

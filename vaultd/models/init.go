@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/evilsocket/vault/config"
+	"github.com/evilsocket/vault/vaultd/config"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"log"
