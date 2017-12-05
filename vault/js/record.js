@@ -37,6 +37,10 @@ Record.prototype.Encrypt = function( key ) {
     return data
 }
 
+Record.prototype.isValidData = function(data) {
+    return ( data == "[]" || data.indexOf('"value"') != -1 );
+}
+
 Record.prototype.Decrypt = function( key, data ) {
     console.log( "Decrypting " + data.length + " bytes of record." );
     try {
@@ -50,7 +54,7 @@ Record.prototype.Decrypt = function( key, data ) {
     console.log( "Decrypted data is " + data.length + " bytes." );
 
     // quick and dirty check
-    if( data.indexOf('"value"') == -1 ) {
+    if( this.isValidData(data) == false ) {
         this.SetError( "Error while decrypting record data." );
     } else {
         var objects = JSON.parse(data);

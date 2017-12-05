@@ -312,10 +312,7 @@ app.controller('PMController', ['$scope', function (scope) {
         var names = $('.editable.entry-title');
         var entries = $('*[id^=entry_value_]');
 
-        if( entries.length == 0 ){
-            return alert("Please add at least one entry to your secret.");
-        }
-        else if( entries.length != names.length ) {
+        if( entries.length != names.length ) {
             return alert("WTF?!");
         }
 
@@ -381,10 +378,7 @@ app.controller('PMController', ['$scope', function (scope) {
         var names = $('.editable.entry-title');
         var entries = $('*[id^=entry_value_]');
 
-        if( entries.length == 0 ){
-            return alert("Please add at least one entry to your secret.");
-        } 
-        else if( entries.length != names.length ) {
+        if( entries.length != names.length ) {
             return alert("WTF?!");
         }
 
