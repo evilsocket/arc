@@ -8,10 +8,8 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 
@@ -31,6 +29,7 @@ var (
 	conf_file = ""
 	no_auth   = false
 	export    = false
+	import_fn = ""
 	store_id  = ""
 	output    = "vault.json"
 )
@@ -40,6 +39,7 @@ func init() {
 	flag.StringVar(&conf_file, "config", "", "JSON configuration file.")
 	flag.BoolVar(&no_auth, "no-auth", no_auth, "Disable authenticaion.")
 
+	flag.StringVar(&import_fn, "import", import_fn, "Import stores from this JSON export file.")
 	flag.BoolVar(&export, "export", export, "Export store to JSON file, requires --store and --output parameters.")
 	flag.StringVar(&store_id, "store", store_id, "Store id to export or empty for all the existing stores.")
 	flag.StringVar(&output, "output", output, "Export file name.")
@@ -75,37 +75,14 @@ func main() {
 	}
 
 	if export == true {
-		var stores []models.Store
-		var err error
-
-		if store_id != "" {
-			store, err := models.GetStoreWithRecords(store_id)
-			if err != nil {
-				fatal(err)
-			}
-
-			stores = []models.Store{
-				store,
-			}
-		} else {
-			if stores, err = models.GetStores(true); err != nil {
-				fatal(err)
-			}
-		}
-
-		log.Printf("Exporting %d records ...\n", len(stores))
-
-		var buffer []byte
-		if buffer, err = json.Marshal(stores); err != nil {
+		if err := models.Export(store_id, output); err != nil {
 			fatal(err)
 		}
-
-		if err = ioutil.WriteFile(output, buffer, 0644); err != nil {
+		return
+	} else if import_fn != "" {
+		if err := models.Import(import_fn); err != nil {
 			fatal(err)
 		}
-
-		log.Printf("Exported %d bytes to %s.\n", len(buffer), output)
-
 		return
 	}
 

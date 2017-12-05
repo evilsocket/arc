@@ -24,6 +24,22 @@ Run the `Secrets Manager` web application, the first time `vaultd` will automati
 
 Browse `http://localhost:8080/` and login with the credentials you specified in the `config.json` file.
 
+## Export and import stores.
+
+You can export stores and their encrypted records to a JSON file:
+
+    # exports store with id 1 to ~/vault_store_1.json
+    ./vaultd -config config.json -output ~/vault_store_1.json -export -store 1 
+
+Or
+
+    # exports all stores to ~/backup.json
+    ./vaultd -config config.json -output ~/backup.json -export
+
+Such export files can be later imported with:
+
+    ./vaultd -config config.json -import ~/backup.json
+
 ## Screenshots
 
 Both `vaultd` and the `Secrets Manager` app are work in progress, you might experience some differences with the following screenshots.
