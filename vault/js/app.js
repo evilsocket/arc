@@ -252,6 +252,13 @@ app.controller('PMController', ['$scope', function (scope) {
         entry.RenderToList( list, nidx );
     }
 
+    scope.onBack = function() {
+        scope.vault.store = null;
+        scope.stores = null;
+        scope.store_id = null;
+        scope.doSelectStore();
+    };
+
     scope.onNewSecret = function() {
         $('#cleartext-warning').show();
         $('#secret_title').val('');

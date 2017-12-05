@@ -67,11 +67,22 @@
         <div id="search_form" class="search-form form-group" ng-include src="'/views/search_form.html?v=2'"></div>
 
         <ul id="secrets_list" class="list-group secrets-list">
-          <li class="list-group-item" ng-click="onNewSecret()">
-            <center class="action-button">
-              <i class="fa fa-file" aria-hidden="true"></i>
-            </center>
+
+          <li class="list-group-item">
+            <div class="row">
+              <div class="col-6">
+                <center class="action-button" ng-click="onBack()">
+                  <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                </center>    
+              </div>
+              <div class="col-6" style="border-left: 1px solid #eee">
+                <center class="action-button" ng-click="onNewSecret()">
+                  <i class="fa fa-file" aria-hidden="true"></i>
+                </center>
+              </div>
+            </div>
           </li>
+
           <li class="list-group-item" id="secret_list_item_{{ r.ID }}" ng-if="filterSecret(r)" ng-repeat="r in vault.records" ng-click="onShowSecret(r)">
             <span ng-include src="'/views/secret_list_item.html?v=13'"></span>
           </li>
