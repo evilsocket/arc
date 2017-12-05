@@ -18,7 +18,7 @@ Customize access credentials:
     cp sample_config config.json
     vim config.json
 
-Run the `Secrets Manager` web application, the first time `vaultd` will automatically create its encrypted store:
+Run the `vault` web application, the first time `vaultd` will automatically load some example stores from the `vault/seeds.json` seed file (encryption key is `vault`):
 
     ./vaultd -config config.json -app ../vault
 

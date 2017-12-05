@@ -89,6 +89,7 @@ func Export(store_id string, filename string) (err error) {
 func ImportStores(stores []Store) (err error) {
 	tx := db.Begin()
 	for _, store := range stores {
+		log.Printf("Creating store '%s' with %d records (id=%d).\n", store.Title, len(store.Records), store.ID)
 		if err = db.Create(&store).Error; err != nil {
 			tx.Rollback()
 			return
