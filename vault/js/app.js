@@ -166,7 +166,6 @@ app.controller('PMController', ['$scope', function (scope) {
             },
             scope.errorHandler );
         }
-
     };
 
     scope.onNewStore = function() {
@@ -184,6 +183,7 @@ app.controller('PMController', ['$scope', function (scope) {
         scope.store_id = id;
         scope.setStatus("Loading passwords store ...");
         scope.vault.SetStore( scope.store_id, function() {
+            document.title = scope.vault.store.Title;
             scope.setError(null);
             scope.$apply();
         },
@@ -192,6 +192,7 @@ app.controller('PMController', ['$scope', function (scope) {
 
     scope.doSelectStore = function() {
         scope.vault.Stores(function(stores){
+            document.title = "Select store"
             scope.stores = stores;
             scope.$apply();
         },
