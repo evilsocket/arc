@@ -1,9 +1,15 @@
-function Vault() {
+function Vault(on_req_executed) {
     this.token = null;
     this.token_time = null;
     this.config = null;
     this.store = null;
     this.records = null;
+    this.req = null;
+    this.req_started = null;
+    this.req_time = null;
+    this.on_req_executed = on_req_executed || function(success, req, time){
+        console.log( req + " executed in " + time + " ms." );
+    };
 }
 
 Vault.prototype.IsLogged = function() {
@@ -15,8 +21,21 @@ Vault.prototype.HasStore = function() {
     return this.IsLogged() && ( this.store != null );
 }
 
+Vault.prototype.onRequestStart = function( req ) {
+    this.req = req;
+    this.req_time = null;
+    this.req_started = new Date();
+}
+
+Vault.prototype.onRequestDone = function( success ) {
+    this.req_time = ( new Date() ) - this.req_started;
+    this.on_req_executed( success, this.req, this.req_time );
+}
+
 Vault.prototype.Api = function( method, path, data, success, error ) {
     console.log( method + ' ' + path );
+
+    this.onRequestStart( method + ' ' + path );
 
     var vault = this;
     $.ajax({
@@ -27,9 +46,15 @@ Vault.prototype.Api = function( method, path, data, success, error ) {
                 xhr.setRequestHeader('Authorization', 'Bearer: ' + vault.token);
             }
         },
+        success: function(r) {
+            vault.onRequestDone(true);            
+            success(r);
+        },
+        error: function(e) {
+            vault.onRequestDone(false);            
+            error(e);
+        },
         data: data ? JSON.stringify(data) : null,
-        success: success,
-        error: error,
         contentType: "application/json",
         dataType: 'json',
         timeout: 60 * 60 * 100
