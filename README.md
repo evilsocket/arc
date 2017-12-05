@@ -4,9 +4,13 @@ Vault is an API and HTML+js application server for your secrets.
 
 ## Usage
 
-Compile the `vaultd` server:
-    
+Install the dependencies of `vaultd`:
+
     cd vault-repo-path/vaultd
+    make vendor_get
+    
+Compile `vaultd`:
+    
     make
 
 Customize access credentials:
