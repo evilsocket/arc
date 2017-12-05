@@ -22,8 +22,7 @@
   <script type="text/javascript" src="/js/libs/angular/angular.min.js"></script>
   <script type="text/javascript" src="/js/libs/crypto-js/crypto-js.js"></script>
 
-  <script type="text/javascript" src="/js/libs/vault.js"></script>
-
+  <script type="text/javascript" src="/js/vault.js"></script>
   <script type="text/javascript" src="/js/entries/base.js"></script>
   <script type="text/javascript" src="/js/entries/input.js"></script>
   <script type="text/javascript" src="/js/entries/text.js"></script>
@@ -39,29 +38,49 @@
 
     <div ng-include src="'/views/modals/error.html?v=2'"></div>
 
+    <!-- if user is not logged, show login -->
     <div id="login" class="container" ng-if="!vault.IsLogged()" ng-include src="'/views/login.html?v=3'"></div>
 
-    <div ng-if="vault.HasStore()">
-          <div id="session_time_left" class="alert alert-warning" style="display:none"></div>
+    <!-- if user is logged instead -->
+    <span ng-if="vault.IsLogged()" ng-switch on="vault.HasStore()">
+      <!-- no store selected, show available stores -->
+      <div ng-switch-when="false">
+        <br/>
+        <ul id="stores_list" class="list-group stores-list">
+          <li class="list-group-item" ng-click="onNewStore()">
+            <center class="action-button">
+              <i class="fa fa-file" aria-hidden="true"></i>
+            </center>
+          </li>
 
-          <div id="search_form" class="search-form form-group" ng-include src="'/views/search_form.html?v=2'"></div>
-
-          <ul id="secrets_list" class="list-group secrets-list">
-            <li class="list-group-item" ng-click="onNewSecret()">
-              <center class="action-button">
-                <i class="fa fa-file" aria-hidden="true"></i>
-              </center>
-            </li>
-            <li class="list-group-item" id="secret_list_item_{{ r.ID }}" ng-if="filterSecret(r)" ng-repeat="r in vault.records" ng-click="onShowSecret(r)">
-              <span ng-include src="'/views/secret_list_item.html?v=13'"></span>
-            </li>
-          </ul>
-
-          <div ng-include src="'/views/modals/secret.html?v=10'"></div>
-
+          <li class="list-group-item store-list-item" ng-repeat="s in stores" ng-click="onShowStore(s.ID)">
+            <span ng-include src="'/views/store_list_item.html'"></span>
+          </li>
+        </ul>
       </div>
-    </div>
+
+      <!-- store selected, load records from it -->
+      <div ng-switch-when="true">
+        <!-- will show session expire time when approaching 5 minutes left -->
+        <div id="session_time_left" class="alert alert-warning" style="display:none"></div>
+
+        <div id="search_form" class="search-form form-group" ng-include src="'/views/search_form.html?v=2'"></div>
+
+        <ul id="secrets_list" class="list-group secrets-list">
+          <li class="list-group-item" ng-click="onNewSecret()">
+            <center class="action-button">
+              <i class="fa fa-file" aria-hidden="true"></i>
+            </center>
+          </li>
+          <li class="list-group-item" id="secret_list_item_{{ r.ID }}" ng-if="filterSecret(r)" ng-repeat="r in vault.records" ng-click="onShowSecret(r)">
+            <span ng-include src="'/views/secret_list_item.html?v=13'"></span>
+          </li>
+        </ul>
+
+        <div ng-include src="'/views/modals/secret.html?v=10'"></div>
+      </div>
+    </span>
 
   </div>
 </body>
-</html
+</html>

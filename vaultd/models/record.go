@@ -1,7 +1,6 @@
 package models
 
 import (
-	"github.com/gosimple/slug"
 	"time"
 )
 
@@ -12,19 +11,8 @@ type Record struct {
 	StoreID    uint   `json:"-"`
 	Store      Store  `json:"-"`
 	Title      string `gorm:"not null"`
-	Name       string `gorm:"not null"`
 	Encryption string `sql:"DEFAULT:'none'"`
 	Data       []byte
-}
-
-func (r *Record) BeforeSave() error {
-	r.Name = slug.Make(r.Title)
-	return nil
-}
-
-func (r *Record) BeforeUpdate() error {
-	r.Name = slug.Make(r.Title)
-	return nil
 }
 
 func Records(store_id string) (records []Record, err error) {

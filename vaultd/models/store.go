@@ -1,7 +1,6 @@
 package models
 
 import (
-	"github.com/gosimple/slug"
 	"time"
 )
 
@@ -10,18 +9,7 @@ type Store struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	Title     string   `gorm:"unique;not null"`
-	Name      string   `gorm:"unique;not null"`
 	Records   []Record `json:"-"`
-}
-
-func (s *Store) BeforeSave() error {
-	s.Name = slug.Make(s.Title)
-	return nil
-}
-
-func (s *Store) BeforeUpdate() error {
-	s.Name = slug.Make(s.Title)
-	return nil
 }
 
 func Stores() (stores []Store, err error) {
@@ -31,11 +19,6 @@ func Stores() (stores []Store, err error) {
 
 func GetStore(id string) (store Store, err error) {
 	err = db.Where("id = ?", id).Find(&store).Error
-	return
-}
-
-func GetStoreByName(name string) (store Store, err error) {
-	err = db.Where("name = ?", name).Find(&store).Error
 	return
 }
 

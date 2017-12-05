@@ -91,6 +91,8 @@ app.controller('PMController', ['$scope', function (scope) {
     scope.vault = new Vault();
     scope.key = null;
     scope.secret = null;
+    scope.store_id = null;
+    scope.stores = null;
     scope.filter = null;
     scope.registeredTypes = REGISTERED_TYPES;
 
@@ -122,16 +124,20 @@ app.controller('PMController', ['$scope', function (scope) {
     }
 
     scope.getStore = function(success) {
-        scope.setStatus("Loading passwords store ...");
-
-        scope.vault.SetStore( "passwords", function() {
-            scope.setError(null);
-            scope.$apply();
-        },
-        function(error){
-            scope.setError(error);
-            scope.$apply();
-        });
+        if( scope.vault.HasStore() == false ) {
+            alert("No store selected");
+        }
+        else {
+            scope.setStatus("Loading passwords store ...");
+            scope.vault.SetStore( scope.store_id, function() {
+                scope.setError(null);
+                scope.$apply();
+            },
+            function(error){
+                scope.setError(error);
+                scope.$apply();
+            });
+        }
     }
 
     scope.setKey = function(key) {
@@ -146,6 +152,44 @@ app.controller('PMController', ['$scope', function (scope) {
         return true;
     }
 
+    scope.onNewStore = function() {
+        var store_title = $.trim( prompt("Please enter the store title:") );
+        if( store_title ) {
+            scope.vault.AddStore( store_title, function() {
+                scope.setError(null);
+                scope.doSelectStore();
+            },
+            function(error){
+                scope.setError(error);
+                scope.$apply();
+            });
+        }
+    };
+
+    scope.onShowStore = function(id) {
+        scope.store_id = id;
+        scope.setStatus("Loading passwords store ...");
+        scope.vault.SetStore( scope.store_id, function() {
+            scope.setError(null);
+            scope.$apply();
+        },
+        function(error){
+            scope.setError(error);
+            scope.$apply();
+        }); 
+    };
+
+    scope.doSelectStore = function() {
+        scope.vault.Stores(function(stores){
+            scope.stores = stores;
+            scope.$apply();
+        },
+        function(error){
+            scope.setError(error);
+            scope.$apply();
+        });
+    };
+
     scope.doLogin = function() {
         scope.setStatus("Logging in ...");
 
@@ -159,9 +203,7 @@ app.controller('PMController', ['$scope', function (scope) {
 
                 scope.setError(null);
                 scope.$apply();
-                scope.getStore( function() {
-                    scope.$apply();
-                });
+                scope.doSelectStore();
             },
             function(error){
                 scope.setError(error);
@@ -441,7 +483,3 @@ app.controller('PMController', ['$scope', function (scope) {
         }
     };
 }]);
-
-$(function(){
-    console.log( "Document ready." );
-});

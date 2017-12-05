@@ -130,6 +130,20 @@ div.entry-edit > a:hover {
     color: #aaa;
 }
 
+.store-list-item {
+    cursor: pointer;
+}
+
+.store-media {
+    float: left;
+    margin-right: 10px;
+    color: #ccc;
+}
+
+.store-list-item b {
+    
+}
+
 #secret_title {
     line-height: 35px;
     font-size: 35px;

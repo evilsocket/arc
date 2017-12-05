@@ -8,10 +8,17 @@ import (
 	"path/filepath"
 )
 
-type Manifest struct {
+type Author struct {
 	Name    string `json:"name"`
-	Store   string `json:"store"`
-	Version string `json:"version"`
+	Email   string `json:"email"`
+	License string `json:"license"`
+}
+
+type Manifest struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Version     string `json:"version"`
+	Author      Author `json:"author"`
 }
 
 type App struct {
@@ -37,8 +44,9 @@ func Open(path string) (err error, app *App) {
 	manifest_filename := path + "/manifest.json"
 
 	manifest := Manifest{
-		Name:  "Unknown Vault App",
-		Store: "",
+		Name:        "?",
+		Version:     "0.0.0",
+		Description: "",
 	}
 
 	if _, err = os.Stat(manifest_filename); err == nil {

@@ -78,26 +78,25 @@ Vault.prototype.Records = function( store, success, error ) {
     }, error );
 }
 
-Vault.prototype.SetStore = function( name, success, error ) {
-    console.log( "Selecting store '" + name + "'" );
+Vault.prototype.GetStore = function(id, success, error) {
+    this.Api( 'GET', '/api/store/' + id, null, success, error );
+}
 
+Vault.prototype.AddStore = function( title, success, error ) {
+    console.log( "Creating store '" + title + "'" );
+    var record = {
+        'Title': title,
+    };
+    this.Api( 'POST', '/api/stores/', record, success, error );
+}
+
+Vault.prototype.SetStore = function( id, success, error ) {
+    console.log( "Selecting store '" + id + "'" );
     var vault = this;
-    this.Stores(function(stores){
-        var nstores = stores.length;
-        for( var i = 0; i < nstores; i++ ) {
-            var s = stores[i];
-            if( s.Name == name ) {
-                vault.store = s;
-                vault.Records( s, success, error );
-                break;
-            }
-        }
-
-        if( vault.store == null ){ 
-            error("Could not find store.");
-        } else {
-            success();
-        }
+    this.GetStore( id, function(s){
+        vault.store = s;
+        vault.Records( s, success, error );
+        success();
     },
     error);
 }

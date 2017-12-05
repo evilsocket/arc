@@ -38,14 +38,6 @@ func loadApp(r *gin.Engine) *app.App {
 	if err != nil {
 		fatal(err)
 	}
-	if webapp.Manifest.Store != "" {
-		if _, err := models.GetStoreByName(webapp.Manifest.Store); err != nil {
-			log.Printf("Creating default app store %s.\n", webapp.Manifest.Store)
-			if err := models.Create(&models.Store{Title: webapp.Manifest.Store}); err != nil {
-				fatal(err)
-			}
-		}
-	}
 
 	r.Use(static.Serve("/", static.LocalFile(webapp.Path, true)))
 
