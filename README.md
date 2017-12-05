@@ -28,13 +28,11 @@ Browse `http://localhost:8080/` and login with the credentials you specified in 
 
 You can export stores and their encrypted records to a JSON file:
 
-    # exports store with id 1 to ~/vault_store_1.json
-    ./vaultd -config config.json -output ~/vault_store_1.json -export -store 1 
-
-Or
-
-    # exports all stores to ~/backup.json
     ./vaultd -config config.json -output ~/backup.json -export
+
+Or export only one store by its numeric id:
+
+    ./vaultd -config config.json -output ~/vault_store_1.json -export -store 1 
 
 Such export files can be later imported with:
 
