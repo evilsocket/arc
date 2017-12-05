@@ -5,6 +5,11 @@
  *
  * See LICENSE.
  */
+.editable:empty:after {
+    color: transparent;
+    content: 'abcde';
+}
+
 .editable {
     display: inline;
 }

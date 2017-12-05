@@ -21,8 +21,16 @@
 
                 var input_name = 'editable_input_for_' + id;
                 var icon_name = 'editable_icon_for_' + id;
-                var $icon = $('<i class="editable-icon fa fa-pencil-square-o" icon-for="' + id + '">').hide(); 
+                var $icon = $('<i class="editable-icon fa fa-pencil-square-o" icon-for="' + id + '">'); 
                 var $input = $('<input class="editable-input">').hide();
+                
+                if( $elem.text() != "" ) {
+                    console.log( "Hiding icon" );
+                    $icon.hide()
+                }
+                else {
+                    console.log( "Showing icon" );
+                }
 
                 $input.attr({
                     type: 'text',
@@ -35,12 +43,6 @@
 
                 $icon.attr({
                     id: icon_name  
-                })
-                .click(function(e){
-                    // if the icon is clickable, it means the text is empty, therefore
-                    // it can not be clicked by the user and we need to simulate it.
-                    e.preventDefault();
-                    $( '#' + $(this).attr('icon-for') ).click(); 
                 });
 
                 $elem.after($icon).after($input);
@@ -79,16 +81,6 @@
 
                     $(this).hide();
                     $elem.text(text).show();
-
-                    // if there's no text, make the icon visible in order to
-                    // allow the user to click on something, otherwise hide
-                    // it in case it was already forcefully shown by a previous
-                    // empty text.
-                    if( $.trim(text) == "" ){
-                        $(icon_id).show();
-                    } else {
-                        $(icon_id).hide();
-                    }
                 };
 
                 $input

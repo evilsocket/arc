@@ -117,7 +117,6 @@ PasswordEntry.prototype.input = function(with_value, id) {
                 'type="password" ' + 
                 'class="form-control" ' +
                 'data-entry-type="' + this.type + '" ' +
-                'data-entry-name="' + this.name + '" ' +
                 'name="' + this.name + '" ' + 
                 'id="' + this.id(id) + '" ' +
                 'value="' + ( with_value ? this.value : '' ) + '"/>' +
