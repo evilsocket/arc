@@ -243,3 +243,26 @@ input[type=file] {
 .md-editor > .md-preview {
     padding: 10px;
 }
+
+body.dragging, body.dragging * {
+    cursor: move !important;
+}
+
+.secret-entry-item {
+    cursor: grab;
+    padding: 5px;
+}
+
+.secret-entry-item:hover {
+    background-color: #eee;
+}
+
+.dragged {
+    position: absolute;
+    opacity: 0.5;
+    z-index: 2000;
+}
+
+ul li.placeholder:before {
+    position: absolute;
+}

@@ -219,6 +219,7 @@ app.controller('PMController', ['$scope', function (scope) {
         $('#secret_entry_list').html('');
         $('#new_secret_buttons').show();
         $('#edt_secret_buttons').hide();
+        $('#secret_entry_list').sortable();
         $('#secret_modal').modal();
 
         $('#secret_title_label').click(function () {
@@ -283,6 +284,7 @@ app.controller('PMController', ['$scope', function (scope) {
                 e.RenderToList( list, i );
             }
 
+            $('#secret_entry_list').sortable();
             $('#secret_modal').modal();
         }
     }
@@ -439,3 +441,7 @@ app.controller('PMController', ['$scope', function (scope) {
         }
     };
 }]);
+
+$(function(){
+    console.log( "Document ready." );
+});

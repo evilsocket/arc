@@ -134,7 +134,7 @@ PasswordEntry.prototype.RenderToList = function(list, idx) {
                    this.Render(true, idx) +
                    '<div class="pwstrength_viewport_progress"></div>';
 
-    list.append( '<li id="secret_entry_' + idx + '">' + rendered + '</li>' );
+    list.append( '<li class="secret-entry-item" id="secret_entry_' + idx + '">' + rendered + '</li>' );
 
     this.OnRendered(idx);
 }

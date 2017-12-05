@@ -17,6 +17,7 @@
 
   <script type="text/javascript" src="/js/libs/jquery/jquery.min.js"></script>
   <script type="text/javascript" src="/js/libs/jquery/jquery.timeago.js"></script>
+  <script type="text/javascript" src="/js/libs/jquery/jquery-sortable.js"></script>
   <script type="text/javascript" src="/js/libs/bootstrap/bootstrap.bundle.min.js"></script>
   <script type="text/javascript" src="/js/libs/angular/angular.min.js"></script>
   <script type="text/javascript" src="/js/libs/crypto-js/crypto-js.js"></script>
@@ -52,7 +53,7 @@
               </center>
             </li>
             <li class="list-group-item" id="secret_list_item_{{ r.ID }}" ng-if="filterSecret(r)" ng-repeat="r in vault.records" ng-click="onShowSecret(r)">
-              <span ng-include src="'/views/secret_list_item.html?v=12'"></span>
+              <span ng-include src="'/views/secret_list_item.html?v=13'"></span>
             </li>
           </ul>
 

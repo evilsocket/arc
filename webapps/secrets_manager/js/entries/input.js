@@ -23,7 +23,7 @@ InputEntry.prototype.RenderToList = function(list, idx) {
                     '</div>' +
                     this.Render(true, idx);
 
-    list.append( '<li id="secret_entry_' + idx + '">' + rendered + '</li>' );
+    list.append( '<li class="secret-entry-item" id="secret_entry_' + idx + '">' + rendered + '</li>' );
 
     this.OnRendered(idx);
 }
