@@ -44,7 +44,7 @@
 
     <!-- user logged but empty encryption key -->
     <div ng-if="vault.IsLogged() && !key" style="margin-bottom:-10px; margin-top:10px;" class="alert alert-warning">
-      No key provided, encryption and decryption disabled.
+      No encryption key provided.
     </div>
 
     <!-- if user is logged instead -->
@@ -55,18 +55,24 @@
         <ul id="stores_list" class="list-group stores-list">
           <li class="list-group-item">
             <div class="row">
+              <div class="col-6">
+                <center class="action-button" onclick="location.reload();">
+                  <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                </center>    
+              </div>
               <div class="col-6" style="border-left: 1px solid #eee">
                 <center class="action-button" ng-click="onNewStore()">
                   <i class="fa fa-file" aria-hidden="true"></i>
                 </center>
               </div>
-              <div class="col-6">
-                <center class="action-button" onclick="location.reload();">
-                  <i class="fa fa-sign-out" aria-hidden="true"></i>
-                </center>    
-              </div>
             </div>
           </li>
+
+          <li class="list-group-item" ng-if="!stores.length">
+            <small class="action-label">
+              No stores found, create one using the <i class="fa fa-file" aria-hidden="true"></i> icon.
+            </small>
+          </li>          
 
           <li class="list-group-item store-list-item" ng-repeat="s in stores" ng-click="onShowStore(s.ID)">
             <span ng-include src="'/views/store_list_item.html'"></span>
@@ -85,18 +91,29 @@
 
           <li class="list-group-item">
             <div class="row">
-              <div class="col-6">
+              <div class="col-4">
                 <center class="action-button" ng-click="onBack()">
                   <i class="fa fa-chevron-left" aria-hidden="true"></i>
                 </center>    
               </div>
-              <div class="col-6" style="border-left: 1px solid #eee">
+              <div class="col-4" style="border-left: 1px solid #eee">
+                <center class="action-button" ng-click="onDeleteStore()">
+                  <i class="fa fa-trash-o" aria-hidden="true"></i>
+                </center>
+              </div>
+              <div class="col-4" style="border-left: 1px solid #eee">
                 <center class="action-button" ng-click="onNewSecret()">
                   <i class="fa fa-file" aria-hidden="true"></i>
                 </center>
               </div>
             </div>
           </li>
+
+          <li class="list-group-item" ng-if="!vault.records.length">
+            <small class="action-label">
+              No records found, create one using the <i class="fa fa-file" aria-hidden="true"></i> icon.
+            </small>
+          </li>       
 
           <li class="list-group-item" id="secret_list_item_{{ r.ID }}" ng-if="filterSecret(r)" ng-repeat="r in vault.records" ng-click="onShowSecret(r)">
             <span ng-include src="'/views/secret_list_item.html?v=13'"></span>

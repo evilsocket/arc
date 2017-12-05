@@ -152,6 +152,24 @@ app.controller('PMController', ['$scope', function (scope) {
         return true;
     };
 
+    scope.onDeleteStore = function() {
+        if( scope.vault.HasStore() == false ) {
+            alert("No store selected");
+        }
+        else if( confirm( "Are you sure?" ) == true ) {
+            scope.vault.DeleteStore( scope.store_id, function() {
+                scope.vault.store = null;
+                scope.store_id = null;
+                scope.doSelectStore();
+            },
+            function(error){
+                scope.setError(error);
+                scope.$apply();
+            });
+        }
+
+    };
+
     scope.onNewStore = function() {
         var store_title = $.trim( prompt("Please enter the store title:") );
         if( store_title ) {

@@ -120,6 +120,10 @@ div.entry-edit {
     margin-bottom: 5px;
 }
 
+.action-label {
+    color: #aaa;
+}
+
 .action-button {
     color: #aaa;
 }

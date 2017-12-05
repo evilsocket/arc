@@ -113,6 +113,10 @@ Vault.prototype.GetStore = function(id, success, error) {
     this.Api( 'GET', '/api/store/' + id, null, success, error );
 }
 
+Vault.prototype.DeleteStore = function(id, success, error) {
+    this.Api( 'DELETE', '/api/store/' + id, null, success, error );
+}
+
 Vault.prototype.AddStore = function( title, success, error ) {
     console.log( "Creating store '" + title + "'" );
     var record = {
