@@ -120,6 +120,11 @@ app.controller('PMController', ['$scope', function (scope) {
         }
     };
 
+    scope.errorHandler = function(error) {
+        scope.setError(error);
+        scope.$apply();
+    };
+
     scope.setStatus = function(message) {
         if( message ) 
             console.log(message);
@@ -128,6 +133,11 @@ app.controller('PMController', ['$scope', function (scope) {
 
     scope.setSecret = function(secret) {
         scope.secret = secret;
+    };
+
+    scope.setKey = function(key) {
+        scope.key = $.trim(key);
+        return true;
     };
 
     scope.getStore = function(success) {
@@ -140,16 +150,8 @@ app.controller('PMController', ['$scope', function (scope) {
                 scope.setError(null);
                 scope.$apply();
             },
-            function(error){
-                scope.setError(error);
-                scope.$apply();
-            });
+            scope.errorHandler );
         }
-    };
-
-    scope.setKey = function(key) {
-        scope.key = $.trim(key);
-        return true;
     };
 
     scope.onDeleteStore = function() {
@@ -162,10 +164,7 @@ app.controller('PMController', ['$scope', function (scope) {
                 scope.store_id = null;
                 scope.doSelectStore();
             },
-            function(error){
-                scope.setError(error);
-                scope.$apply();
-            });
+            scope.errorHandler );
         }
 
     };
@@ -177,10 +176,7 @@ app.controller('PMController', ['$scope', function (scope) {
                 scope.setError(null);
                 scope.doSelectStore();
             },
-            function(error){
-                scope.setError(error);
-                scope.$apply();
-            });
+            scope.errorHandler );
         }
     };
 
@@ -191,10 +187,7 @@ app.controller('PMController', ['$scope', function (scope) {
             scope.setError(null);
             scope.$apply();
         },
-        function(error){
-            scope.setError(error);
-            scope.$apply();
-        }); 
+        scope.errorHandler ); 
     };
 
     scope.doSelectStore = function() {
@@ -202,10 +195,7 @@ app.controller('PMController', ['$scope', function (scope) {
             scope.stores = stores;
             scope.$apply();
         },
-        function(error){
-            scope.setError(error);
-            scope.$apply();
-        });
+        scope.errorHandler );
     };
 
     scope.doLogin = function() {
@@ -222,10 +212,7 @@ app.controller('PMController', ['$scope', function (scope) {
                 scope.$apply();
                 scope.doSelectStore();
             },
-            function(error){
-                scope.setError(error);
-                scope.$apply();
-            });
+            scope.errorHandler );
         }
     };
 
@@ -354,17 +341,11 @@ app.controller('PMController', ['$scope', function (scope) {
         data = record.Encrypt( scope.key )
         
         scope.vault.AddRecord( title, data, 'aes', function(record) {
-            scope.setError(null);
-            scope.$apply();
-
             scope.getStore( function() {
                 scope.$apply();
             });
         },
-        function(error){
-            scope.setError(error);
-            scope.$apply();
-        });
+        scope.errorHandler );
 
         $('#secret_modal').modal('hide');
     };
@@ -382,10 +363,7 @@ app.controller('PMController', ['$scope', function (scope) {
                     scope.$apply();
                 });
             },
-            function(err){
-                scope.setError(err);
-                scope.$apply();
-            });
+            scope.errorHandler );
 
             $('#secret_modal').modal('hide');
         }
@@ -434,16 +412,11 @@ app.controller('PMController', ['$scope', function (scope) {
         scope.vault.UpdateRecord( scope.secret.ID, title, data, 'aes', function(record) {
             scope.setSecret(null);
             scope.setError(null);
-            scope.$apply();
-
             scope.getStore( function() {
                 scope.$apply();
             });
         },
-        function(error){
-            scope.setError(error);
-            scope.$apply();
-        });
+        scope.errorHandler );
 
         $('#secret_modal').modal('hide');
     };
