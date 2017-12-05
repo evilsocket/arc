@@ -8,8 +8,10 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 
@@ -18,6 +20,7 @@ import (
 	"github.com/evilsocket/vault/vaultd/controllers"
 	"github.com/evilsocket/vault/vaultd/middlewares"
 	"github.com/evilsocket/vault/vaultd/models"
+
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
@@ -27,12 +30,19 @@ var (
 	apppath   = ""
 	conf_file = ""
 	no_auth   = false
+	export    = false
+	store_id  = ""
+	output    = "vault.json"
 )
 
 func init() {
 	flag.StringVar(&apppath, "app", ".", "Path of the web application to serve.")
 	flag.StringVar(&conf_file, "config", "", "JSON configuration file.")
 	flag.BoolVar(&no_auth, "no-auth", no_auth, "Disable authenticaion.")
+
+	flag.BoolVar(&export, "export", export, "Export store to JSON file, requires --store and --output parameters.")
+	flag.StringVar(&store_id, "store", store_id, "Store id to export or empty for all the existing stores.")
+	flag.StringVar(&output, "output", output, "Export file name.")
 }
 
 func fatal(err error) {
@@ -62,6 +72,41 @@ func main() {
 
 	if err := models.Setup(); err != nil {
 		fatal(err)
+	}
+
+	if export == true {
+		var stores []models.Store
+		var err error
+
+		if store_id != "" {
+			store, err := models.GetStoreWithRecords(store_id)
+			if err != nil {
+				fatal(err)
+			}
+
+			stores = []models.Store{
+				store,
+			}
+		} else {
+			if stores, err = models.GetStores(true); err != nil {
+				fatal(err)
+			}
+		}
+
+		log.Printf("Exporting %d records ...\n", len(stores))
+
+		var buffer []byte
+		if buffer, err = json.Marshal(stores); err != nil {
+			fatal(err)
+		}
+
+		if err = ioutil.WriteFile(output, buffer, 0644); err != nil {
+			fatal(err)
+		}
+
+		log.Printf("Exported %d bytes to %s.\n", len(buffer), output)
+
+		return
 	}
 
 	gin.SetMode(gin.ReleaseMode)
