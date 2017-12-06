@@ -105,6 +105,10 @@ PasswordEntry.prototype.TypeName = function() {
     return "PasswordEntry";
 }
 
+PasswordEntry.prototype.Icon = function() {
+    return 'key';
+}
+
 PasswordEntry.prototype.btn = function(id, name, icon) {
     return '<button id="btn_pass_' + name + '_' + this.id(id) + '" type="button" class="btn btn-default btn-password">' +
              '<span class="fa fa-' + icon + '"></span>' + 

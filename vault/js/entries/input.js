@@ -18,6 +18,10 @@ InputEntry.prototype.TypeName = function() {
     return "InputEntry";
 }
 
+InputEntry.prototype.Icon = function() {
+    return 'square-o';
+}
+
 InputEntry.prototype.Render = function(with_value, id){
     return this.formGroup( this.input('text', with_value, id), id ); 
 }

@@ -25,6 +25,10 @@ Entry.prototype.TypeName = function() {
     return "Entry";
 }
 
+Entry.prototype.Icon = function() {
+    return 'keyboard-o';
+}
+
 Entry.prototype.Describe = function() {
     return JSON.stringify({
         type: this.type,

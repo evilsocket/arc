@@ -18,6 +18,10 @@ TextEntry.prototype.TypeName = function() {
     return "TextEntry";
 }
 
+TextEntry.prototype.Icon = function() {
+    return 'font';
+}
+
 TextEntry.prototype.Render = function(with_value, id){
     return this.formGroup( this.textarea(false, with_value, id), id );
 }

@@ -241,17 +241,16 @@ app.controller('PMController', ['$scope', function (scope) {
         $('#'+g_SelectedEntryId).pwstrength('forceUpdate');
     };
 
-    scope.addSecretEntry = function() {
-        var entry_idx = $('#new_entry_type').val();
-        var entry = $.extend( true, {}, scope.registeredTypes[entry_idx] );
+    scope.doAddField = function(idx) {
         var list = $('#secret_entry_list'); 
         var nidx = list.find('li').length;
-    
-        if( nidx > 0 ) {
-            entry.name = entry.name + " " + ( nidx + 1 );
-        }
+        var entry = $.extend( true, {}, scope.registeredTypes[idx] );
 
         entry.RenderToList( list, nidx );
+    };
+
+    scope.onAddField = function() {
+        $('#field_selector_modal').css('z-index', '1500').modal();
     };
 
     scope.onBack = function() {
@@ -263,7 +262,6 @@ app.controller('PMController', ['$scope', function (scope) {
 
     scope.showSecretModal = function(is_new, title) {
         if( is_new == true ) {
-            $('#secret_title').text(title);
             $('#cleartext-warning').show();
             $('#new_secret_buttons').show();
             $('#edt_secret_buttons').hide();

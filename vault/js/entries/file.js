@@ -22,6 +22,10 @@ FileEntry.prototype.TypeName = function() {
     return "FileEntry";
 }
 
+FileEntry.prototype.Icon = function() {
+    return 'cloud-upload';
+}
+
 FileEntry.prototype.formGroup = function(input, id) {
     var id = this.id(id);
     return '<div class="form-group">' + 

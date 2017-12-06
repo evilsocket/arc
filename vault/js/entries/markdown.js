@@ -23,6 +23,10 @@ MarkdownEntry.prototype.TypeName = function() {
     return "MarkdownEntry";
 }
 
+MarkdownEntry.prototype.Icon = function() {
+    return 'text-width';
+}
+
 MarkdownEntry.prototype.Render = function(with_value, id){
     return this.formGroup( this.textarea(true, with_value, id), id );
 }

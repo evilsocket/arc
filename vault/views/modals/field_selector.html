@@ -1,0 +1,22 @@
+<div class="modal fade" id="field_selector_modal" role="dialog" aria-hidden="true" tabindex="-1">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    
+      <div class="modal-body container" id="field_selector_body">
+
+        <div class="row">
+          <div ng-repeat="t in registeredTypes" class="col field-box">
+            <button type="button" class="btn btn-default action-button field-button" ng-click="doAddField($index)">
+              <center>
+                <span class="field-name">{{ t.name }}</span>
+                <i class="fa fa-{{ t.Icon() }}" aria-hidden="true"></i>
+              </center>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
