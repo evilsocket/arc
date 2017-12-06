@@ -37,7 +37,7 @@ FileEntry.prototype.formGroup = function(input, id) {
 }
 
 FileEntry.prototype.Render = function(with_value, id){
-    return this.formGroup( this.input('file', false, id), id ); 
+     return this.formGroup( this.input('file', false, id), id ); 
 }
 
 FileEntry.prototype.RenderToList = function(list, idx) {
@@ -67,20 +67,18 @@ FileEntry.prototype.OnRendered = function(id) {
 
     var elem_id = this.id(id);
     var editable = $('#editable_' + elem_id );
-    var name_of = $('#name_of_' + elem_id );
     var fileInput = document.getElementById(elem_id);
 
     var readFile = function () {
         var file = fileInput.files[0];
         var reader = new FileReader();
+
         reader.onload = function () {
             console.log( "FILES_MAP['" + elem_id + "'] => " + reader.result.length + " bytes." );
             g_FilesMap[elem_id] = reader.result;
         };
 
-        editable.html( file.name );
-        name_of.val( file.name );
-
+        editable.text( file.name );
         reader.readAsBinaryString(file);
     };
     fileInput.addEventListener('change', readFile);
