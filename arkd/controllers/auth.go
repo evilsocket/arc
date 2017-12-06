@@ -27,21 +27,13 @@ func Auth(c *gin.Context) {
 	var auth AuthRequest
 
 	if err := c.BindJSON(&auth); err != nil {
-		logEvent(c, "Invalid auth request.")
-		c.AbortWithStatus(444)
-		return
+		jBadRequest(c)
 	} else if auth.Username != config.Conf.Username || auth.Password != config.Conf.Password {
-		logEvent(c, "Invalid auth credentials: %s.", auth)
-		c.AbortWithStatus(403)
-		return
+		jForbidden(c)
+	} else if token, err := middlewares.GenerateToken([]byte(config.Conf.Secret), auth.Username); err != nil {
+		jServerError(c, err)
+	} else {
+		logEvent(c, "User '%s' requested new API token (will expire in %d minutes).", auth.Username, config.Conf.TokenDuration)
+		c.JSON(200, gin.H{"token": token})
 	}
-
-	token, err := middlewares.GenerateToken([]byte(config.Conf.Secret), auth.Username)
-	if err != nil {
-		logEvent(c, "Error generating token: %s.", err)
-		panic(err)
-	}
-
-	logEvent(c, "User '%s' requested new API token (will expire in %d minutes).", auth.Username, config.Conf.TokenDuration)
-	c.JSON(200, gin.H{"token": token})
 }
