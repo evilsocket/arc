@@ -3,7 +3,6 @@
 DEPENDENCIES=github.com/gin-gonic/gin \
 			 github.com/dgrijalva/jwt-go \
 			 github.com/gin-contrib/gzip \
-			 github.com/gin-gonic/contrib/static \
 			 github.com/gin-gonic/gin \
 			 github.com/jinzhu/gorm
 SRC_PATH=.

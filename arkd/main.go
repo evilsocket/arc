@@ -19,7 +19,6 @@ import (
 	"github.com/evilsocket/ark/arkd/models"
 
 	"github.com/gin-contrib/gzip"
-	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 )
 
@@ -58,7 +57,7 @@ func loadApp(r *gin.Engine) *app.App {
 		log.Fatal(err)
 	}
 
-	r.Use(static.Serve("/", static.LocalFile(webapp.Path, true)))
+	r.Use(middlewares.ServeStatic("/", webapp.Path, webapp.Manifest.Index))
 
 	return webapp
 }

@@ -33,6 +33,7 @@ type Manifest struct {
 	Description string `json:"description"`
 	Version     string `json:"version"`
 	Author      Author `json:"author"`
+	Index       string `json:"index"`
 }
 
 type App struct {
