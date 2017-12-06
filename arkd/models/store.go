@@ -9,8 +9,8 @@ package models
 
 import (
 	"encoding/json"
+	"github.com/evilsocket/ark/arkd/log"
 	"io/ioutil"
-	"log"
 	"time"
 )
 
@@ -70,7 +70,7 @@ func Export(store_id string, filename string) (err error) {
 		}
 	}
 
-	log.Printf("Exporting %d records ...\n", len(stores))
+	log.Infof("Exporting %d records ...", len(stores))
 
 	var buffer []byte
 	if buffer, err = json.Marshal(stores); err != nil {
@@ -81,7 +81,7 @@ func Export(store_id string, filename string) (err error) {
 		return
 	}
 
-	log.Printf("Exported %d bytes to %s.\n", len(buffer), filename)
+	log.Infof("Exported %d bytes to %s.", len(buffer), filename)
 
 	return nil
 }
@@ -89,7 +89,7 @@ func Export(store_id string, filename string) (err error) {
 func ImportStores(stores []Store) (err error) {
 	tx := db.Begin()
 	for _, store := range stores {
-		log.Printf("Creating store '%s' with %d records (id=%d).\n", store.Title, len(store.Records), store.ID)
+		log.Infof("Creating store %s with %d records (id=%d).", log.Bold(store.Title), len(store.Records), store.ID)
 		if err = db.Create(&store).Error; err != nil {
 			tx.Rollback()
 			return
@@ -107,13 +107,13 @@ func Import(filename string) (err error) {
 		return
 	}
 
-	log.Printf("Read %d bytes from %s ...\n", len(buffer), filename)
+	log.Infof("Read %d bytes from %s ...", len(buffer), filename)
 
 	if err = json.Unmarshal(buffer, &stores); err != nil {
 		return
 	}
 
-	log.Printf("Importing %d stores ...\n", len(stores))
+	log.Infof("Importing %d stores ...", len(stores))
 
 	return ImportStores(stores)
 }

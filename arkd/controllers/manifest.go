@@ -9,12 +9,13 @@ package controllers
 
 import (
 	"github.com/evilsocket/ark/arkd/app"
+	"github.com/evilsocket/ark/arkd/log"
 	"github.com/gin-gonic/gin"
 )
 
 var App *app.App
 
 func GetManifest(c *gin.Context) {
-	logEvent(c, "Requested manifest.")
+	log.Api(log.DEBUG, c, "Requested manifest.")
 	c.JSON(200, App.Manifest)
 }

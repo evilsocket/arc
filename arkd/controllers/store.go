@@ -8,16 +8,18 @@
 package controllers
 
 import (
+	"github.com/evilsocket/ark/arkd/log"
 	"github.com/evilsocket/ark/arkd/models"
+	"github.com/evilsocket/ark/arkd/utils"
 	"github.com/gin-gonic/gin"
 )
 
 func ListStores(c *gin.Context) {
 	stores, err := models.Stores()
 	if err != nil {
-		jNotFound(c)
+		utils.NotFound(c)
 	} else {
-		// logEvent(c, "Requested stores.")
+		log.Api(log.DEBUG, c, "Requested stores.")
 		c.JSON(200, stores)
 	}
 }
@@ -25,11 +27,11 @@ func ListStores(c *gin.Context) {
 func CreateStore(c *gin.Context) {
 	var store models.Store
 	if err := c.BindJSON(&store); err != nil {
-		jBadRequest(c)
+		utils.BadRequest(c)
 	} else if err := models.Create(&store); err != nil {
-		jServerError(c, err)
+		utils.ServerError(c, err)
 	} else {
-		logEvent(c, "Created store %d.", store.ID)
+		log.Api(log.INFO, c, "Created store %d.", store.ID)
 		c.JSON(200, store)
 	}
 }
@@ -37,9 +39,9 @@ func CreateStore(c *gin.Context) {
 func GetStore(c *gin.Context) {
 	store, err := models.GetStore(c.Params.ByName("id"))
 	if err != nil {
-		jNotFound(c)
+		utils.NotFound(c)
 	} else {
-		// logEvent(c, "Requested store %s.", c.Params.ByName("id"))
+		log.Api(log.DEBUG, c, "Requested store %s.", c.Params.ByName("id"))
 		c.JSON(200, store)
 	}
 }
@@ -47,11 +49,11 @@ func GetStore(c *gin.Context) {
 func DeleteStore(c *gin.Context) {
 	store, err := models.GetStore(c.Params.ByName("id"))
 	if err != nil {
-		jNotFound(c)
+		utils.NotFound(c)
 	} else if err := models.Delete(&store); err != nil {
-		jServerError(c, err)
+		utils.ServerError(c, err)
 	} else {
-		logEvent(c, "Deleted store %s.", c.Params.ByName("id"))
+		log.Api(log.INFO, c, "Deleted store %s.", c.Params.ByName("id"))
 		c.JSON(200, gin.H{"msg": "Store deleted."})
 	}
 }
@@ -59,13 +61,13 @@ func DeleteStore(c *gin.Context) {
 func UpdateStore(c *gin.Context) {
 	store, err := models.GetStore(c.Params.ByName("id"))
 	if err != nil {
-		jNotFound(c)
+		utils.NotFound(c)
 	} else if err := c.BindJSON(&store); err != nil {
-		jBadRequest(c)
+		utils.BadRequest(c)
 	} else if err := models.Save(&store); err != nil {
-		jServerError(c, err)
+		utils.ServerError(c, err)
 	} else {
-		logEvent(c, "Updated store %s.", c.Params.ByName("id"))
+		log.Api(log.INFO, c, "Updated store %s.", c.Params.ByName("id"))
 		c.JSON(200, gin.H{"msg": "Store updated."})
 	}
 }

@@ -10,38 +10,58 @@ package middlewares
 import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/evilsocket/ark/arkd/config"
+	"github.com/evilsocket/ark/arkd/log"
+	"github.com/evilsocket/ark/arkd/utils"
 	"github.com/gin-gonic/gin"
-	"strings"
+	"regexp"
+	"time"
 )
+
+var authTokenParser = regexp.MustCompile("^(?i)Bearer:\\s*(.+)$")
+
+func GenerateToken(k []byte, userId string) (string, error) {
+	// Create the token
+	token := jwt.New(jwt.SigningMethodHS256)
+	// Set some claims
+	claims := make(jwt.MapClaims)
+	claims["user_id"] = userId
+	claims["exp"] = time.Now().Add(time.Minute * time.Duration(config.Conf.TokenDuration)).Unix()
+	token.Claims = claims
+	// Sign and get the complete encoded token as a string
+	tokenString, err := token.SignedString(k)
+	return tokenString, err
+}
+
+func ValidateToken(t string, k string) (*jwt.Token, error) {
+	token, err := jwt.Parse(t, func(token *jwt.Token) (interface{}, error) {
+		return []byte(k), nil
+	})
+
+	return token, err
+}
 
 func AuthHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		user_id := c.GetString("user_id")
+		// do we need to refresh session data?
 		if user_id != config.Conf.Username {
-			token := c.Request.Header.Get("Authorization")
-			// Check if toke in correct format
-			// ie Bearer: xx03xllasx
-			b := "Bearer: "
-			if !strings.Contains(token, b) {
-				c.JSON(403, gin.H{"message": "Your request is not authorized"})
-				c.Abort()
-				return
-			}
-			t := strings.Split(token, b)
-			if len(t) < 2 {
-				c.JSON(403, gin.H{"message": "An authorization token was not supplied"})
-				c.Abort()
+			// Parse bearer token from Authorization header.
+			authorization := c.Request.Header.Get("Authorization")
+			m := authTokenParser.FindStringSubmatch(authorization)
+			if len(m) != 2 {
+				utils.Forbidden(c)
 				return
 			}
 			// Validate token
-			valid, err := ValidateToken(t[1], config.Conf.Secret)
+			token := m[1]
+			valid, err := ValidateToken(token, config.Conf.Secret)
 			if err != nil {
-				c.JSON(403, gin.H{"message": "Invalid authorization token"})
-				c.Abort()
+				log.Api(log.WARNING, c, "Error while validating bearer token: %s", err)
+				utils.Forbidden(c)
 				return
 			}
 
-			// set user_id Variable
+			// set session data
 			c.Set("user_id", valid.Claims.(jwt.MapClaims)["user_id"])
 		}
 

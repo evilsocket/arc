@@ -9,10 +9,11 @@ package controllers
 
 import (
 	"github.com/evilsocket/ark/arkd/config"
+	"github.com/evilsocket/ark/arkd/log"
 	"github.com/gin-gonic/gin"
 )
 
 func GetConfig(c *gin.Context) {
-	logEvent(c, "Requested configuration.")
+	log.Api(log.DEBUG, c, "Requested configuration.")
 	c.JSON(200, config.Conf)
 }

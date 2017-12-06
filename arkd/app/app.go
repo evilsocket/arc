@@ -16,6 +16,11 @@ import (
 	"path/filepath"
 )
 
+const (
+	kManifestFileName = "manifest.json"
+	kSeedsFileName    = "seeds.json"
+)
+
 type Author struct {
 	Name    string `json:"name"`
 	Email   string `json:"email"`
@@ -50,8 +55,8 @@ func Open(path string) (err error, app *App) {
 		return
 	}
 
-	seeds_filename := path + "/seeds.json"
-	manifest_filename := path + "/manifest.json"
+	seeds_fn := path + "/" + kSeedsFileName
+	manifest_fn := path + "/" + kManifestFileName
 
 	seeds := make([]models.Store, 0)
 	manifest := Manifest{
@@ -60,8 +65,8 @@ func Open(path string) (err error, app *App) {
 		Description: "",
 	}
 
-	if _, err = os.Stat(manifest_filename); err == nil {
-		raw, ferr := ioutil.ReadFile(manifest_filename)
+	if _, err = os.Stat(manifest_fn); err == nil {
+		raw, ferr := ioutil.ReadFile(manifest_fn)
 		if ferr != nil {
 			err = ferr
 			return
@@ -72,8 +77,8 @@ func Open(path string) (err error, app *App) {
 		}
 	}
 
-	if _, err = os.Stat(seeds_filename); err == nil {
-		raw, ferr := ioutil.ReadFile(seeds_filename)
+	if _, err = os.Stat(seeds_fn); err == nil {
+		raw, ferr := ioutil.ReadFile(seeds_fn)
 		if ferr != nil {
 			err = ferr
 			return

@@ -10,7 +10,9 @@ package controllers
 import (
 	"fmt"
 	"github.com/evilsocket/ark/arkd/config"
+	"github.com/evilsocket/ark/arkd/log"
 	"github.com/evilsocket/ark/arkd/middlewares"
+	"github.com/evilsocket/ark/arkd/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,13 +29,13 @@ func Auth(c *gin.Context) {
 	var auth AuthRequest
 
 	if err := c.BindJSON(&auth); err != nil {
-		jBadRequest(c)
+		utils.BadRequest(c)
 	} else if auth.Username != config.Conf.Username || auth.Password != config.Conf.Password {
-		jForbidden(c)
+		utils.Forbidden(c)
 	} else if token, err := middlewares.GenerateToken([]byte(config.Conf.Secret), auth.Username); err != nil {
-		jServerError(c, err)
+		utils.ServerError(c, err)
 	} else {
-		logEvent(c, "User '%s' requested new API token (will expire in %d minutes).", auth.Username, config.Conf.TokenDuration)
+		log.Api(log.INFO, c, "User %s requested new API token", log.Bold(auth.Username))
 		c.JSON(200, gin.H{"token": token})
 	}
 }

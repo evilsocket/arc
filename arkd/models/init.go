@@ -9,9 +9,9 @@ package models
 
 import (
 	"github.com/evilsocket/ark/arkd/config"
+	"github.com/evilsocket/ark/arkd/log"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
-	"log"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -38,10 +38,10 @@ func Setup() (created bool, err error) {
 
 	if _, err = os.Stat(config.Conf.Database); os.IsNotExist(err) {
 		created = true
-		log.Printf("Creating database %s ...\n", config.Conf.Database)
+		log.Infof("Creating database %s ...", log.Bold(config.Conf.Database))
 	} else {
 		created = false
-		log.Printf("Loading database %s ...\n", config.Conf.Database)
+		log.Infof("Loading database %s ...", log.Bold(config.Conf.Database))
 	}
 
 	if db, err = gorm.Open("sqlite3", config.Conf.Database); err != nil {
