@@ -9,6 +9,7 @@ package config
 
 import (
 	"encoding/json"
+	"github.com/evilsocket/ark/arkd/log"
 	"io/ioutil"
 )
 
@@ -51,6 +52,7 @@ var Conf = Configuration{
 }
 
 func Load(filename string) error {
+	log.Infof("Loading configuration from %s ...", log.Bold(filename))
 	raw, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return err

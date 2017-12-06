@@ -48,6 +48,8 @@ func Setup() (created bool, err error) {
 		return false, err
 	}
 
+	log.Debugf("Migrating models ...")
+
 	db.AutoMigrate(&Store{})
 	db.AutoMigrate(&Record{})
 

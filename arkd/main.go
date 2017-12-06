@@ -23,9 +23,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const (
+	APP_NAME    = "arkd"
+	APP_VERSION = "0.9.0"
+)
+
 var (
 	apppath   = ""
 	conf_file = ""
+	debug     = false
 	no_auth   = false
 	export    = false
 	import_fn = ""
@@ -38,6 +44,7 @@ func init() {
 	flag.StringVar(&apppath, "app", ".", "Path of the web application to serve.")
 	flag.StringVar(&conf_file, "config", "", "JSON configuration file.")
 	flag.BoolVar(&no_auth, "no-auth", no_auth, "Disable authenticaion.")
+	flag.BoolVar(&debug, "debug", debug, "Enable debug logs.")
 
 	flag.StringVar(&import_fn, "import", import_fn, "Import stores from this JSON export file.")
 	flag.BoolVar(&export, "export", export, "Export store to JSON file, requires --store and --output parameters.")
@@ -60,6 +67,14 @@ func main() {
 	var err error
 
 	flag.Parse()
+
+	if debug == true {
+		log.MinLevel = log.DEBUG
+	} else {
+		log.MinLevel = log.INFO
+	}
+
+	log.Infof("%s v%s is starting ...", log.Bold(APP_NAME), APP_VERSION)
 
 	if conf_file != "" {
 		if err = config.Load(conf_file); err != nil {

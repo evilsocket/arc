@@ -10,6 +10,7 @@ package app
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/evilsocket/ark/arkd/log"
 	"github.com/evilsocket/ark/arkd/models"
 	"io/ioutil"
 	"os"
@@ -45,6 +46,8 @@ func Open(path string) (err error, app *App) {
 		return
 	}
 
+	log.Infof("Loading web application from %s ...", log.Bold(path))
+
 	stat, err := os.Stat(path)
 	if err != nil {
 		return
@@ -66,6 +69,7 @@ func Open(path string) (err error, app *App) {
 	}
 
 	if _, err = os.Stat(manifest_fn); err == nil {
+		log.Debugf("Loading manifest from %s ...", log.Bold(manifest_fn))
 		raw, ferr := ioutil.ReadFile(manifest_fn)
 		if ferr != nil {
 			err = ferr
@@ -78,6 +82,7 @@ func Open(path string) (err error, app *App) {
 	}
 
 	if _, err = os.Stat(seeds_fn); err == nil {
+		log.Debugf("Loading seeds from %s ...", log.Bold(seeds_fn))
 		raw, ferr := ioutil.ReadFile(seeds_fn)
 		if ferr != nil {
 			err = ferr
