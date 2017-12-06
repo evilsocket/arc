@@ -11,16 +11,15 @@ Download, install dependencies and compile the `arkd` server component:
     make vendor_get
     make
 
-Customize the configuration:
-
-    cp sample_config config.json
-    vim config.json
-
-Run the `ark` web application, the first time `arkd` will automatically load some example stores from the `ark/seeds.json` seed file (encryption key is `vault`):
+Now copy the `sample_config.json` file to a new `config.json' file, customize and run the `ark` web application:
 
     ./arkd -config config.json -app ../ark
 
 Browse `http://localhost:8080/` and login with the credentials you specified in the `config.json` file.
+
+**Note**
+
+The first time the `arkd` server executes the `ark` web application. it will automatically import some example stores from the `ark/seeds.json` seed file (encryption key is `vault`).
 
 ## Export and import stores.
 
