@@ -1,8 +1,13 @@
 {
     "address": "127.0.0.1",
-    "port": 8080,
+    "port": 8083,
     "username": "ark",
     "password": "ark",
     "database": "~/ark.db",
-    "token_duration": 60
+    "token_duration": 60,
+    "tls": {
+        "enabled": true,
+        "pem": "/some/file.pem",
+        "key": "/some/file.key"
+    }
 }

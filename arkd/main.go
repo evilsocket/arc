@@ -129,7 +129,17 @@ func main() {
 	api.PUT("/store/:id/record/:r_id", controllers.UpdateRecord)
 	api.DELETE("/store/:id/record/:r_id", controllers.DeleteRecord)
 
-	log.Printf("arkd is serving the app '%s' on %s:%d ...\n\n", webapp, config.Conf.Address, config.Conf.Port)
+	address := fmt.Sprintf("%s:%d", config.Conf.Address, config.Conf.Port)
 
-	r.Run(fmt.Sprintf("%s:%d", config.Conf.Address, config.Conf.Port))
+	log.Printf("arkd is serving the app '%s' on %s ...\n\n", webapp, address)
+
+	if config.Conf.TLS.Enabled {
+		if err = r.RunTLS(address, config.Conf.TLS.PemFile, config.Conf.TLS.KeyFile); err != nil {
+			fatal(err)
+		}
+	} else {
+		if err = r.Run(address); err != nil {
+			fatal(err)
+		}
+	}
 }

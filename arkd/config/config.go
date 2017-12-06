@@ -22,14 +22,21 @@ const (
 	defTokenDuration = 60
 )
 
+type tlsConfig struct {
+	Enabled bool   `json:"enabled"`
+	PemFile string `json:"pem"`
+	KeyFile string `json:"key"`
+}
+
 type Configuration struct {
-	Address       string `json:"address"`
-	Port          int    `json:"port"`
-	Database      string `json:"database"`
-	Secret        string `json:"secret"`
-	Username      string `json:"username"`
-	Password      string `json:"password"`
-	TokenDuration int    `json:"token_duration"`
+	Address       string    `json:"address"`
+	Port          int       `json:"port"`
+	Database      string    `json:"database"`
+	Secret        string    `json:"secret"`
+	Username      string    `json:"username"`
+	Password      string    `json:"password"`
+	TokenDuration int       `json:"token_duration"`
+	TLS           tlsConfig `json:"tls"`
 }
 
 var Conf = Configuration{
@@ -40,6 +47,7 @@ var Conf = Configuration{
 	Username:      defUsername,
 	Password:      defPassword,
 	TokenDuration: defTokenDuration,
+	TLS:           tlsConfig{Enabled: false},
 }
 
 func Load(filename string) error {
