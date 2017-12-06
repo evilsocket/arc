@@ -1,0 +1,11 @@
+{
+    "name": "ark",
+    "description": "Your secrets keeper.", 
+    "version": "1.0.0",
+    "author": {
+        "name": "Simone Margaritelli",
+        "email": "evilsocket@gmail.com",
+        "license": "GPL 3"
+    }
+}
+

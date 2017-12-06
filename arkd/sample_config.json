@@ -1,0 +1,8 @@
+{
+    "address": "127.0.0.1",
+    "port": 8080,
+    "username": "ark",
+    "password": "ark",
+    "database": "~/ark.db",
+    "token_duration": 60
+}

@@ -1,8 +1,0 @@
-{
-    "address": "127.0.0.1",
-    "port": 8080,
-    "username": "vault",
-    "password": "vault",
-    "database": "~/vault.db",
-    "token_duration": 60
-}
