@@ -260,15 +260,18 @@ app.controller('PMController', ['$scope', function (scope) {
         scope.doSelectStore();
     };
 
-    scope.showSecretModal = function(is_new, title) {
+    scope.showSecretModal = function(is_new, title, date) {
         if( is_new == true ) {
             $('#cleartext-warning').show();
             $('#new_secret_buttons').show();
             $('#edt_secret_buttons').hide();
+            $('#secret_date_container').hide();
         } else {
             $('#cleartext-warning').hide();
             $('#new_secret_buttons').hide();
             $('#edt_secret_buttons').show();
+            $('#secret_date').text(date);
+            $('#secret_date_container').show();
         }
 
         $('#secret_title').text(title);
@@ -295,7 +298,7 @@ app.controller('PMController', ['$scope', function (scope) {
             $('#record_lock_' + secret.ID ).removeClass("fa-lock").addClass("fa-unlock");
             $('#record_status_' + secret.ID ).removeClass("status-locked").addClass("status-unlocked");
 
-            scope.showSecretModal(false, record.title);
+            scope.showSecretModal(false, record.title, secret.UpdatedAt);
 
             var list = $('#secret_entry_list'); 
             for( var i = 0; i < record.entries.length; i++ ){
