@@ -22,12 +22,15 @@ const (
 	kSeedsFileName    = "seeds.json"
 )
 
+// Information about the author of the web application.
 type Author struct {
 	Name    string `json:"name"`
 	Email   string `json:"email"`
 	License string `json:"license"`
 }
 
+// Information about the web application.
+// swagger:response
 type Manifest struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`

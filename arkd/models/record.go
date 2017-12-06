@@ -5,21 +5,35 @@
  *
  * See LICENSE.
  */
+// swagger:meta
 package models
 
 import (
 	"time"
 )
 
+// A single encrypted record belonging to one store.
+// swagger:model
 type Record struct {
-	ID         uint `gorm:"primary_key"`
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
-	StoreID    uint   `json:"-"`
-	Store      Store  `json:"-"`
-	Title      string `gorm:"not null"`
+	// Record id.
+	// Read Only: true
+	// required: true
+	ID uint `gorm:"primary_key"`
+	// Record creation time.
+	CreatedAt time.Time
+	// Record creation time.
+	UpdatedAt time.Time
+	StoreID   uint  `json:"-"`
+	Store     Store `json:"-"`
+	// Record title.
+	// required: true
+	Title string `gorm:"not null"`
+	// Record encryption.
+	// required: true
 	Encryption string `sql:"DEFAULT:'none'"`
-	Data       []byte
+	// Record data.
+	// format: bytes
+	Data []byte
 }
 
 func Records(store_id string) (records []Record, err error) {

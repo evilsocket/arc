@@ -5,6 +5,7 @@
  *
  * See LICENSE.
  */
+// swagger:meta
 package models
 
 import (
@@ -14,12 +15,22 @@ import (
 	"time"
 )
 
+// A store represents a single database / data container of the Ark server.
+// swagger:model
 type Store struct {
-	ID        uint `gorm:"primary_key"`
+	// Store id.
+	// Read Only: true
+	// required: true
+	ID uint `gorm:"primary_key"`
+	// Store creation time.
 	CreatedAt time.Time
+	// Store update time.
 	UpdatedAt time.Time
-	Title     string `gorm:"unique;not null"`
-	Records   []Record
+	// Store title.
+	// required: true
+	Title string `gorm:"unique;not null"`
+	// Store records.
+	Records []Record
 }
 
 func Stores() (stores []Store, err error) {

@@ -12,11 +12,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Used when sending a HTTP status response different than 200
+// swagger:response errorResponse
+type ErrorResponse struct {
+	// The error description.
+	// in: body
+	// Error code.
+	Code int `json:"code"`
+	// Error message.
+	// in: body
+	Message string `json:"message"`
+}
+
 func jError(level int, c *gin.Context, code int, message string) {
 	log.Api(level, c, "[%d] %s", code, message)
-	c.JSON(code, gin.H{
-		"code":    code,
-		"message": message,
+	c.JSON(code, ErrorResponse{
+		Code:    code,
+		Message: message,
 	})
 	c.Abort()
 }

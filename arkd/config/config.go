@@ -23,12 +23,15 @@ const (
 	defTokenDuration = 60
 )
 
+// Server TLS configuration.
 type tlsConfig struct {
 	Enabled bool   `json:"enabled"`
 	PemFile string `json:"pem"`
 	KeyFile string `json:"key"`
 }
 
+// Ark server configuration.
+// swagger:response
 type Configuration struct {
 	Address       string    `json:"address"`
 	Port          int       `json:"port"`

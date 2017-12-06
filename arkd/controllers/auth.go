@@ -8,7 +8,6 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/evilsocket/ark/arkd/config"
 	"github.com/evilsocket/ark/arkd/log"
 	"github.com/evilsocket/ark/arkd/middlewares"
@@ -16,15 +15,41 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Authentication credentials.
+// swagger:model Auth
 type AuthRequest struct {
+	// API server username ( as per config.json ).
+	// in: body
+	// required: true
 	Username string `json:"username"`
+	// API server password ( as per config.json ).
+	// in: body
+	// required: true
 	Password string `json:"password"`
 }
 
-func (auth AuthRequest) String() string {
-	return fmt.Sprintf("username='%s' password='%s'", auth.Username, auth.Password)
+// Authentication response.
+// swagger:response authResponse
+type AuthResponse struct {
+	// The bearer token to use for API requests.
+	// in: body
+	Token string `json:"token"`
 }
 
+// swagger:route POST /auth authentication doAuth
+//
+// Handler authenticating a user and returning a bearer token for API requests.
+//
+// Consumes:
+//     - application/json
+// Produces:
+//     - application/json
+//
+// Responses:
+//        200: authResponse
+//		  400: errorResponse
+//		  403: errorResponse
+//		  500: errorResponse
 func Auth(c *gin.Context) {
 	var auth AuthRequest
 
