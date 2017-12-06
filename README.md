@@ -4,16 +4,14 @@ Ark is an API and HTML+js application server for your secrets.
 
 ## Usage
 
-Install the dependencies of `arkd`:
+Download, install dependencies and compile the `arkd` server component:
 
-    cd ark-repo-path/arkd
+    git clone https://github.com/evilsocket/ark
+    cd ark/arkd
     make vendor_get
-    
-Compile `arkd`:
-    
     make
 
-Customize access credentials:
+Customize the configuration:
 
     cp sample_config config.json
     vim config.json
