@@ -418,7 +418,7 @@ app.controller('PMController', ['$scope', function (scope) {
         if( expire_at != '' ) {
             expire_at = scope.pickerFormatToDate(expire_at);
         } else {
-            expire_at = null;
+            expire_at = ZERO_DATETIME;
         }
 
         if( entries.length != names.length ) {
