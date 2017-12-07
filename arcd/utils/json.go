@@ -34,16 +34,28 @@ func jError(level int, c *gin.Context, code int, message string) {
 }
 
 // http://www.restapitutorial.com/httpstatuscodes.html
-func NotFound(c *gin.Context) {
-	jError(log.WARNING, c, 404, "Record not found.")
+func NotFound(c *gin.Context, opt_msg ...string) {
+	msg := "Record not found."
+	if len(opt_msg) > 0 {
+		msg = opt_msg[0]
+	}
+	jError(log.WARNING, c, 404, msg)
 }
 
-func BadRequest(c *gin.Context) {
-	jError(log.WARNING, c, 400, "Bad request.")
+func BadRequest(c *gin.Context, opt_msg ...string) {
+	msg := "Bad request."
+	if len(opt_msg) > 0 {
+		msg = opt_msg[0]
+	}
+	jError(log.WARNING, c, 400, msg)
 }
 
-func Forbidden(c *gin.Context) {
-	jError(log.ERROR, c, 403, "Forbidden.")
+func Forbidden(c *gin.Context, opt_msg ...string) {
+	msg := "Forbidden"
+	if len(opt_msg) > 0 {
+		msg = opt_msg[0]
+	}
+	jError(log.WARNING, c, 403, msg)
 }
 
 func ServerError(c *gin.Context, err error) {
