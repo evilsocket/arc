@@ -10,6 +10,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"time"
 
 	"github.com/evilsocket/ark/arkd/app"
 	"github.com/evilsocket/ark/arkd/config"
@@ -51,7 +52,7 @@ func init() {
 	flag.StringVar(&output, "output", output, "Export file name.")
 }
 
-func loadApp(r *gin.Engine) *app.App {
+func arkLoadApp(r *gin.Engine) *app.App {
 	err, webapp := app.Open(apppath)
 	if err != nil {
 		log.Fatal(err)
@@ -60,6 +61,41 @@ func loadApp(r *gin.Engine) *app.App {
 	r.Use(middlewares.ServeStatic("/", webapp.Path, webapp.Manifest.Index))
 
 	return webapp
+}
+
+func arkScheduler() {
+	period := time.Duration(config.Conf.Scheduler.Period) * time.Second
+
+	log.Infof("Scheduler started with a %v period.", period)
+
+	for {
+		time.Sleep(period)
+
+		expired, prunable, err := models.CountExpired()
+		if err != nil {
+			log.Errorf("Error while counting expired records: %s.", err)
+			continue
+		} else if expired == 0 {
+			continue
+		} else if prunable <= 0 {
+			log.Debugf("%d expired records, no prunable elements.", expired)
+			continue
+		}
+
+		log.Infof("Found %d prunable elements out of %d total expired records.", prunable, expired)
+		records, err := models.PrunableRecords()
+		if err != nil {
+			log.Errorf("Error while running scheduler query: %s.", err)
+			continue
+		}
+
+		for _, record := range records {
+			log.Warningf("Pruning record %d: '%s' (expired at %s)\n", record.ID, log.Bold(record.Title), record.ExpiredAt)
+			if err := models.Delete(&record); err != nil {
+				log.Errorf("Error while deleting record %d: %s.\n", record.ID, err)
+			}
+		}
+	}
 }
 
 func main() {
@@ -95,12 +131,19 @@ func main() {
 		}
 	}
 
+	if config.Conf.Scheduler.Enabled {
+		log.Infof("Starting scheduler with a period of %ds ...", config.Conf.Scheduler.Period)
+		go arkScheduler()
+	} else {
+		log.Warningf("Scheduler is disabled.")
+	}
+
 	gin.SetMode(gin.ReleaseMode)
 
 	r := gin.New()
 	r.Use(gzip.Gzip(gzip.DefaultCompression))
 
-	webapp := loadApp(r)
+	webapp := arkLoadApp(r)
 
 	if dbIsNew && len(webapp.Seeds) > 0 {
 		log.Infof("Seeding database with %d store(s) ...", len(webapp.Seeds))

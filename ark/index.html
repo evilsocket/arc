@@ -12,6 +12,7 @@
   <link rel="shortcut icon" type="image/png" href="/img/logo.png"/>
 
   <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/bootstrap/bootstrap-datetimepicker.min.css">
   <link rel="stylesheet" href="/css/fontawesome/font-awesome.min.css">
   <link rel="stylesheet" href="/css/jquery.editable.css">
   <link rel="stylesheet" href="/css/style.css">
@@ -21,12 +22,14 @@
   <script type="text/javascript" src="/js/libs/jquery/jquery.timeago.js"></script>
   <script type="text/javascript" src="/js/libs/jquery/jquery-sortable.js"></script>
   <script type="text/javascript" src="/js/libs/bootstrap/bootstrap.bundle.min.js"></script>
+  <script type="text/javascript" src="/js/libs/bootstrap/bootstrap-datetimepicker.min.js"></script>
   <script type="text/javascript" src="/js/libs/angular/angular.min.js"></script>
   <script type="text/javascript" src="/js/libs/crypto-js/crypto-js.js"></script>
 
   <script type="text/javascript" src="/js/api.js"></script>
   <script type="text/javascript" src="/js/entries/base.js"></script>
   <script type="text/javascript" src="/js/entries/input.js"></script>
+  <script type="text/javascript" src="/js/entries/url.js"></script>
   <script type="text/javascript" src="/js/entries/text.js"></script>
   <script type="text/javascript" src="/js/entries/file.js"></script>
   <script type="text/javascript" src="/js/entries/password.js"></script>
@@ -116,11 +119,11 @@
           </li>       
 
           <li class="list-group-item" id="secret_list_item_{{ r.ID }}" ng-if="filterSecret(r)" ng-repeat="r in ark.records" ng-click="onShowSecret(r)">
-            <span ng-include src="'/views/secret_list_item.html?v=13'"></span>
+            <span ng-include src="'/views/secret_list_item.html?v=14'"></span>
           </li>
         </ul>
 
-        <div ng-include src="'/views/modals/secret.html?v=14'"></div>
+        <div ng-include src="'/views/modals/secret.html?v=21'"></div>
       </div>
     </span>
 

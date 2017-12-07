@@ -14,13 +14,14 @@ import (
 )
 
 const (
-	defAddress       = "127.0.0.1"
-	defPort          = 8080
-	defDatabaseName  = "ark.db"
-	defHMacSecret    = ":°F_WQEùwqeflpùwa.pelfùkepwfùw,koefopwkepfwv"
-	defUsername      = "ark"
-	defPassword      = "ark"
-	defTokenDuration = 60
+	defAddress         = "127.0.0.1"
+	defPort            = 8080
+	defDatabaseName    = "ark.db"
+	defHMacSecret      = ":°F_WQEùwqeflpùwa.pelfùkepwfùw,koefopwkepfwv"
+	defUsername        = "ark"
+	defPassword        = "ark"
+	defTokenDuration   = 60
+	defSchedulerPeriod = 15
 )
 
 // Server TLS configuration.
@@ -28,6 +29,12 @@ type tlsConfig struct {
 	Enabled bool   `json:"enabled"`
 	PemFile string `json:"pem"`
 	KeyFile string `json:"key"`
+}
+
+// Scheduler configuration.
+type schConfig struct {
+	Enabled bool `json:"enabled"`
+	Period  int  `json:"period"`
 }
 
 // Ark server configuration.
@@ -40,6 +47,8 @@ type Configuration struct {
 	Username      string    `json:"username"`
 	Password      string    `json:"password"`
 	TokenDuration int       `json:"token_duration"`
+	CheckExpired  int       `json:"check_expired"`
+	Scheduler     schConfig `json:"scheduler"`
 	TLS           tlsConfig `json:"tls"`
 }
 
@@ -52,6 +61,10 @@ var Conf = Configuration{
 	Password:      defPassword,
 	TokenDuration: defTokenDuration,
 	TLS:           tlsConfig{Enabled: false},
+	Scheduler: schConfig{
+		Enabled: true,
+		Period:  defSchedulerPeriod,
+	},
 }
 
 func Load(filename string) error {

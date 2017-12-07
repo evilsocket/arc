@@ -5,6 +5,8 @@
  *
  * See LICENSE.
  */
+var ZERO_DATETIME = "0001-01-01T00:00:00Z";
+
 function removeEntry(idx) {
     if( confirm("Remove this field?") ) {
         console.log("Removing entry at position " + idx );
@@ -75,6 +77,12 @@ function bytesFormat(bytes, precision) {
     return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) +  ' ' + units[number];
 }
 
+Number.prototype.pad = function(size) {
+    var s = String(this);
+    while (s.length < (size || 2)) {s = "0" + s;}
+    return s;
+};
+
 var app = angular.module('PM', [], function($interpolateProvider) {
 
 });
@@ -82,6 +90,19 @@ var app = angular.module('PM', [], function($interpolateProvider) {
 app.filter('timeago', function() {
     return function(date) {
        return $.timeago(date);
+    }
+});
+
+app.filter('expiration', function() {
+    return function(date) {
+        // Expired
+        if( Date.parse(date) < Date.now() ) {
+            return 'Expired ' + $.timeago(date);
+        } 
+        // Yet to expire.
+        else {
+            return 'Expiring in ' + $.timeago(date).replace(' ago', '');
+        }
     }
 });
 
@@ -101,6 +122,7 @@ app.controller('PMController', ['$scope', function (scope) {
     scope.store_id = null;
     scope.stores = null;
     scope.filter = null;
+    scope.timeout = null;
     scope.registeredTypes = REGISTERED_TYPES;
 
     scope.setError = function(message) {
@@ -140,13 +162,15 @@ app.controller('PMController', ['$scope', function (scope) {
         return true;
     };
 
-    scope.getStore = function(success) {
-        if( scope.ark.HasStore() == false ) {
+    scope.getStore = function(success, force) {
+        if( force == false && scope.ark.HasStore() == false ) {
             alert("No store selected");
         }
         else {
             scope.setStatus("Loading passwords store ...");
             scope.ark.SetStore( scope.store_id, function() {
+                document.title = scope.ark.store.Title;
+                scope.setupTimeout();
                 scope.setError(null);
                 scope.$apply();
             },
@@ -179,20 +203,63 @@ app.controller('PMController', ['$scope', function (scope) {
         }
     };
 
+    scope.delTimeout = function() {
+        if( scope.timeout != null ) {
+            console.log( "Clearing timeout of " + scope.timeout.ms + " ms." );
+            clearTimeout(scope.timeout.tm);
+        }
+        scope.timeout = null;
+    };
+
+    scope.setTimeoutTo = function(ms) {
+        console.log( "Setting refresh timeout to " + ms + " ms." );
+
+        if( scope.timeout != null ) {
+            console.log( "Clearing previous timeout of " + scope.timeout.ms + " ms." );
+            clearTimeout(scope.timeout.tm);
+        }
+        scope.timeout = {
+            tm: setTimeout(function(){
+                scope.delTimeout();
+
+                scope.setStatus("Refresh timeout callback, reloading ...");
+                scope.getStore(function(){}, true);
+            }, ms ),
+            ms: ms
+        };
+    };
+
+    scope.setTimeoutIfLess = function(record) {
+        var expires = Date.parse(record.ExpiredAt),
+            now = Date.now();
+
+        if( expires > now || ( expires <= now && record.Prune ) ) {
+            var tm = expires - now;
+            if( scope.timeout == null || this.timeout.ms > tm ) {
+                this.setTimeoutTo(tm);
+            }
+        }
+    };
+
+    scope.setupTimeout = function() {
+        for( var i = 0; i < this.ark.records.length; i++ ) {
+            var record = this.ark.records[i];
+            if( record.ExpiredAt != ZERO_DATETIME ) {
+                this.setTimeoutIfLess(record);
+            }
+        }
+    };
+
     scope.onShowStore = function(id) {
         scope.store_id = id;
         scope.setStatus("Loading passwords store ...");
-        scope.ark.SetStore( scope.store_id, function() {
-            document.title = scope.ark.store.Title;
-            scope.setError(null);
-            scope.$apply();
-        },
-        scope.errorHandler ); 
+        scope.getStore(function(){}, true);
     };
 
     scope.doSelectStore = function() {
         scope.ark.Stores(function(stores){
             document.title = "Select store"
+            scope.delTimeout();
             scope.stores = stores;
             scope.$apply();
         },
@@ -220,6 +287,14 @@ app.controller('PMController', ['$scope', function (scope) {
     scope.updateFilter = function() {
         scope.filter = $('#search_filter').val(); 
     };
+
+    scope.doesExpire = function(record) {
+        return ( record.ExpiredAt != ZERO_DATETIME );
+    };
+
+    scope.isExpired = function(record) {
+        return ( scope.doesExpire(record) && Date.parse(record.ExpiredAt) <= Date.now() );
+    }
 
     scope.filterSecret = function(record) {
         if( scope.filter != null ) {
@@ -260,20 +335,68 @@ app.controller('PMController', ['$scope', function (scope) {
         scope.doSelectStore();
     };
 
-    scope.showSecretModal = function(is_new, title, date) {
-        if( is_new == true ) {
-            $('#cleartext-warning').show();
-            $('#new_secret_buttons').show();
-            $('#edt_secret_buttons').hide();
-            $('#secret_date_container').hide();
+    /*
+     * TODO
+     *
+     * The following two functions are horrible hacks, anyone
+     * with more experience with javascript than me is welcome
+     * to fix this mess ^_^
+     */
+    scope.dateToPickerFormat = function(date_string) {
+        // Convert to "mm/dd/yyyy hh:ii:ss",
+        var e = new Date(date_string);
+        return ( e.getMonth() + 1 ).pad(2) + '/' +
+                 e.getDate().pad(2) + '/' +
+                 e.getFullYear() + ' ' +
+                 e.getHours().pad(2) + ':' +
+                 e.getMinutes().pad(2) + ':' +
+                 e.getSeconds().pad(2);
+    };
+
+    scope.pickerFormatToDate = function(picker_string) {
+        // Convert to "2017-12-06T20:35:25.416459867+01:00"  
+        var parts = picker_string.split(' ');
+        var date = parts[0].split('/');
+        var timezone = ( new Date().getTimezoneOffset() * -1 ) / 60
+        var abs = Math.abs(timezone).pad(2);
+        var tz = "";
+
+        if( timezone >= 0 ) {
+            tz = "+" + abs;
         } else {
-            $('#cleartext-warning').hide();
-            $('#new_secret_buttons').hide();
-            $('#edt_secret_buttons').show();
-            $('#secret_date').text(date);
-            $('#secret_date_container').show();
+            tz = "-" + abs;
         }
 
+        return date[2] + '-' + date[0] + '-' + date[1] + 'T' +
+               parts[1] + '.000000000' + tz + ":00";
+    };
+
+    scope.showSecretModal = function(is_new, title, date, expired_at, prune) {
+        if( is_new == true ) {
+            $('#cleartext-warning').show();
+            $('.btn-new').show();
+            $('.btn-edit').hide();
+            $('#secret_date_container').hide();
+            $('#secret_expired_at').val('');
+            $('#pruner').val('0');
+        } else {
+            if( expired_at == ZERO_DATETIME ){
+                $('#secret_expired_at').val('');
+            }
+            else {
+                var to_picker = scope.dateToPickerFormat(expired_at);
+                $('#secret_expired_at').val(to_picker);
+            }
+
+            $('#cleartext-warning').hide();
+            $('.btn-new').hide();
+            $('.btn-edit').show();
+            $('#secret_date').text(date);
+            $('#secret_date_container').show();
+            $('#pruner').val( prune ? '1' : '0' );
+        }
+
+        $('#secret_expired_at').trigger('change');
         $('#secret_title').text(title);
         $('#secret_entry_list').html('').sortable();
         $('#secret_modal').modal();
@@ -283,36 +406,20 @@ app.controller('PMController', ['$scope', function (scope) {
         scope.showSecretModal( true, "Put a title ..." );
     };
 
-    scope.onShowSecret = function(secret) {
-        var record = new Record(secret.Title);
-
-        record.Decrypt( scope.key, secret.Data );
-
-        if( record.HasError() == true ) {
-            $('#record_error_' + secret.ID).html(record.error);
-            $('#record_status_' + secret.ID ).addClass("status-error");
-        }
-        else {
-            scope.setSecret(secret)
-
-            $('#record_lock_' + secret.ID ).removeClass("fa-lock").addClass("fa-unlock");
-            $('#record_status_' + secret.ID ).removeClass("status-locked").addClass("status-unlocked");
-
-            scope.showSecretModal(false, record.title, secret.UpdatedAt);
-
-            var list = $('#secret_entry_list'); 
-            for( var i = 0; i < record.entries.length; i++ ){
-                record.entries[i].RenderToList( list, i );
-            }
-        }
-    };
-
     scope.onAdd = function() {
         scope.setStatus("Adding secret ...");
 
         var title = $('#secret_title').text();
         var names = $('.editable.entry-title');
         var entries = $('*[id^=entry_value_]');
+        var expire_at = $('#secret_expired_at').val();
+        var prune = $('#pruner').val() == '1';
+        
+        if( expire_at != '' ) {
+            expire_at = scope.pickerFormatToDate(expire_at);
+        } else {
+            expire_at = null;
+        }
 
         if( entries.length != names.length ) {
             return alert("WTF?!");
@@ -339,7 +446,7 @@ app.controller('PMController', ['$scope', function (scope) {
 
         data = record.Encrypt( scope.key )
         
-        scope.ark.AddRecord( title, data, 'aes', function(record) {
+        scope.ark.AddRecord( title, expire_at, prune, data, 'aes', function(record) {
             scope.getStore( function() {
                 scope.$apply();
             });
@@ -349,22 +456,27 @@ app.controller('PMController', ['$scope', function (scope) {
         $('#secret_modal').modal('hide');
     };
 
-    scope.onDelete = function() {
-        // this shouldn't happen, but better be safe than sorry :)
-        if( scope.secret == null ){
-            return;
+    scope.onShowSecret = function(secret) {
+        var record = new Record(secret.Title);
+
+        record.Decrypt( scope.key, secret.Data );
+
+        if( record.HasError() == true ) {
+            $('#record_error_' + secret.ID).html(record.error);
+            $('#record_status_' + secret.ID ).addClass("status-error");
         }
+        else {
+            scope.setSecret(secret)
 
-        if( confirm( "Delete this secret?" ) == true ) {
-            scope.ark.DeleteRecord(scope.secret, function(){ 
-                scope.setSecret(null);
-                scope.getStore( function() {
-                    scope.$apply();
-                });
-            },
-            scope.errorHandler );
+            $('#record_lock_' + secret.ID ).removeClass("fa-lock").addClass("fa-unlock");
+            $('#record_status_' + secret.ID ).removeClass("status-locked").addClass("status-unlocked");
 
-            $('#secret_modal').modal('hide');
+            scope.showSecretModal(false, record.title, secret.UpdatedAt, secret.ExpiredAt, secret.Prune);
+
+            var list = $('#secret_entry_list'); 
+            for( var i = 0; i < record.entries.length; i++ ){
+                record.entries[i].RenderToList( list, i );
+            }
         }
     };
 
@@ -379,6 +491,14 @@ app.controller('PMController', ['$scope', function (scope) {
         var title = $('#secret_title').text();
         var names = $('.editable.entry-title');
         var entries = $('*[id^=entry_value_]');
+        var expire_at = $('#secret_expired_at').val();
+        var prune = $('#pruner').val() == '1';
+        
+        if( expire_at != '' ) {
+            expire_at = scope.pickerFormatToDate(expire_at);
+        } else {
+            expire_at = ZERO_DATETIME;
+        }
 
         if( entries.length != names.length ) {
             return alert("WTF?!");
@@ -405,7 +525,7 @@ app.controller('PMController', ['$scope', function (scope) {
         
         var data = record.Encrypt( scope.key )
         
-        scope.ark.UpdateRecord( scope.secret.ID, title, data, 'aes', function(record) {
+        scope.ark.UpdateRecord( scope.secret.ID, title, expire_at, prune, data, 'aes', function(record) {
             scope.setSecret(null);
             scope.setError(null);
             scope.getStore( function() {
@@ -415,6 +535,25 @@ app.controller('PMController', ['$scope', function (scope) {
         scope.errorHandler );
 
         $('#secret_modal').modal('hide');
+    };
+
+    scope.onDelete = function() {
+        // this shouldn't happen, but better be safe than sorry :)
+        if( scope.secret == null ){
+            return;
+        }
+
+        if( confirm( "Delete this secret?" ) == true ) {
+            scope.ark.DeleteRecord(scope.secret, function(){ 
+                scope.setSecret(null);
+                scope.getStore( function() {
+                    scope.$apply();
+                });
+            },
+            scope.errorHandler );
+
+            $('#secret_modal').modal('hide');
+        }
     };
 
     scope.updateSessionTime = function() {

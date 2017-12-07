@@ -131,12 +131,11 @@ Ark.prototype.SetStore = function( id, success, error ) {
     this.GetStore( id, function(s){
         ark.store = s;
         ark.Records( s, success, error );
-        success();
     },
     error);
 }
 
-Ark.prototype.AddRecord = function( title, data, encryption, success, error ) {
+Ark.prototype.AddRecord = function( title, expire_at, prune, data, encryption, success, error ) {
     if( this.HasStore() == false ) {
         return error("No store has been selected.");
     }
@@ -144,13 +143,15 @@ Ark.prototype.AddRecord = function( title, data, encryption, success, error ) {
     var record = {
         'Title': title,
         'Data': data,
+        'ExpiredAt': expire_at,
+        'Prune': prune,
         'Encryption': encryption,
     };
 
     this.Api( 'POST', '/api/store/' + this.store.ID + '/records', record, success, error );
 }
 
-Ark.prototype.UpdateRecord = function( id, title, data, encryption, success, error) {
+Ark.prototype.UpdateRecord = function( id, title, expire_at, prune, data, encryption, success, error) {
     if( this.HasStore() == false ) {
         return error("No store has been selected.");
     }
@@ -158,6 +159,8 @@ Ark.prototype.UpdateRecord = function( id, title, data, encryption, success, err
         'ID': id,
         'StoreID': this.store.ID,
         'Title': title,
+        'ExpiredAt': expire_at,
+        'Prune': prune,
         'Data': data,
         'Encryption': encryption,
     };

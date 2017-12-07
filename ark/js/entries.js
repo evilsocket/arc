@@ -6,7 +6,7 @@
  * See LICENSE.
  */
 var REGISTERED_TYPES = [
-    new InputEntry( "URL", "https://" ),
+    new URLEntry( "URL", "https://" ),
     new InputEntry( "Login", "" ),
     new PasswordEntry( "Password", "" ),
     new TextEntry( "Text", "" ),

@@ -50,11 +50,6 @@ button:hover {
     border: none !important;
 }
 
-#secret_date_container {
-    float: right;
-    color: #ccc !important;
-}
-
 .form-signin {
   max-width: 330px;
   padding: 15px;
@@ -106,6 +101,35 @@ button:hover {
 div.entry-edit {
     float: right; 
     margin-bottom: 5px;
+}
+
+div.tb-container {
+    padding: 0;
+    margin: 0;
+}
+
+#toolbar {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+} 
+
+#toolbar .tb-elem {
+    float: left;
+}
+
+#toolbar .tb-updated {
+    padding: 5px;
+    padding-left: 15px;
+}
+
+#pruner {
+    font-size: 0.9rem !important;
+}
+
+#toolbar button.btn-close {
+    background-color: transparent;
+    float: right;
 }
 
 .action-label {
@@ -170,6 +194,11 @@ div.entry-edit > a:hover {
     float:right; 
     font-size:11px; 
     text-align:right;
+}
+
+
+.status-expired {
+    color: black !important;
 }
 
 .status-locked {

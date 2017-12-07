@@ -5,6 +5,10 @@
     "password": "ark",
     "database": "~/ark.db",
     "token_duration": 60,
+    "scheduler": {
+        "enabled": true,
+        "period": 10
+    },
     "tls": {
         "enabled": false,
         "pem": "/some/file.pem",
