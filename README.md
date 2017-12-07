@@ -1,15 +1,10 @@
 # Arc
 
-Arc is a database API and a HTML+js application server for your secrets.
-
-
-## Architecture
-
-Arc is made of two components: `arcd`, a RESTful API server written in Go which exposes read and write primitives for **encrypted records** on a sqlite database file:
+Arc is a manager for your secrets made of `arcd`, a RESTful API server written in Go which exposes read and write primitives for **encrypted records** on a sqlite database file.
 
 ![arcd](https://i.imgur.com/swC00gX.png)
 
-And `arc`, the client application implemented in html5 and javascript, which **runs in every html5 enabled browser** and  is served by arcd itself:
+And `arc`, the client application implemented in html5 and javascript, which **runs in every html5 enabled browser** and  it is served by `arcd` itself.
 
 ![multikey](https://pbs.twimg.com/media/DQN8W1KWsAEP6bd.jpg:large)
 
@@ -17,15 +12,13 @@ Records are generated and decrypted client side (Arc relies on CryptoJS for its 
 
 - Simple text inputs.
 - Simple text areas.
-- Custom file attachments (**files are encrypted client side** before being uploaded as records).
+- Custom file attachments (**files are encrypted client side** before being uploaded as binary records).
 - A markdown editor area with preview and full screen mode.
 - A password field with **password strength estimation** and a **random password generator**. 
 
 Elements can be created (with optional expiration dates), arranged and edited using `arc` and are stored on `arcd` safely.
 
-![ui mix 1](https://i.imgur.com/KCn4RGw.png)
-
-![ui mix 2](https://i.imgur.com/nxqmRqY.png)
+![ui mix 1](https://i.imgur.com/KCn4RGw.png) ![ui mix 2](https://i.imgur.com/nxqmRqY.png)
 
 TL;DR: Host yourself (on a raspberry pi or whatever) your password / encrypted notes / encrypted files / -all secret things- manager.
 
