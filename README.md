@@ -1,8 +1,33 @@
 # Arc
 
-Arc is an API and HTML+js application server for your secrets.
+Arc is a database API and a HTML+js application server for your secrets.
+
+
+## Architecture
+
+Arc is made of two components: `arcd`, a RESTful API server written in Go which exposes read and write primitives for **encrypted records** on a sqlite database file:
 
 ![arcd](https://i.imgur.com/swC00gX.png)
+
+And `arc`, the client application implemented in html5 and javascript, which **runs in every html5 enabled browser** and  is served by arcd itself:
+
+![multikey](https://pbs.twimg.com/media/DQN8W1KWsAEP6bd.jpg:large)
+
+Records are generated and decrypted client side (Arc relies on CryptoJS for its AES encryption and the PRNG) by `arc`, which offers an intuitive management system equipped with UI widgets including:
+
+- Simple text inputs.
+- Simple text areas.
+- Custom file attachments (**files are encrypted client side** before being uploaded as records).
+- A markdown editor area with preview and full screen mode.
+- A password field with **password strength estimation** and a **random password generator**. 
+
+Elements can be created (with optional expiration dates), arranged and edited using `arc` and are stored on `arcd` safely.
+
+![ui mix 1](https://i.imgur.com/KCn4RGw.png)
+
+![ui mix 2](https://i.imgur.com/nxqmRqY.png)
+
+TL;DR: Host yourself (on a raspberry pi or whatever) your password / encrypted notes / encrypted files / -all secret things- manager.
 
 ## Usage
 
@@ -36,22 +61,6 @@ Or export only one store by its numeric id:
 Such export files can be later imported with:
 
     ./arcd -config config.json -import ~/backup.json
-
-## Screenshots
-
-Both `arcd` and the `Secrets Manager` app are work in progress, you might experience some differences with the following screenshots.
-
-Using different encryption keys for different records.
-![multikey](https://pbs.twimg.com/media/DQN8W1KWsAEP6bd.jpg:large)
-
-Attaching files.
-![files](https://pbs.twimg.com/media/DQN8vAtW0AEho6Z.jpg:large)
-
-Password complexity audit and generator.
-![passgen](https://pbs.twimg.com/media/DQN8vAiXkAA9x1z.jpg:large)
-
-Markdown notepad.
-![notepad](https://pbs.twimg.com/media/DQOmJ8tW4AE7W_H.jpg:large)
 
 ## License
 
