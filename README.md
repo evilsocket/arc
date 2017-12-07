@@ -104,6 +104,10 @@ Such export files can be later imported with:
 
     ./arcd -config config.json -import ~/backup.json
 
+## Bugs
+
+Before opening an issue, please make sure your request is not already part of [a known bug](https://github.com/evilsocket/arc/issues?q=is%3Aopen+is%3Aissue+label%3Abug).
+
 ## License
 
 Arc was made with ♥  by [Simone Margaritelli](https://www.evilsocket.net/) and it is released under the GPL 3 license.
