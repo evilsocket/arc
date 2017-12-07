@@ -85,19 +85,4 @@ Entry.prototype.Render = function(with_value, id){
     return "Unhandled entry type " + this.type;
 }
 
-Entry.prototype.OnRendered = function(id) {
-    var elem_id = this.id(id);
-    var editable = $('#editable_' + elem_id );
-    var name_of = $('#name_of_' + elem_id );
-
-    editable.click(function () {
-        $(this).hide();
-        name_of.val($(this).text()).toggleClass("form-control").show().focus();
-    });
-
-    name_of.hide().blur(function () {
-        $(this).hide().toggleClass("form-control");
-        var myid = (this).id;
-        editable.text($(this).val()).show();
-    });
-}
+Entry.prototype.OnRendered = function(id) { }
