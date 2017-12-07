@@ -1,6 +1,4 @@
-# Arc
-
-Arc is a manager for your secrets made of `arcd`, a RESTful API server written in Go which exposes read and write primitives for **encrypted records** on a sqlite database file.
+**Arc** is a manager for your secrets made of `arcd`, a RESTful API server written in Go which exposes read and write primitives for **encrypted records** on a sqlite database file.
 
 ![arcd](https://i.imgur.com/swC00gX.png)
 
@@ -22,7 +20,7 @@ Elements can be created (with optional expiration dates), arranged and edited us
 | ------------- | -- |-------------- |
 | ![ui mix 1](https://i.imgur.com/KCn4RGw.png)  |  | ![ui mix 2](https://i.imgur.com/nxqmRqY.png) |
 
-TL;DR: Host yourself (on a raspberry pi or whatever) your password / encrypted notes / encrypted files / -all secret things- manager.
+TL;DR: Host yourself (on a raspberry pi or whatever) your password / encrypted notes / encrypted files / `-all secret things-` manager.
 
 ## Usage
 
