@@ -1,6 +1,6 @@
 # Arc
 
-**Arc** is a manager for your secrets made of `arcd`, a RESTful API server written in Go which exposes read and write primitives for **encrypted records** on a sqlite database file.
+Arc is a manager for your secrets made of `arcd`, a RESTful API server written in Go which exposes read and write primitives for **encrypted records** on a sqlite database file.
 
 ![arcd](https://i.imgur.com/swC00gX.png)
 
