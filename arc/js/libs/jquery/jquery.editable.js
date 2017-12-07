@@ -59,14 +59,14 @@
                 })
                 // hide editable and show input on click
                 .click(function(){
+                    var f_size = $(this).css('font-size');
                     var input_id = '#editable_input_for_' + $(this).attr('id');
                     $(this).hide();
-                    $(input_id).val( $(this).text() ).show().focus();
+                    $(input_id).css('font-size', f_size).val( $(this).text() ).show().focus();
                 });
 
                 var onHide = function(e){
                     var is_keypress = ( e && typeof(e.keyCode) !== 'undefined' );
-
                     // we can get here from keypress or blur
                     if( is_keypress && ( e.keyCode != 27 && e.keyCode != 13 ) ) {
                         return;
