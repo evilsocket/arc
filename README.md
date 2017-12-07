@@ -18,7 +18,9 @@ Records are generated and decrypted client side (Arc relies on CryptoJS for its 
 
 Elements can be created (with optional expiration dates), arranged and edited using `arc` and are stored on `arcd` safely.
 
-![ui mix 1](https://i.imgur.com/KCn4RGw.png) ![ui mix 2](https://i.imgur.com/nxqmRqY.png)
+|   |   |  |
+| ------------- | -- |-------------- |
+| ![ui mix 1](https://i.imgur.com/KCn4RGw.png)  |  | ![ui mix 2](https://i.imgur.com/nxqmRqY.png) |
 
 TL;DR: Host yourself (on a raspberry pi or whatever) your password / encrypted notes / encrypted files / -all secret things- manager.
 
