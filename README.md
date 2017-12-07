@@ -2,6 +2,8 @@
 
 Arc is an API and HTML+js application server for your secrets.
 
+![arcd](https://i.imgur.com/swC00gX.png)
+
 ## Usage
 
 Download, install dependencies and compile the `arcd` server component:
