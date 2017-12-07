@@ -49,7 +49,7 @@ type Record struct {
 }
 
 func Records(store_id string) (records []Record, err error) {
-	err = db.Where("store_id = ?", store_id).Order("updated_at desc").Find(&records).Error
+	err = db.Where("store_id = ?", store_id).Order("expired_at desc, updated_at desc").Find(&records).Error
 	return
 }
 
