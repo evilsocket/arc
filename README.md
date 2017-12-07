@@ -2,7 +2,7 @@
 
 ![arcd](https://i.imgur.com/swC00gX.png)
 
-And `arc`, the client application implemented in html5 and javascript, which **runs in every html5 enabled browser** and  it is served by `arcd` itself.
+And `arc`, the client application implemented in html5 and javascript, which runs in every html5 enabled browser and  it is served by `arcd` itself.
 
 ![multikey](https://pbs.twimg.com/media/DQN8W1KWsAEP6bd.jpg:large)
 
@@ -21,7 +21,11 @@ Elements can be created (with optional expiration dates), arranged and edited us
 | ![ui mix 1](https://i.imgur.com/KCn4RGw.png)  |  | ![ui mix 2](https://i.imgur.com/nxqmRqY.png) |
 | A client side encrypted record set to expire and self delete with a markdown area and a password widget. |  |  Markdown and various attached files. |
 
-TL;DR: The idea is to use *the Arc* as a single manager for your passwords, encrypted notes, files and `-all the secret things here-` while hosting it yourself on some spare hardware like a Raspberry Pi (a very portable setup with a `Zero W` model) or a real dedicated server.
+#### TL;DR 
+
+The idea is to use *the Arc* as a single manager for your passwords, encrypted notes, files and `-all the secret things here-` while hosting `arcd` yourself on some spare hardware like a Raspberry Pi (a very portable setup with a `Zero W` model, or an USB Armory) or a real dedicated server and accessing `arc` from every device with a modern browser.
+
+![encrpt all the things](https://i.imgur.com/h5cpCeN.png)
 
 ## Usage
 
@@ -60,4 +64,3 @@ Such export files can be later imported with:
 
 Arc was made with ♥  by [Simone Margaritelli](https://www.evilsocket.net/) and it is released under the GPL 3 license.
 
-![encrpt all the things](https://i.imgur.com/h5cpCeN.png)
