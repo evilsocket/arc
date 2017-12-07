@@ -109,7 +109,7 @@ func main() {
 		log.MinLevel = log.INFO
 	}
 
-	log.Infof("%s v%s is starting ...", log.Bold(APP_NAME), APP_VERSION)
+	log.Infof("%s is starting ...", log.Bold(APP_NAME+" v"+APP_VERSION))
 
 	if conf_file != "" {
 		if err = config.Load(conf_file); err != nil {
