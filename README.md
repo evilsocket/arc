@@ -106,7 +106,7 @@ Such export files can be later imported with:
 
 ## Bugs
 
-Before opening an issue, please make sure your request is not already part of [a known bug](https://github.com/evilsocket/arc/issues?q=is%3Aopen+is%3Aissue+label%3Abug).
+Before opening an issue, please make sure it is not already part of [a known bug](https://github.com/evilsocket/arc/issues?q=is%3Aopen+is%3Aissue+label%3Abug).
 
 ## License
 
