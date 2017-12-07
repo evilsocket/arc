@@ -40,7 +40,7 @@ func CreateRecord(c *gin.Context) {
 		if err := models.Create(&record); err != nil {
 			utils.ServerError(c, err)
 		} else {
-			log.Api(log.INFO, c, "Created the record %d for the store %s with %d bytes of data encrypted with %s.", record.ID, store_id, len(record.Data), record.Encryption)
+			log.Api(log.INFO, c, "Created record %d (store %s) with %db of %s encrypted data.", record.ID, store_id, len(record.Data), record.Encryption)
 			c.JSON(200, record)
 		}
 	}
