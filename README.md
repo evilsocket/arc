@@ -28,7 +28,7 @@ Elements can be created (with optional expiration dates), arranged and edited us
 The idea is to use *the Arc* as a single manager for your passwords, encrypted notes, files and `-all the secret things here-` while hosting `arcd` yourself on some spare hardware like a Raspberry Pi (a very portable setup with a `Zero W` model, or an USB Armory) or a real dedicated server and accessing `arc` from every device with a modern browser.
 
 <p align="center">
-![encrpt all the things](https://i.imgur.com/h5cpCeN.png)
+    <img src="https://i.imgur.com/h5cpCeN.png" alt="Encrypt all the things!"/>
 </p>
 
 ## Usage
