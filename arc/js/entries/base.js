@@ -62,7 +62,7 @@ Entry.prototype.input = function(type, with_value, id) {
 Entry.prototype.textarea = function(with_md, with_value, id) {
     return '<textarea ' + 
              'class="form-control" ' +
-             ( with_md ? 'data-provide="marcdown" ' : '' ) +
+             ( with_md ? 'data-provide="markdown" ' : '' ) +
              'data-entry-type="' + this.type + '" ' +
              'name="' + this.name + '" ' + 
              'id="' + this.id(id) + '" ' +

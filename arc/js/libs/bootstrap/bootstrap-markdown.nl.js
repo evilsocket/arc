@@ -1,9 +1,9 @@
 /**
- * Dutch translation for bootstrap-marcdown
+ * Dutch translation for bootstrap-markdown
  * Jeroen Thora <jeroenthora@gmail.com>
  */
 (function ($) {
-  $.fn.marcdown.messages.nl = {
+  $.fn.markdown.messages.nl = {
     'Bold': "Vet",
     'Italic': "Cursief",
     'Heading': "Titel",

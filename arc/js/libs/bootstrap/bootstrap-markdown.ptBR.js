@@ -1,9 +1,9 @@
 /**
- * Brazilian Portuguese translation for bootstrap-marcdown
+ * Brazilian Portuguese translation for bootstrap-markdown
  * Gabriel Anderson <gcacars@>
  */
 (function ($) {
-  $.fn.marcdown.messages.ptBR = {
+  $.fn.markdown.messages.ptBR = {
     'Bold': "Negrito",
     'Italic': "Itálico",
     'Heading': "Título",

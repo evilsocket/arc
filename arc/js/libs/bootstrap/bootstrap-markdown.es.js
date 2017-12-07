@@ -1,9 +1,9 @@
 /**
- * Spanish translation for bootstrap-marcdown
+ * Spanish translation for bootstrap-markdown
  * by Leandro Poblet <leandrodrhouse@gmail.com>
  */
 (function ($) {
-  $.fn.marcdown.messages.es = {
+  $.fn.markdown.messages.es = {
     'Bold': "Negrita",
     'Italic': "Itálica",
     'Heading': "Título",

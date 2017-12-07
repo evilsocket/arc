@@ -1,9 +1,9 @@
 /**
- * Japanese translation for bootstrap-marcdown
+ * Japanese translation for bootstrap-markdown
  * Kenta Murakami <kntmrkm@gmail.com>
  */
 (function ($) {
-  $.fn.marcdown.messages.ja = {
+  $.fn.markdown.messages.ja = {
     'Bold': "太字",
     'Italic': "斜体",
     'Heading': "見出し",

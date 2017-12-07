@@ -1,9 +1,9 @@
 /**
- * Ukrainian translation for bootstrap-marcdown
+ * Ukrainian translation for bootstrap-markdown
  * by Oleg Vivtash <o@vivtash.net>
  */
 (function ($) {
-  $.fn.marcdown.messages.ua = {
+  $.fn.markdown.messages.ua = {
     'Bold': "Жирний",
     'Italic': "Курсів",
     'Heading': "Заголовок",

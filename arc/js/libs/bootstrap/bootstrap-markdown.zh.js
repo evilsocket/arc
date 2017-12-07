@@ -1,9 +1,9 @@
 /**
- * Chinese translation for bootstrap-marcdown
+ * Chinese translation for bootstrap-markdown
  * benhaile <denghaier@163.com>
  */
 (function ($) {
-  $.fn.marcdown.messages.zh = {
+  $.fn.markdown.messages.zh = {
     'Bold': "粗体",
     'Italic': "斜体",
     'Heading': "标题",

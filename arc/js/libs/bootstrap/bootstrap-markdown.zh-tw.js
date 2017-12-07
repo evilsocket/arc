@@ -1,9 +1,9 @@
 /**
- * Traditional Chinese translation for bootstrap-marcdown
+ * Traditional Chinese translation for bootstrap-markdown
  * TheoKlein <theokleintw@gmail.com>
  */
 (function ($) {
-  $.fn.marcdown.messages.zh = {
+  $.fn.markdown.messages.zh = {
     'Bold': "粗體",
     'Italic': "斜體",
     'Heading': "標題",

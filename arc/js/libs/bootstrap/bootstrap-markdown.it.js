@@ -1,9 +1,9 @@
 /**
- * Italian translation for bootstrap-marcdown
+ * Italian translation for bootstrap-markdown
  * Michele Virgilio <michele.virgilio@gmail.com>
  */
 (function ($) {
-  $.fn.marcdown.messages.it = {
+  $.fn.markdown.messages.it = {
     'Bold': "Grassetto",
     'Italic': "Corsivo",
     'Heading': "Titolo",

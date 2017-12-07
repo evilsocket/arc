@@ -114,7 +114,12 @@ div.tb-container {
     padding: 0;
 } 
 
+#toolbar button {
+    background-color: transparent;
+}
+
 #toolbar .tb-elem {
+    background-color: transparent;
     float: left;
 }
 
@@ -123,7 +128,13 @@ div.tb-container {
     padding-left: 15px;
 }
 
+#secret_expired_at {
+    border: 0;
+    font-size: 0.9rem;
+}
+
 #pruner {
+    background-color: transparent;
     font-size: 0.9rem !important;
 }
 

@@ -1,9 +1,9 @@
 /**
- * German translation for bootstrap-marcdown
+ * German translation for bootstrap-markdown
  * Tobias Nitsche <tobias-nitsche@gmx.net>
  */
 (function ($) {
-  $.fn.marcdown.messages.de = {
+  $.fn.markdown.messages.de = {
     'Bold': "Fett",
     'Italic': "Kursiv",
     'Heading': "Überschrift",

@@ -10,7 +10,7 @@ var REGISTERED_TYPES = [
     new InputEntry( "Login", "" ),
     new PasswordEntry( "Password", "" ),
     new TextEntry( "Text", "" ),
-    new MarcdownEntry( "Marcdown", "" ),
+    new MarkdownEntry( "Markdown", "" ),
     new FileEntry( "File", "" ),
 ];
 

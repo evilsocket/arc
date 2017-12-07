@@ -1,9 +1,9 @@
 /**
- * Polish translation for bootstrap-marcdown
+ * Polish translation for bootstrap-markdown
  * Marek Kaput
  */
 (function ($) {
-  $.fn.marcdown.messages.pl = {
+  $.fn.markdown.messages.pl = {
     'Bold': "Pogrubienie",
     'Italic': "Kursywa",
     'Heading': "Nagłówek",

@@ -1,9 +1,9 @@
 /**
- * Danish translation for bootstrap-marcdown
+ * Danish translation for bootstrap-markdown
  * Dan Storm <storm@catalystcode.net>
  */
 (function ($) {
-  $.fn.marcdown.messages.da = {
+  $.fn.markdown.messages.da = {
     'Bold': 'Fed',
     'Italic': 'Kursiv',
     'Heading': 'Overskrift',

@@ -1,9 +1,9 @@
 /**
- * Russian translation for bootstrap-marcdown
+ * Russian translation for bootstrap-markdown
  * by Oleg Vivtash <o@vivtash.net>
  */
 (function ($) {
-  $.fn.marcdown.messages.ru = {
+  $.fn.markdown.messages.ru = {
     'Bold': "Жирный",
     'strong text': "выделенный текст",
     'Italic': "Курсив",

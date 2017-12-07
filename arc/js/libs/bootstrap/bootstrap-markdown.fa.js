@@ -1,9 +1,9 @@
 /**
- * Persian(Farsi) translation for bootstrap-marcdown
+ * Persian(Farsi) translation for bootstrap-markdown
  * Sajad Dehshiri <Pelakweb.ir>
  */
 (function ($) {
-  $.fn.marcdown.messages.fa = {
+  $.fn.markdown.messages.fa = {
     'Bold': "توپر",
     'Italic': "مورب",
     'Heading': "عنوان",

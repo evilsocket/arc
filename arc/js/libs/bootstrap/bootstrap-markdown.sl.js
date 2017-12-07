@@ -1,9 +1,9 @@
 /**
- * Slovenian translation for bootstrap-marcdown
+ * Slovenian translation for bootstrap-markdown
  * Davor Padovan <davor.padovan@gmail.com>
  */
 (function ($) {
-  $.fn.marcdown.messages.sl = {
+  $.fn.markdown.messages.sl = {
     'Bold': "Odebeljeno",
     'Italic': "Poševno",
     'Heading': "Naslov",

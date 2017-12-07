@@ -1,9 +1,9 @@
 /**
- * Hungarian translation for bootstrap-marcdown
+ * Hungarian translation for bootstrap-markdown
  * T1k3 <t1k3hu@gmail.com>
  */
 (function ($) {
-  $.fn.marcdown.messages.hu = {
+  $.fn.markdown.messages.hu = {
     'Bold': 'Félkövér',
     'Italic': 'Dőlt',
     'Heading': 'Címsor',

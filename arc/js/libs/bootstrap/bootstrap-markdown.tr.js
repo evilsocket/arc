@@ -1,9 +1,9 @@
 /**
- * Turkish translation for bootstrap-marcdown
+ * Turkish translation for bootstrap-markdown
  * Serkan Algur <info@wpadami.com>
  */
 (function ($) {
-  $.fn.marcdown.messages.tr = {
+  $.fn.markdown.messages.tr = {
     'Bold': "Kalın",
     'Italic': "İtalik",
     'Heading': "Başlık",

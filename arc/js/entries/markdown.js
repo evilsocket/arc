@@ -5,33 +5,33 @@
  *
  * See LICENSE.
  */
-$.getCSS("/css/bootstrap/bootstrap-marcdown.min.css");
-$.getScript("/js/libs/jquery/marcdown.min.js");
-$.getScript("/js/libs/jquery/to-marcdown.js");
-$.getScript("/js/libs/bootstrap/bootstrap-marcdown.js");
+$.getCSS("/css/bootstrap/bootstrap-markdown.min.css");
+$.getScript("/js/libs/jquery/markdown.min.js");
+$.getScript("/js/libs/jquery/to-markdown.js");
+$.getScript("/js/libs/bootstrap/bootstrap-markdown.js");
 
 const ENTRY_TYPE_MARKDOWN = 3;
 
-function MarcdownEntry(name, value) {
+function MarkdownEntry(name, value) {
     Entry.call( this, ENTRY_TYPE_MARKDOWN, name, value );
 }
 
-MarcdownEntry.prototype = Object.create(Entry.prototype);
-MarcdownEntry.prototype.constructor = MarcdownEntry;
+MarkdownEntry.prototype = Object.create(Entry.prototype);
+MarkdownEntry.prototype.constructor = MarkdownEntry;
 
-MarcdownEntry.prototype.TypeName = function() {
-    return "MarcdownEntry";
+MarkdownEntry.prototype.TypeName = function() {
+    return "MarkdownEntry";
 }
 
-MarcdownEntry.prototype.Icon = function() {
+MarkdownEntry.prototype.Icon = function() {
     return 'text-width';
 }
 
-MarcdownEntry.prototype.Render = function(with_value, id){
+MarkdownEntry.prototype.Render = function(with_value, id){
     return this.formGroup( this.textarea(true, with_value, id), id );
 }
 
-MarcdownEntry.prototype.OnRendered = function(id) {
+MarkdownEntry.prototype.OnRendered = function(id) {
     Entry.prototype.OnRendered.call( this, id );
 
     var on_show = undefined;
@@ -48,7 +48,7 @@ MarcdownEntry.prototype.OnRendered = function(id) {
 
     var elem_id = this.id(id);
     var elem = $('#' + elem_id);
-    elem.marcdown({
+    elem.markdown({
         autofocus:true,
         onShow: on_show,
         iconlibrary:'fa',

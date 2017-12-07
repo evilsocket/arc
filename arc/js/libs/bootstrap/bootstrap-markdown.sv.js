@@ -1,9 +1,9 @@
 /**
- * Swedish translation for bootstrap-marcdown
+ * Swedish translation for bootstrap-markdown
  * Tobias Bohwalli <hi@futhr.io>
  */
 (function ($) {
-  $.fn.marcdown.messages.sv = {
+  $.fn.markdown.messages.sv = {
     'Bold': 'Fet',
     'Italic': 'Kursiv',
     'Heading': 'Rubrik',

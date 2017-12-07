@@ -1,9 +1,9 @@
 /*
- * Arabic translation for bootstrap-marcdown
+ * Arabic translation for bootstrap-markdown
  * George Ajam <george.ejaam@gmail.com>
  */
 (function ($) {
-  $.fn.marcdown.messages.nl = {
+  $.fn.markdown.messages.nl = {
     'Bold': "غامق",
     'Italic': "مائل",
     'Heading': "عنوان",

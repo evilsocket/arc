@@ -1,9 +1,9 @@
 /**
- * Czech translation for bootstrap-marcdown
+ * Czech translation for bootstrap-markdown
  * Vít Kabele <vit@kabele.me>
  */
 (function ($) {
-  $.fn.marcdown.messages.cs = {
+  $.fn.markdown.messages.cs = {
     'Bold': "Tučně",
     'Italic': "Kurzíva",
     'Heading': "Nadpis",

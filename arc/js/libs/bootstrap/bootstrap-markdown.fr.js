@@ -1,9 +1,9 @@
 /**
- * French translation for bootstrap-marcdown
+ * French translation for bootstrap-markdown
  * Benoît Bourgeois <bierdok@gmail.com>
  */
 (function ($) {
-  $.fn.marcdown.messages.fr = {
+  $.fn.markdown.messages.fr = {
     'Bold': "Gras",
     'Italic': "Italique",
     'Heading': "Titre",

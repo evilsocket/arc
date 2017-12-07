@@ -1,12 +1,12 @@
 /*
- * to-marcdown - an HTML to Marcdown converter
+ * to-markdown - an HTML to Markdown converter
  *
  * Copyright 2011, Dom Christie
  * Licenced under the MIT licence
  *
  */
 
-var toMarcdown = function(string) {
+var toMarkdown = function(string) {
   
   var ELEMENTS = [
     {
@@ -87,16 +87,16 @@ var toMarcdown = function(string) {
   function replaceEls(html, elProperties) {
     var pattern = elProperties.type === 'void' ? '<' + elProperties.tag + '\\b([^>]*)\\/?>' : '<' + elProperties.tag + '\\b([^>]*)>([\\s\\S]*?)<\\/' + elProperties.tag + '>',
         regex = new RegExp(pattern, 'gi'),
-        marcdown = '';
+        markdown = '';
     if(typeof elProperties.replacement === 'string') {
-      marcdown = html.replace(regex, elProperties.replacement);
+      markdown = html.replace(regex, elProperties.replacement);
     }
     else {
-      marcdown = html.replace(regex, function(str, p1, p2, p3) {
+      markdown = html.replace(regex, function(str, p1, p2, p3) {
         return elProperties.replacement.call(this, str, p1, p2, p3);
       });
     }
-    return marcdown;
+    return markdown;
   }
   
   function attrRegExp(attr) {
@@ -180,5 +180,5 @@ var toMarcdown = function(string) {
 };
 
 if (typeof exports === 'object') {
-  exports.toMarcdown = toMarcdown;
+  exports.toMarkdown = toMarkdown;
 }

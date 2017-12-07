@@ -1,9 +1,9 @@
 /**
- * Norwegian bokmål translation for bootstrap-marcdown
+ * Norwegian bokmål translation for bootstrap-markdown
  * Tobias Bohwalli <hi@futhr.io>
  */
 (function ($) {
-  $.fn.marcdown.messages.nb = {
+  $.fn.markdown.messages.nb = {
     'Bold': 'Fet',
     'Italic': 'Kursiv',
     'Heading': 'Overskrift',

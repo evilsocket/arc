@@ -1,6 +1,6 @@
 /* ===================================================
- * bootstrap-marcdown.js v2.10.0
- * http://github.com/toopay/bootstrap-marcdown
+ * bootstrap-markdown.js v2.10.0
+ * http://github.com/toopay/bootstrap-markdown
  * ===================================================
  * Copyright 2013-2016 Taufan Aditya
  *
@@ -33,9 +33,9 @@
   /* MARKDOWN CLASS DEFINITION
    * ========================== */
 
-  var Marcdown = function(element, options) {
+  var Markdown = function(element, options) {
     // @TODO : remove this BC on next major release
-    // @see : https://github.com/toopay/bootstrap-marcdown/issues/109
+    // @see : https://github.com/toopay/bootstrap-markdown/issues/109
     var opts = ['autofocus', 'savable', 'hideable', 'width',
       'height', 'resize', 'iconlibrary', 'language',
       'footer', 'fullscreen', 'hiddenButtons', 'disabledButtons'
@@ -49,7 +49,7 @@
     // End BC
 
     // Class Properties
-    this.$ns = 'bootstrap-marcdown';
+    this.$ns = 'bootstrap-markdown';
     this.$element = $(element);
     this.$editable = {
       el: null,
@@ -58,7 +58,7 @@
       attrValues: [],
       content: null
     };
-    this.$options = $.extend(true, {}, $.fn.marcdown.defaults, options, this.$element.data('options'));
+    this.$options = $.extend(true, {}, $.fn.markdown.defaults, options, this.$element.data('options'));
     this.$oldContent = null;
     this.$isPreview = false;
     this.$isFullscreen = false;
@@ -71,9 +71,9 @@
     this.showEditor();
   };
 
-  Marcdown.prototype = {
+  Markdown.prototype = {
 
-    constructor: Marcdown,
+    constructor: Markdown,
     __alterButtons: function(name, alter) {
       var handler = this.$handler,
         isAll = (name == 'all'),
@@ -167,8 +167,8 @@
         this.$textarea.css('resize', this.$options.resize);
       }
 
-      // Re-attach marcdown data
-      this.$textarea.data('marcdown', this);
+      // Re-attach markdown data
+      this.$textarea.data('markdown', this);
     },
     __setEventListeners: function() {
       this.$textarea.on({
@@ -211,7 +211,7 @@
       e.preventDefault();
     },
     __localize: function(string) {
-      var messages = $.fn.marcdown.messages,
+      var messages = $.fn.markdown.messages,
         language = this.$options.language;
       if (
         typeof messages !== 'undefined' &&
@@ -331,7 +331,7 @@
           textarea.addClass('md-input');
           editor.append(textarea);
         } else {
-          var rawContent = (typeof toMarcdown == 'function') ? toMarcdown(container.html()) : container.html(),
+          var rawContent = (typeof toMarkdown == 'function') ? toMarkdown(container.html()) : container.html(),
             currentContent = $.trim(rawContent);
 
           // This is some arbitrary content that could be edited
@@ -423,7 +423,7 @@
 
         // Set editor attributes, data short-hand API and listener
         this.$editor.attr('id', (new Date()).getTime());
-        this.$editor.on('click', '[data-provider="bootstrap-marcdown"]', $.proxy(this.__handle, this));
+        this.$editor.on('click', '[data-provider="bootstrap-markdown"]', $.proxy(this.__handle, this));
 
         if (this.$element.is(':disabled') || this.$element.is('[readonly]')) {
           this.$editor.addClass('md-editor-disabled');
@@ -431,7 +431,7 @@
         }
 
         if (this.eventSupported('keydown') && typeof jQuery.hotkeys === 'object') {
-          editorHeader.find('[data-provider="bootstrap-marcdown"]').each(function() {
+          editorHeader.find('[data-provider="bootstrap-markdown"]').each(function() {
             var $button = $(this),
               hotkey = $button.attr('data-hotkey');
             if (hotkey.toLowerCase() !== '') {
@@ -531,13 +531,13 @@
     parseContent: function(val) {
       var content;
 
-      // parse with supported marcdown parser
+      // parse with supported markdown parser
       val = val || this.$textarea.val();
 
       if (this.$options.parser) {
         content = this.$options.parser(val);
-      } else if (typeof marcdown == 'object') {
-        content = marcdown.toHTML(val);
+      } else if (typeof markdown == 'object') {
+        content = markdown.toHTML(val);
       } else if (typeof marced == 'function') {
         content = marced(val);
       } else {
@@ -552,14 +552,14 @@
         afterContainer = container.next(),
         replacementContainer = $('<div/>', {
           'class': 'md-preview',
-          'data-provider': 'marcdown-preview'
+          'data-provider': 'markdown-preview'
         }),
         content,
         callbackContent;
 
       if (this.$isPreview === true) {
         // Avoid sequenced element creation on misused scenario
-        // @see https://github.com/toopay/bootstrap-marcdown/issues/170
+        // @see https://github.com/toopay/bootstrap-markdown/issues/170
         return this;
       }
 
@@ -599,7 +599,7 @@
       container.hide();
 
       // Attach the editor instances
-      replacementContainer.data('marcdown', this);
+      replacementContainer.data('markdown', this);
 
       if (this.$element.is(':disabled') || this.$element.is('[readonly]')) {
         this.$editor.addClass('md-editor-disabled');
@@ -613,7 +613,7 @@
       this.$isPreview = false;
 
       // Obtain the preview container
-      var container = this.$editor.find('div[data-provider="marcdown-preview"]');
+      var container = this.$editor.find('div[data-provider="markdown-preview"]');
 
       // Remove the preview container
       container.remove();
@@ -936,18 +936,18 @@
 
       editor.addClass('active');
 
-      // Blur other marcdown(s)
+      // Blur other markdown(s)
       $(document).find('.md-editor').each(function() {
         if ($(this).attr('id') !== editor.attr('id')) {
-          var attachedMarcdown;
+          var attachedMarkdown;
 
-          if (attachedMarcdown = $(this).find('textarea').data('marcdown'),
-            attachedMarcdown === null) {
-            attachedMarcdown = $(this).find('div[data-provider="marcdown-preview"]').data('marcdown');
+          if (attachedMarkdown = $(this).find('textarea').data('markdown'),
+            attachedMarkdown === null) {
+            attachedMarkdown = $(this).find('div[data-provider="markdown-preview"]').data('markdown');
           }
 
-          if (attachedMarcdown) {
-            attachedMarcdown.blur();
+          if (attachedMarkdown) {
+            attachedMarkdown.blur();
           }
         }
       });
@@ -999,21 +999,21 @@
   /* MARKDOWN PLUGIN DEFINITION
    * ========================== */
 
-  var old = $.fn.marcdown;
+  var old = $.fn.markdown;
 
-  $.fn.marcdown = function(option) {
+  $.fn.markdown = function(option) {
     return this.each(function() {
       var $this = $(this),
-        data = $this.data('marcdown'),
+        data = $this.data('markdown'),
         options = typeof option == 'object' && option;
       if (!data)
-        $this.data('marcdown', (data = new Marcdown(this, options)));
+        $this.data('markdown', (data = new Markdown(this, options)));
     });
   };
 
-  $.fn.marcdown.messages = {};
+  $.fn.markdown.messages = {};
 
-  $.fn.marcdown.defaults = {
+  $.fn.markdown.defaults = {
     /* Editor Properties */
     autofocus: false,
     hideable: false,
@@ -1502,28 +1502,28 @@
     onSelect: function(e) {}
   };
 
-  $.fn.marcdown.Constructor = Marcdown;
+  $.fn.markdown.Constructor = Markdown;
 
 
   /* MARKDOWN NO CONFLICT
    * ==================== */
 
-  $.fn.marcdown.noConflict = function() {
-    $.fn.marcdown = old;
+  $.fn.markdown.noConflict = function() {
+    $.fn.markdown = old;
     return this;
   };
 
   /* MARKDOWN GLOBAL FUNCTION & DATA-API
    * ==================================== */
-  var initMarcdown = function(el) {
+  var initMarkdown = function(el) {
     var $this = el;
 
-    if ($this.data('marcdown')) {
-      $this.data('marcdown').showEditor();
+    if ($this.data('markdown')) {
+      $this.data('markdown').showEditor();
       return;
     }
 
-    $this.marcdown();
+    $this.markdown();
   };
 
   var blurNonFocused = function(e) {
@@ -1533,26 +1533,26 @@
     $(document).find('.md-editor').each(function() {
       var $this = $(this),
         focused = $activeElement.closest('.md-editor')[0] === this,
-        attachedMarcdown = $this.find('textarea').data('marcdown') ||
-        $this.find('div[data-provider="marcdown-preview"]').data('marcdown');
+        attachedMarkdown = $this.find('textarea').data('markdown') ||
+        $this.find('div[data-provider="markdown-preview"]').data('markdown');
 
-      if (attachedMarcdown && !focused) {
-        attachedMarcdown.blur();
+      if (attachedMarkdown && !focused) {
+        attachedMarkdown.blur();
       }
     });
   };
 
   $(document)
-    .on('click.marcdown.data-api', '[data-provide="marcdown-editable"]', function(e) {
-      initMarcdown($(this));
+    .on('click.markdown.data-api', '[data-provide="markdown-editable"]', function(e) {
+      initMarkdown($(this));
       e.preventDefault();
     })
     .on('click focusin', function(e) {
       blurNonFocused(e);
     })
     .ready(function() {
-      $('textarea[data-provide="marcdown"]').each(function() {
-        initMarcdown($(this));
+      $('textarea[data-provide="markdown"]').each(function() {
+        initMarkdown($(this));
       });
     });
 
