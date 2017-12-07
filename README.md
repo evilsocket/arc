@@ -50,6 +50,46 @@ Browse `http://localhost:8080/` and login with the credentials you specified in 
 
 The first time the `arcd` server executes the `arc` web application. it will automatically import some example stores from the `arc/seeds.json` seed file (encryption key is `vault`).
 
+## Configuration
+
+You will find a `sample_config.json` file inside the `arcd` folder of the project, this is the example configuration you need to customize the first time.
+
+```json
+{
+    "address": "127.0.0.1",
+    "port": 8080,
+    "username": "arc",
+    "password": "arc",
+    "database": "~/arc.db",
+    "token_duration": 60,
+    "scheduler": {
+        "enabled": true,
+        "period": 10
+    },
+    "tls": {
+        "enabled": false,
+        "pem": "/some/file.pem",
+        "key": "/some/file.key"
+    }
+}
+```
+
+It is necessary to change only the `username` and `password` access parameters of Arc, while the others can be left to their default values.
+
+| Configuration | Description |
+| ------------- | ------------- |
+| address | IP address to bind the `arcd` server to. |
+| port | TCP to bind the `arcd` server to. |
+| username | API access username. |
+| password | API access passwrd. |
+| database | SQLite database file path. |
+| token\_duration | Validity in minutes of a JWT API token after it's being generated. |
+| scheduler.enabled | Enable the scheduling and pruning of expired records. |
+| scheduler.period | Delay in seconds between one period and another of the scheduler. |
+| tls.enabled | Run `arcd` on HTTPS. |
+| tls.pem | HTTPS certificate. |
+| tls.key | HTTPS private key. |
+
 ## Export and import stores.
 
 You can export stores and their encrypted records to a JSON file:
