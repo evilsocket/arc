@@ -1,3 +1,5 @@
+# Arc
+
 **Arc** is a manager for your secrets made of `arcd`, a RESTful API server written in Go which exposes read and write primitives for **encrypted records** on a sqlite database file.
 
 ![arcd](https://i.imgur.com/swC00gX.png)
@@ -6,7 +8,7 @@ And `arc`, the client application implemented in html5 and javascript, which run
 
 ![multikey](https://pbs.twimg.com/media/DQN8W1KWsAEP6bd.jpg:large)
 
-Records are generated and decrypted client side (Arc relies on CryptoJS for its AES encryption and the PRNG) by `arc`, which offers an intuitive management system equipped with UI widgets including:
+Records are generated, encrypted and decrypted **client side only** (Arc relies on CryptoJS for its AES encryption and the PRNG) by `arc`, which offers an intuitive management system equipped with UI widgets including:
 
 - Simple text inputs.
 - Simple text areas.
