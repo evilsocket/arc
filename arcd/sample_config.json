@@ -1,0 +1,17 @@
+{
+    "address": "127.0.0.1",
+    "port": 8080,
+    "username": "arc",
+    "password": "arc",
+    "database": "~/arc.db",
+    "token_duration": 60,
+    "scheduler": {
+        "enabled": true,
+        "period": 10
+    },
+    "tls": {
+        "enabled": false,
+        "pem": "/some/file.pem",
+        "key": "/some/file.key"
+    }
+}
