@@ -131,7 +131,7 @@ app.controller('PMController', ['$scope', function (scope) {
 
         if( message ) {
             if( typeof(message) == 'object' ) {
-                message = message.statusText;
+                message = message.responseJSON.message;
             }
 
             console.log(message);
