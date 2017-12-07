@@ -19,8 +19,7 @@ function editEntryFor(id) {
 }
 
 function downloadFor(id) {
-    var name_of = $('#name_of_' + id);
-    var name = name_of.val();
+    var name = $('#editable_' +  id).text();
     var data = g_FilesMap[id];
 
     console.log( "Dowloading " + data.length + " bytes of data as " + name );
