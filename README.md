@@ -38,7 +38,7 @@ Download, install dependencies and compile the `arcd` server component:
     make vendor_get
     make
 
-Now copy the `sample_config.json` file to a new `config.json' file, customize and run the `arc` web application:
+Now copy the `sample_config.json` file to a new `config.json` file, customize it and run the `arc` web application:
 
     ./arcd -config config.json -app ../arc
 
