@@ -331,7 +331,6 @@ body.dragging, body.dragging * {
 }
 
 .secret-entry-item:hover {
-    background-color: #eee;
 }
 
 .dragged {
