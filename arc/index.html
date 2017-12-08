@@ -41,6 +41,7 @@
 <body>
   <div class="container-fluid" ng-app="PM" ng-controller="PMController">
     <div ng-include src="'/views/modals/error.html?v=2'"></div>
+    <div ng-include src="'/views/modals/loader.html'"></div>
 
     <!-- if user is not logged, show login -->
     <div id="login" class="container" ng-if="!arc.IsLogged()" ng-include src="'/views/login.html?v=3'"></div>
@@ -119,7 +120,7 @@
           </li>       
 
           <li class="list-group-item" id="secret_list_item_{{ r.ID }}" ng-if="filterSecret(r)" ng-repeat="r in arc.records" ng-click="onShowSecret(r)">
-            <span ng-include src="'/views/secret_list_item.html?v=14'"></span>
+            <span ng-include src="'/views/secret_list_item.html?v=15'"></span>
           </li>
         </ul>
 

@@ -130,7 +130,9 @@ app.controller('PMController', ['$scope', function (scope) {
         scope.errorMessage = message;
 
         if( message ) {
-            if( typeof(message) == 'object' ) {
+            console.log(message);
+
+            if( typeof(message) == 'object' && message.responseJSON ) {
                 message = message.responseJSON.message;
             }
 
@@ -143,6 +145,7 @@ app.controller('PMController', ['$scope', function (scope) {
     };
 
     scope.errorHandler = function(error) {
+        scope.hideLoader();
         scope.setError(error);
         scope.$apply();
     };
@@ -162,6 +165,34 @@ app.controller('PMController', ['$scope', function (scope) {
         return true;
     };
 
+    scope.isLoading = function() {
+        // bootstrap < 4: isShown
+        // bootstra >= 4: _isShown
+        return !!( $('#loader_modal').data('bs.modal') || {} )._isShown;
+    };
+
+    scope.showLoader = function(message, callback) {
+        $('#loader_message').text(message);
+        if( !scope.isLoading() ) {
+            // console.log("LOADER SHOWING");
+            $('#loader_modal').on('shown.bs.modal', callback ).modal({
+                backdrop: 'static',
+                keyboard: false 
+            });
+        } else if( callback ) {
+            callback();
+        }
+    };
+
+    scope.hideLoader = function() {
+        $('#loader_message').text('');
+        if( scope.isLoading() ) {
+            // console.log("LOADER HIDING");
+            // https://stackoverflow.com/questions/14451052/in-twitter-bootstrap-how-do-i-unbind-an-event-from-the-closing-of-a-modal-dialo
+            $('#loader_modal').unbind().modal('hide');
+        }
+    };
+
     scope.getStore = function(success, force) {
         if( force == false && scope.arc.HasStore() == false ) {
             alert("No store selected");
@@ -170,9 +201,12 @@ app.controller('PMController', ['$scope', function (scope) {
             scope.setStatus("Loading passwords store ...");
             scope.arc.SetStore( scope.store_id, function() {
                 document.title = scope.arc.store.Title;
+
+                scope.hideLoader();
                 scope.setupTimeout();
                 scope.setError(null);
                 scope.$apply();
+                success();
             },
             scope.errorHandler );
         }
@@ -229,14 +263,24 @@ app.controller('PMController', ['$scope', function (scope) {
         };
     };
 
+    scope.Timeout = {
+        max: 1000 * 60 * 60 * 12,
+        min: 1000
+    };
+
     scope.setTimeoutIfLess = function(record) {
         var expires = Date.parse(record.ExpiredAt),
             now = Date.now();
 
         if( expires > now || ( expires <= now && record.Prune ) ) {
             var tm = expires - now;
-            if( scope.timeout == null || this.timeout.ms > tm ) {
-                this.setTimeoutTo(tm);
+            if( tm <= scope.Timeout.max ) {
+                if( tm < scope.Timeout.min ) {
+                    tm = scope.Timeout.min;
+                }
+                if( scope.timeout == null || this.timeout.ms > tm ) {
+                    this.setTimeoutTo(tm);
+                }
             }
         }
     };
@@ -337,7 +381,8 @@ app.controller('PMController', ['$scope', function (scope) {
 
         for( var i = 0; i < fields.length; ++i ) {
             var entry = $.extend( true, {}, fields[i] );
-            entry.RenderToList( list, nidx );
+            var eidx = list.find('li').length;
+            entry.RenderToList( list, eidx );
         }
 
         $('#field_selector_modal').modal('hide');
@@ -459,40 +504,55 @@ app.controller('PMController', ['$scope', function (scope) {
             record.AddEntry(new Entry( type, name, value ));
         }
 
-        data = record.Encrypt( scope.key )
-        
-        scope.arc.AddRecord( title, expire_at, prune, data, 'aes', function(record) {
-            scope.getStore( function() {
-                scope.$apply();
-            });
-        },
-        scope.errorHandler );
-
         $('#secret_modal').modal('hide');
+
+        scope.showLoader("Encrypting record ...", function(){
+            // Execute asynchronously to not block the ui.
+            setTimeout( function() {
+                var data = record.Encrypt( scope.key );
+                var size = data.length;
+                scope.arc.AddRecord( title, expire_at, prune, data, 'aes', size, function(record) {
+                    scope.getStore(function() {});
+                },
+                scope.errorHandler );
+            }, 0 );
+        });
     };
 
     scope.onShowSecret = function(secret) {
-        var record = new Record(secret.Title);
+        console.log( "Loading record " + secret.ID );
 
-        record.Decrypt( scope.key, secret.Data );
+        scope.showLoader( "Buffering data ...", function() {
+            // start reading data when loader is shown
+            scope.arc.GetRecordBuffer( secret.ID, function(data){
+                console.log( "Decrypting record data ..." );
+                // start decrypting data when message is updated
+                scope.showLoader( "Decrypting data ...", function() {
+                    var record = new Record(secret.Title);
+                    record.Decrypt( scope.key, data );
+                    if( record.HasError() == true ) {
+                        $('#record_error_' + secret.ID).html(record.error);
+                        $('#record_status_' + secret.ID ).addClass("status-error");
+                    }
+                    else {
+                        scope.setSecret(secret)
 
-        if( record.HasError() == true ) {
-            $('#record_error_' + secret.ID).html(record.error);
-            $('#record_status_' + secret.ID ).addClass("status-error");
-        }
-        else {
-            scope.setSecret(secret)
+                        $('#record_lock_' + secret.ID ).removeClass("fa-lock").addClass("fa-unlock");
+                        $('#record_status_' + secret.ID ).removeClass("status-locked").addClass("status-unlocked");
 
-            $('#record_lock_' + secret.ID ).removeClass("fa-lock").addClass("fa-unlock");
-            $('#record_status_' + secret.ID ).removeClass("status-locked").addClass("status-unlocked");
+                        scope.showSecretModal(false, record.title, secret.UpdatedAt, secret.ExpiredAt, secret.Prune);
 
-            scope.showSecretModal(false, record.title, secret.UpdatedAt, secret.ExpiredAt, secret.Prune);
+                        var list = $('#secret_entry_list'); 
+                        for( var i = 0; i < record.entries.length; i++ ){
+                            record.entries[i].RenderToList( list, i );
+                        }
+                    }
 
-            var list = $('#secret_entry_list'); 
-            for( var i = 0; i < record.entries.length; i++ ){
-                record.entries[i].RenderToList( list, i );
-            }
-        }
+                    scope.hideLoader();
+                });
+
+            }, scope.errorHandler );
+        });
     };
 
     scope.onUpdate = function() {
@@ -539,8 +599,8 @@ app.controller('PMController', ['$scope', function (scope) {
         }
         
         var data = record.Encrypt( scope.key )
-        
-        scope.arc.UpdateRecord( scope.secret.ID, title, expire_at, prune, data, 'aes', function(record) {
+        var size = data.length
+        scope.arc.UpdateRecord( scope.secret.ID, title, expire_at, prune, data, 'aes', size, function(record) {
             scope.setSecret(null);
             scope.setError(null);
             scope.getStore( function() {

@@ -36,13 +36,17 @@ type Record struct {
 	// Record title.
 	// required: true
 	Title string `gorm:"not null"`
-	// Record encryption.
+	// Used to create the record.
+	Data string `gorm:"-"`
+	// The buffer size in bytes.
+	// required: true
+	Size uint64
+	// Buffer encryption.
 	// required: true
 	Encryption string `sql:"DEFAULT:'none'"`
-	// Record data.
-	// format: bytes
-	Data []byte
-
+	// Buffer association.
+	BufferID uint   `json:"-"`
+	Buffer   Buffer `json:"Buffer,omitempty"`
 	// Store association.
 	StoreID uint  `json:"-"`
 	Store   Store `json:"-"`

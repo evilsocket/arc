@@ -62,7 +62,12 @@
                     var f_size = $(this).css('font-size');
                     var input_id = '#editable_input_for_' + $(this).attr('id');
                     $(this).hide();
-                    $(input_id).css('font-size', f_size).val( $(this).text() ).show().focus();
+                    $(input_id).css({
+                        'font-size': f_size,
+                    })
+                    .val( $(this).text() )
+                    .show()
+                    .focus();
                 });
 
                 var onHide = function(e){

@@ -38,7 +38,7 @@ func Setup() (created bool, err error) {
 
 	if _, err = os.Stat(config.Conf.Database); os.IsNotExist(err) {
 		created = true
-		log.Infof("Creating database %s ...", log.Bold(config.Conf.Database))
+		log.Warningf("Creating database %s ...", log.Bold(config.Conf.Database))
 	} else {
 		created = false
 		log.Infof("Loading database %s ...", log.Bold(config.Conf.Database))
@@ -52,6 +52,7 @@ func Setup() (created bool, err error) {
 
 	db.AutoMigrate(&Store{})
 	db.AutoMigrate(&Record{})
+	db.AutoMigrate(&Buffer{})
 
 	return created, nil
 }

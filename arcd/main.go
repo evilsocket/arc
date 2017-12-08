@@ -85,7 +85,7 @@ func arcScheduler() {
 		log.Infof("Found %d prunable elements out of %d total expired records.", prunable, expired)
 		records, err := models.PrunableRecords()
 		if err != nil {
-			log.Errorf("Error while running scheduler query: %s.", err)
+			log.Errorf("Error while running scheduler queryrecord: %s.", err)
 			continue
 		}
 
@@ -125,10 +125,12 @@ func main() {
 		if err = models.Export(store_id, output); err != nil {
 			log.Fatal(err)
 		}
+		return
 	} else if import_fn != "" {
 		if err = models.Import(import_fn); err != nil {
 			log.Fatal(err)
 		}
+		return
 	}
 
 	if config.Conf.Scheduler.Enabled {
@@ -175,6 +177,7 @@ func main() {
 	api.GET("/store/:id/records", controllers.ListRecords)
 	api.POST("/store/:id/records", controllers.CreateRecord)
 	api.GET("/store/:id/record/:r_id", controllers.GetRecord)
+	api.GET("/store/:id/record/:r_id/buffer", controllers.GetRecordBuffer)
 	api.PUT("/store/:id/record/:r_id", controllers.UpdateRecord)
 	api.DELETE("/store/:id/record/:r_id", controllers.DeleteRecord)
 

@@ -35,7 +35,7 @@ func jError(level int, c *gin.Context, code int, message string) {
 
 // http://www.restapitutorial.com/httpstatuscodes.html
 func NotFound(c *gin.Context, opt_msg ...string) {
-	msg := "Record not found."
+	msg := "Not found."
 	if len(opt_msg) > 0 {
 		msg = opt_msg[0]
 	}

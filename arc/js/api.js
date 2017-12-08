@@ -15,7 +15,7 @@ function Arc(on_req_executed) {
     this.req_started = null;
     this.req_time = null;
     this.on_req_executed = on_req_executed || function(success, req, time){
-        console.log( req + " executed in " + time + " ms." );
+        console.log( req + " executed " + ( success ? "succesfully" : "with errors" ) + " in " + time + " ms." );
     };
 }
 
@@ -38,8 +38,9 @@ Arc.prototype.onRequestDone = function( success ) {
     this.on_req_executed( success, this.req, this.req_time );
 }
 
-Arc.prototype.Api = function( method, path, data, success, error ) {
-    console.log( method + ' ' + path );
+Arc.prototype.Api = function( method, path, data, success, error, raw ) {
+    var dataType = raw ? undefined : 'json';
+    console.log( method + ' ' + path + ' (' + dataType + ')' );
 
     this.onRequestStart( method + ' ' + path );
 
@@ -62,8 +63,8 @@ Arc.prototype.Api = function( method, path, data, success, error ) {
         },
         data: data ? JSON.stringify(data) : null,
         contentType: "application/json",
-        dataType: 'json',
-        timeout: 60 * 60 * 100
+        dataType: dataType,
+        timeout: 60 * 60 * 1000
     });
 }
 
@@ -135,7 +136,12 @@ Arc.prototype.SetStore = function( id, success, error ) {
     error);
 }
 
-Arc.prototype.AddRecord = function( title, expire_at, prune, data, encryption, success, error ) {
+Arc.prototype.GetRecordBuffer = function( record_id, success, error ) {
+    var path = '/api/store/' + this.store.ID + '/record/' + record_id + '/buffer';
+    this.Api( 'GET', path, null, success, error, true );
+};
+
+Arc.prototype.AddRecord = function( title, expire_at, prune, data, encryption, size, success, error ) {
     if( this.HasStore() == false ) {
         return error("No store has been selected.");
     }
@@ -146,12 +152,13 @@ Arc.prototype.AddRecord = function( title, expire_at, prune, data, encryption, s
         'ExpiredAt': expire_at,
         'Prune': prune,
         'Encryption': encryption,
+        'Size': size,
     };
 
     this.Api( 'POST', '/api/store/' + this.store.ID + '/records', record, success, error );
 }
 
-Arc.prototype.UpdateRecord = function( id, title, expire_at, prune, data, encryption, success, error) {
+Arc.prototype.UpdateRecord = function( id, title, expire_at, prune, data, encryption, size, success, error) {
     if( this.HasStore() == false ) {
         return error("No store has been selected.");
     }
@@ -163,6 +170,7 @@ Arc.prototype.UpdateRecord = function( id, title, expire_at, prune, data, encryp
         'Prune': prune,
         'Data': data,
         'Encryption': encryption,
+        'Size': size
     };
     this.Api( 'PUT', '/api/store/' + this.store.ID + '/record/' + id, record, success, error );
 }

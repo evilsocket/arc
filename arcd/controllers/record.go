@@ -37,10 +37,17 @@ func CreateRecord(c *gin.Context) {
 		utils.BadRequest(c)
 	} else {
 		record.Store = store
+		record.Buffer = models.NewBuffer(record.Encryption, record.Data)
+
 		if err := models.Create(&record); err != nil {
 			utils.ServerError(c, err)
 		} else {
-			log.Api(log.INFO, c, "Created record %d (store %s) with %db of %s encrypted data.", record.ID, store_id, len(record.Data), record.Encryption)
+			log.Api(log.INFO, c,
+				"Created record %d (store %s) with %s of %s encrypted data.",
+				record.ID,
+				store_id,
+				utils.FormatBytes(record.Size),
+				record.Encryption)
 			c.JSON(200, record)
 		}
 	}
@@ -55,6 +62,19 @@ func GetRecord(c *gin.Context) {
 	} else {
 		log.Api(log.DEBUG, c, "Requested record %d of store %s.", record.ID, store_id)
 		c.JSON(200, record)
+	}
+}
+
+func GetRecordBuffer(c *gin.Context) {
+	store_id := c.Params.ByName("id")
+	record_id := c.Params.ByName("r_id")
+	buffer, err := models.GetBuffer(store_id, record_id)
+	if err != nil {
+		utils.NotFound(c)
+	} else {
+		size := uint64(len(buffer.Data))
+		log.Api(log.DEBUG, c, "Streaming %s of buffer %d.", utils.FormatBytes(size), buffer.ID)
+		c.Data(200, "application/octect-stream", []byte(buffer.Data))
 	}
 }
 
@@ -80,7 +100,10 @@ func UpdateRecord(c *gin.Context) {
 		utils.NotFound(c)
 	} else if err := c.BindJSON(&record); err != nil {
 		utils.BadRequest(c)
-	} else if err := models.Save(&record); err != nil {
+	}
+
+	record.Buffer = models.NewBuffer(record.Encryption, record.Data)
+	if err := models.Save(&record); err != nil {
 		utils.ServerError(c, err)
 	} else {
 		log.Api(log.INFO, c, "Updated record %s of store %s.", record_id, store_id)

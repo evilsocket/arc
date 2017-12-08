@@ -51,6 +51,9 @@ func GetStores(with_records bool) (stores []Store, err error) {
 	if with_records {
 		for i, _ := range stores {
 			db.Model(&stores[i]).Related(&stores[i].Records)
+			for j, _ := range stores[i].Records {
+				db.Model(&stores[i].Records[j]).Related(&stores[i].Records[j].Buffer)
+			}
 		}
 	}
 
@@ -61,6 +64,9 @@ func GetStoreWithRecords(id string) (store Store, err error) {
 	err = db.Where("id = ?", id).Find(&store).Error
 	if err == nil {
 		db.Model(&store).Related(&store.Records)
+		for i, _ := range store.Records {
+			db.Model(&store.Records[i]).Related(&store.Records[i].Buffer)
+		}
 	}
 	return
 }
@@ -81,7 +87,7 @@ func Export(store_id string, filename string) (err error) {
 		}
 	}
 
-	log.Infof("Exporting %d records ...", len(stores))
+	log.Infof("Exporting %d stores ...", len(stores))
 
 	var buffer []byte
 	if buffer, err = json.Marshal(stores); err != nil {
