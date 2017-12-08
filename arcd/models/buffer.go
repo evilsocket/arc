@@ -48,3 +48,7 @@ func GetBuffer(store_id, record_id string) (buffer Buffer, err error) {
 	err = db.Where("id = ?", record.BufferID).Find(&buffer).Error
 	return
 }
+
+func DeleteBuffer(id uint) error {
+	return db.Where("id = ?", id).Delete(&Buffer{}).Error
+}
