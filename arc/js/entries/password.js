@@ -168,7 +168,6 @@ PasswordEntry.prototype.OnRendered = function(id) {
 
     var btn_pass_copy_id = '#btn_pass_copy_' + elem_id;
     $(btn_pass_copy_id).click(function() {
-        elem.select().focus();
         var pass = elem.val();
         copyTextToClipboard(pass);
         console.log( "Copied " + pass.length + " characters to clipboard." );

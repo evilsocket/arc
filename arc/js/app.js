@@ -7,6 +7,13 @@
  */
 var ZERO_DATETIME = "0001-01-01T00:00:00Z";
 
+/*
+ * Fixes #20.
+ *
+ * https://stackoverflow.com/questions/38398070/bootstrap-modal-does-not-work-with-clipboard-js-on-firefox
+ */ 
+$.fn.modal.Constructor.prototype._enforceFocus = function() {};
+
 function removeEntry(idx) {
     if( confirm("Remove this field?") ) {
         console.log("Removing entry at position " + idx );
