@@ -84,8 +84,6 @@ func DeleteRecord(c *gin.Context) {
 	record, err := models.GetRecord(store_id, record_id)
 	if err != nil {
 		utils.NotFound(c)
-	} else if err := models.DeleteBuffer(record.BufferID); err != nil {
-		utils.ServerError(c, err)
 	} else if err := models.Delete(&record); err != nil {
 		utils.ServerError(c, err)
 	} else {

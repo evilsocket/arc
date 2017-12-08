@@ -33,6 +33,18 @@ type Store struct {
 	Records []Record
 }
 
+func (s *Store) BeforeDelete() (err error) {
+	log.Warningf("Deleting records of store %d.", s.ID)
+	db.Model(s).Related(&s.Records)
+	for _, record := range s.Records {
+		log.Warningf("  Deleting record %d.", record.ID)
+		if err = Delete(&record); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func Stores() (stores []Store, err error) {
 	err = db.Find(&stores).Error
 	return

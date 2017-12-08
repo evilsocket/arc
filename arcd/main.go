@@ -148,7 +148,7 @@ func main() {
 	webapp := arcLoadApp(r)
 
 	if dbIsNew && len(webapp.Seeds) > 0 {
-		log.Infof("Seeding database with %d store(s) ...", len(webapp.Seeds))
+		log.Warningf("Seeding database with %d store(s) ...", len(webapp.Seeds))
 		if err = models.ImportStores(webapp.Seeds); err != nil {
 			log.Fatal(err)
 		}

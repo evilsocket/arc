@@ -9,6 +9,7 @@
 package models
 
 import (
+	"github.com/evilsocket/arc/arcd/log"
 	"time"
 )
 
@@ -50,6 +51,11 @@ type Record struct {
 	// Store association.
 	StoreID uint  `json:"-"`
 	Store   Store `json:"-"`
+}
+
+func (r *Record) BeforeDelete() (err error) {
+	log.Warningf("Deleting buffer %d of record %d.", r.BufferID, r.ID)
+	return DeleteBuffer(r.BufferID)
 }
 
 func Records(store_id string) (records []Record, err error) {
