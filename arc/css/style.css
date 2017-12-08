@@ -115,6 +115,7 @@ footer a:hover {
     line-height: 0.9rem;
     font-size: 0.9rem;
     width: 100%;
+    border: 0;
 }
 
 div.entry-edit {
