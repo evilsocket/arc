@@ -123,6 +123,7 @@ app.controller('PMController', ['$scope', function (scope) {
     scope.filter = null;
     scope.timeout = null;
     scope.registeredTypes = REGISTERED_TYPES;
+    scope.templates = REGISTERED_TEMPLATES;
 
     scope.setError = function(message) {
         scope.setStatus(null);
@@ -259,6 +260,7 @@ app.controller('PMController', ['$scope', function (scope) {
         scope.arc.Stores(function(stores){
             document.title = "Select store"
             scope.delTimeout();
+                   
             scope.stores = stores;
             scope.$apply();
         },
@@ -325,6 +327,20 @@ app.controller('PMController', ['$scope', function (scope) {
 
     scope.onAddField = function() {
         $('#field_selector_modal').css('z-index', '1500').modal();
+    };
+
+    scope.onAddTemplate = function() {
+        var list = $('#secret_entry_list'); 
+        var nidx = $('#template').val();
+        var tpl = scope.templates[nidx];
+        var fields = tpl.fields;
+
+        for( var i = 0; i < fields.length; ++i ) {
+            var entry = $.extend( true, {}, fields[i] );
+            entry.RenderToList( list, nidx );
+        }
+
+        $('#field_selector_modal').modal('hide');
     };
 
     scope.onBack = function() {

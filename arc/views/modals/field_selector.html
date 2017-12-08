@@ -15,6 +15,23 @@
           </div>
         </div>
 
+        <div class="row">
+          <div class="col form-group" id="templateContainer">
+            <label class="col-form-label" id="templateLabel" for="template">Predefined Templates</label>
+            <br/>
+            <div class="input-group">
+              <select id="template" name="template">
+                <option ng-repeat="tpl in templates" value="{{ $index }}">{{ tpl.name }}</option>
+              </select>
+              <span class="input-group-btn">
+                <button class="btn btn-default action-button" type="button" ng-click="onAddTemplate()">
+                  <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
+              </span>
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </div>

@@ -14,6 +14,33 @@ var REGISTERED_TYPES = [
     new FileEntry( "File", "" ),
 ];
 
+var REGISTERED_TEMPLATES = [
+    { name: "Web Login", fields:[ 
+        new URLEntry( "URL", "https://" ),  
+        new InputEntry( "Login", "" ),
+        new PasswordEntry( "Password", "" )
+    ]},
+    { name: "Email Account", fields:[
+        new InputEntry( "Provider", "" ),
+        new InputEntry( "SMTP Server", "" ),
+        new PasswordEntry( "SMTP Password", "" ),
+        new InputEntry( "IMAP Server", "" ),
+        new PasswordEntry( "IMAP Password", "" )
+    ]},
+    { name: "SSH / FTP Account", fields:[
+        new URLEntry( "Hostname", "" ),  
+        new InputEntry( "Username", "" ),
+        new PasswordEntry( "Password", "" )
+    ]},
+    { name: "Credit Card", fields:[
+        new InputEntry( "Bank Name", "" ),
+        new InputEntry( "Owner Name", "" ),
+        new InputEntry( "Card Number", "" ),
+        new InputEntry( "Valid Until", "" ),
+        new PasswordEntry( "CVV", "" )
+    ]}
+];
+
 // Create an Entry derived object from the 'o' JSON object.
 function TypeFactory(o) {
     for( var i = 0; i < REGISTERED_TYPES.length; i++ ) {
