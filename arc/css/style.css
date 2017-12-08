@@ -112,6 +112,9 @@ footer a:hover {
 }
 
 .search-filter {
+    line-height: 0.9rem;
+    font-size: 0.9rem;
+    width: 100%;
 }
 
 div.entry-edit {
@@ -215,6 +218,11 @@ div.entry-edit > a:hover {
 .secrets-list > li:hover {
     background-color: #eee;
     cursor: pointer;
+}
+
+.secrets-list > li.nohover:hover {
+    background-color: #fff !important;
+    cursor: default !important;
 }
 
 .record-status {
