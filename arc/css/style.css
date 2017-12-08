@@ -327,6 +327,7 @@ body.dragging, body.dragging * {
 .secret-entry-item {
     cursor: grab;
     padding: 5px;
+    z-index: 6000;
 }
 
 .secret-entry-item:hover {
