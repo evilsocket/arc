@@ -329,6 +329,14 @@ app.controller('PMController', ['$scope', function (scope) {
         }
     };
 
+    scope.onStoreTitleChanged = function(new_value) {
+        console.log( "Store title changed to: " + new_value );
+        scope.arc.UpdateStore( scope.store_id, new_value, function(){
+            scope.doSelectStore();
+        },
+        scope.errorHandler );
+    };
+
     scope.updateFilter = function() {
         scope.filter = $('#search_filter').val(); 
     };

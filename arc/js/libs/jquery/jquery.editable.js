@@ -6,7 +6,7 @@
  * See LICENSE.
  */
 (function( $ ) {
-    $.fn.editable = function() {
+    $.fn.editable = function(onchanged) {
         this.each(function() {
             // prevent double initialization
             if( this.$isEditable == true ) {
@@ -25,11 +25,7 @@
                 var $input = $('<input class="editable-input">').hide();
                 
                 if( $elem.text() != "" ) {
-                    console.log( "Hiding icon" );
                     $icon.hide()
-                }
-                else {
-                    console.log( "Showing icon" );
                 }
 
                 $input.attr({
@@ -85,7 +81,13 @@
                     var $elem = $(elem_id);
 
                     $(this).hide();
+
+                    var prev = $elem.text();
                     $elem.text(text).show();
+
+                    if( prev != text && onchanged ) {
+                        onchanged(text);
+                    }
                 };
 
                 $input

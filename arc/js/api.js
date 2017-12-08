@@ -126,6 +126,15 @@ Arc.prototype.AddStore = function( title, success, error ) {
     this.Api( 'POST', '/api/stores/', record, success, error );
 }
 
+Arc.prototype.UpdateStore = function( id, title, success, error ) {
+    console.log( "Updating store " + id + " to '" + title + "'" );
+    var store = {
+        'ID': id,
+        'Title': title,
+    };
+    this.Api( 'PUT', '/api/store/' + id, store, success, error );
+}
+
 Arc.prototype.SetStore = function( id, success, error ) {
     console.log( "Selecting store '" + id + "'" );
     var arc = this;
