@@ -485,36 +485,38 @@ app.controller('PMController', ['$scope', function (scope) {
             return alert("WTF?!");
         }
 
-        var record = new Record(title);
-        for( var i = 0; i < entries.length; i++ ) {
-            var input = $(entries[i]);
-            var entry_id = input.attr('id');
-            var type = parseInt( input.attr('data-entry-type') );
-            var name = $(names[i]).text();
-            var value = input.val();
-
-            if( type == ENTRY_TYPE_FILE ) {
-                console.log( "Reading item " + entry_id + " from file map." );
-                value = g_FilesMap[entry_id];
-                console.log( "  " + entry_id + " => " + value.length + " bytes." );
-                // free the memory!
-                delete g_FilesMap[entry_id];
-            }
-
-            record.AddEntry(new Entry( type, name, value ));
-        }
-
         $('#secret_modal').modal('hide');
 
         scope.showLoader("Encrypting record ...", function(){
             // Execute asynchronously to not block the ui.
             setTimeout( function() {
+                var record = new Record(title);
+                for( var i = 0; i < entries.length; i++ ) {
+                    var input = $(entries[i]);
+                    var entry_id = input.attr('id');
+                    var type = parseInt( input.attr('data-entry-type') );
+                    var name = $(names[i]).text();
+                    var value = input.val();
+
+                    if( type == ENTRY_TYPE_FILE ) {
+                        console.log( "Reading item " + entry_id + " from file map." );
+                        value = g_FilesMap[entry_id];
+                        console.log( "  " + entry_id + " => " + value.length + " bytes." );
+                        // free the memory!
+                        delete g_FilesMap[entry_id];
+                    }
+
+                    record.AddEntry(new Entry( type, name, value ));
+                }
                 var data = record.Encrypt( scope.key );
                 var size = data.length;
-                scope.arc.AddRecord( title, expire_at, prune, data, 'aes', size, function(record) {
-                    scope.getStore(function() {});
-                },
-                scope.errorHandler );
+
+                scope.showLoader("Adding record ...", function(){
+                    scope.arc.AddRecord( title, expire_at, prune, data, 'aes', size, function(record) {
+                        scope.getStore(function() {});
+                    },
+                    scope.errorHandler );
+                });
             }, 0 );
         });
     };
@@ -525,7 +527,6 @@ app.controller('PMController', ['$scope', function (scope) {
         scope.showLoader( "Buffering data ...", function() {
             // start reading data when loader is shown
             scope.arc.GetRecordBuffer( secret.ID, function(data){
-                console.log( "Decrypting record data ..." );
                 // start decrypting data when message is updated
                 scope.showLoader( "Decrypting data ...", function() {
                     var record = new Record(secret.Title);
@@ -561,8 +562,6 @@ app.controller('PMController', ['$scope', function (scope) {
             return;
         }
 
-        scope.setStatus("Updating secret ...");
-
         var title = $('#secret_title').text();
         var names = $('.editable.entry-title');
         var entries = $('*[id^=entry_value_]');
@@ -579,37 +578,41 @@ app.controller('PMController', ['$scope', function (scope) {
             return alert("WTF?!");
         }
 
-        var record = new Record(title);
-        for( var i = 0; i < entries.length; i++ ) {
-            var input = $(entries[i]);
-            var entry_id = input.attr('id');
-            var type = parseInt( input.attr('data-entry-type') );
-            var name = $(names[i]).text();
-            var value = input.val();
-
-            if( type == ENTRY_TYPE_FILE ) {
-                console.log( "Reading item " + entry_id + " from file map." );
-                value = g_FilesMap[entry_id];
-                console.log( "  " + entry_id + " => " + value.length + " bytes." );
-                // free the memory!
-                delete g_FilesMap[entry_id];
-            }
-
-            record.AddEntry(new Entry( type, name, value ));
-        }
-        
-        var data = record.Encrypt( scope.key )
-        var size = data.length
-        scope.arc.UpdateRecord( scope.secret.ID, title, expire_at, prune, data, 'aes', size, function(record) {
-            scope.setSecret(null);
-            scope.setError(null);
-            scope.getStore( function() {
-                scope.$apply();
-            });
-        },
-        scope.errorHandler );
-
         $('#secret_modal').modal('hide');
+
+        scope.showLoader("Encrypting record ...", function(){
+            var record = new Record(title);
+            for( var i = 0; i < entries.length; i++ ) {
+                var input = $(entries[i]);
+                var entry_id = input.attr('id');
+                var type = parseInt( input.attr('data-entry-type') );
+                var name = $(names[i]).text();
+                var value = input.val();
+
+                if( type == ENTRY_TYPE_FILE ) {
+                    console.log( "Reading item " + entry_id + " from file map." );
+                    value = g_FilesMap[entry_id];
+                    console.log( "  " + entry_id + " => " + value.length + " bytes." );
+                    // free the memory!
+                    delete g_FilesMap[entry_id];
+                }
+
+                record.AddEntry(new Entry( type, name, value ));
+            }
+            
+            var data = record.Encrypt( scope.key )
+            var size = data.length
+
+            scope.showLoader("Updating Record ...", function(){
+                scope.arc.UpdateRecord( scope.secret.ID, title, expire_at, prune, data, 'aes', size, function(record) {
+                    scope.setSecret(null);
+                    scope.setError(null);
+                    scope.getStore(function(){});
+                },
+                scope.errorHandler );
+            });
+
+        });
     };
 
     scope.onDelete = function() {
