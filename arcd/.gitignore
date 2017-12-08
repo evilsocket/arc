@@ -1,3 +1,4 @@
 _vendor
 arcd
+config.json
 *.db
