@@ -10,6 +10,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/evilsocket/arc/arcd/app"
@@ -31,6 +32,7 @@ var (
 	apppath   = ""
 	conf_file = ""
 	debug     = false
+	logfile   = ""
 	no_auth   = false
 	export    = false
 	import_fn = ""
@@ -44,6 +46,7 @@ func init() {
 	flag.StringVar(&conf_file, "config", "", "JSON configuration file.")
 	flag.BoolVar(&no_auth, "no-auth", no_auth, "Disable authenticaion.")
 	flag.BoolVar(&debug, "debug", debug, "Enable debug logs.")
+	flag.StringVar(&logfile, "logfile", logfile, "Log messages to this file instead of standard error.")
 
 	flag.StringVar(&import_fn, "import", import_fn, "Import stores from this JSON export file.")
 	flag.BoolVar(&export, "export", export, "Export store to JSON file, requires --store and --output parameters.")
@@ -101,6 +104,15 @@ func main() {
 	var err error
 
 	flag.Parse()
+
+	if logfile != "" {
+		log.Output, err = os.Create(logfile)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		defer log.Output.Close()
+	}
 
 	if debug == true {
 		log.MinLevel = log.DEBUG
