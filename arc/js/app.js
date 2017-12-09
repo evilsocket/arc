@@ -37,7 +37,7 @@ function downloadFor(id) {
         bytes[i] = data.charCodeAt(i);
     data = bytes;
 
-    var file = new File([data], name, {type: "application/octect-stream"});
+    var file = new File([data], name);
     console.log(file);
     saveAs(file);
 }
