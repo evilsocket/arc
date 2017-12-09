@@ -103,11 +103,11 @@ app.filter('expiration', function() {
     return function(date) {
         // Expired
         if( Date.parse(date) < Date.now() ) {
-            return 'Expired ' + $.timeago(date);
+            return 'expired ' + $.timeago(date);
         } 
         // Yet to expire.
         else {
-            return 'Expiring in ' + $.timeago(date).replace(' ago', '');
+            return 'expiring in ' + $.timeago(date).replace(' ago', '');
         }
     }
 });
