@@ -543,7 +543,7 @@ app.controller('PMController', ['$scope', function (scope) {
                     var entry_id = input.attr('id');
                     var type = parseInt( input.attr('data-entry-type') );
                     var name = $(names[i]).text();
-                    var value = input.val();
+                    var value = input.attr('type') == 'checkbox' ? input.is(':checked') ? '1' : '0' : input.val();
 
                     if( type == ENTRY_TYPE_FILE ) {
                         console.log( "Reading item " + entry_id + " from file map." );
@@ -636,7 +636,7 @@ app.controller('PMController', ['$scope', function (scope) {
                 var entry_id = input.attr('id');
                 var type = parseInt( input.attr('data-entry-type') );
                 var name = $(names[i]).text();
-                var value = input.val();
+                var value = input.attr('type') == 'checkbox' ? input.is(':checked') ? '1' : '0' : input.val();
 
                 if( type == ENTRY_TYPE_FILE ) {
                     console.log( "Reading item " + entry_id + " from file map." );

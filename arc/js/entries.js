@@ -8,6 +8,7 @@
 var REGISTERED_TYPES = [
     new URLEntry( "URL", "https://" ),
     new InputEntry( "Login", "" ),
+    new CheckboxEntry( "Checkbox", "" ),
     new PasswordEntry( "Password", "" ),
     new TextEntry( "Text", "" ),
     new MarkdownEntry( "Markdown", "" ),
@@ -38,6 +39,13 @@ var REGISTERED_TEMPLATES = [
         new InputEntry( "Card Number", "" ),
         new InputEntry( "Valid Until", "" ),
         new PasswordEntry( "CVV", "" )
+    ]},
+    { name: "Simple List", fields:[
+        new CheckboxEntry( "Option A", "" ),
+        new CheckboxEntry( "Option B", "" ),
+        new CheckboxEntry( "Option C", "" ),
+        new CheckboxEntry( "Option D", "" ),
+        new CheckboxEntry( "Option E", "" ),
     ]}
 ];
 

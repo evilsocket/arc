@@ -189,6 +189,10 @@ div.tb-container {
     color: #555;
 }
 
+input.ui-checkbox {
+    margin-right: 5px;
+}
+
 div.entry-edit > a {
     color: #ddd;
     font-size: 1.3rem;
