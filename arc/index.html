@@ -47,7 +47,7 @@
     <div ng-include src="'/views/modals/loader.html?v=6'"></div>
 
     <!-- if user is not logged, show login -->
-    <div id="login" class="container" ng-if="!arc.IsLogged()" ng-include src="'/views/login.html?v=3'"></div>
+    <div id="login" class="container" ng-if="!arc.IsLogged()" ng-include src="'/views/login.html?v=4'"></div>
 
     <!-- user logged but empty encryption key -->
     <div ng-if="arc.IsLogged() && !key" style="margin-bottom:-10px; margin-top:10px;" class="alert alert-warning">
@@ -63,8 +63,8 @@
           <li class="list-group-item">
             <div class="row">
               <div class="col-6">
-                <center class="action-button" onclick="location.reload();">
-                  <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                <center class="action-button" ng-click="doLogout()">
+                  <i class="fa fa-sign-out" aria-hidden="true"></i>
                 </center>    
               </div>
               <div class="col-6" style="border-left: 1px solid #eee">

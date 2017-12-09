@@ -123,7 +123,7 @@ app.controller('PMController', ['$scope', function (scope) {
     scope.statusMessage = null;
     scope.errorMessage = null;
     scope.arc = new Arc();
-    scope.key = null;
+    scope.key = window.localStorage.arkEncryptionKey;
     scope.secret = null;
     scope.store_id = null;
     scope.stores = null;
@@ -167,8 +167,11 @@ app.controller('PMController', ['$scope', function (scope) {
         scope.secret = secret;
     };
 
-    scope.setKey = function(key) {
+    scope.setKey = function(key, persist) {
         scope.key = $.trim(key);
+        if( persist ) {
+            window.localStorage.arkEncryptionKey = scope.key;
+        }
         return true;
     };
 
@@ -350,14 +353,22 @@ app.controller('PMController', ['$scope', function (scope) {
         scope.errorHandler );
     };
 
+    scope.doLogout = function() {
+        if( confirm( "This will clear session data and log you out, confirm?" ) ) {
+            window.localStorage.clear();
+            window.location.reload();
+        }
+    };
+
     scope.doLogin = function() {
         scope.setStatus("Logging in ...");
 
+        var persist  = $('#persist').is(':checked');
         var username = $('#username').val();
         var password = $('#password').val();
 
-        if( scope.setKey( $('#key').val() ) == true ) { 
-            scope.arc.Login( username, password, function(token) {
+        if( scope.setKey( $('#key').val(), persist ) == true ) { 
+            scope.arc.Login( username, password, persist, function(token) {
                 setInterval( function(){ scope.updateSessionTime(); }, 1000 );
 
                 scope.setError(null);
@@ -509,7 +520,7 @@ app.controller('PMController', ['$scope', function (scope) {
         $('#secret_modal').modal();
     };
 
-    scope.onNewSecret = function() {
+    scope.onNewSecret = function() {null
         scope.showSecretModal( true, "Put a title ..." );
     };
 
@@ -705,4 +716,8 @@ app.controller('PMController', ['$scope', function (scope) {
             $('#session_time').html( "Session started " + $.timeago(scope.arc.token_time) );
         }
     };
+
+    if( scope.key != null ){
+        scope.doSelectStore();
+    }
 }]);

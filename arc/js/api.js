@@ -5,11 +5,12 @@
  *
  * See LICENSE.
  */
+
 function Arc(on_req_executed) {
-    this.token = null;
-    this.token_time = null;
-    this.config = null;
+    this.token = window.localStorage.arcToken;
+    this.token_time = window.localStorage.arcTokenTime;
     this.store = null;
+    this.config = null;
     this.records = null;
     this.req = null;
     this.req_started = null;
@@ -24,7 +25,9 @@ Arc.prototype.IsLogged = function() {
 }
 
 Arc.prototype.HasStore = function() {
-    return this.IsLogged() && ( this.store != null );
+    var hasStore = this.IsLogged() && ( this.store != null );
+    console.log( "hasStore = " + hasStore );
+    return hasStore;
 }
 
 Arc.prototype.onRequestStart = function( req ) {
@@ -74,8 +77,8 @@ Arc.prototype.Logout = function() {
     this.token_time = null;
 }
 
-Arc.prototype.Login = function(username, password, success, error) {
-    console.log( "Logging in with username="+username+" and password="+password );
+Arc.prototype.Login = function(username, password, persist, success, error) {
+    console.log( "Logging in with username="+username+" and password="+password+" persist="+persist );
     
     var v = this;
     var login = { username: username, password: password };
@@ -84,6 +87,11 @@ Arc.prototype.Login = function(username, password, success, error) {
         if( resp.token != null ) {
             v.token = resp.token;
             v.token_time = Date.now();
+            if( persist ) {
+                console.log( "Saving token to browser storage." );
+                window.localStorage.arcToken = v.token;
+                window.localStorage.arcTokenTime = v.token_time;
+            }
 
             v.Api( 'GET', '/api/config', null, function(resp) {
                 v.config = resp;
