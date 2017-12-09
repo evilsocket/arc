@@ -190,7 +190,8 @@ div.tb-container {
 }
 
 div.entry-edit > a {
-    color: #eee;
+    color: #ddd;
+    font-size: 1.3rem;
 }
 
 div.entry-edit > a:hover {
