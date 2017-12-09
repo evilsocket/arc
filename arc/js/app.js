@@ -178,7 +178,31 @@ app.controller('PMController', ['$scope', function (scope) {
         return !!( $('#loader_modal').data('bs.modal') || {} )._isShown;
     };
 
+    scope.trackProgress = function(e){
+        if(e.lengthComputable) {
+            var loaded = e.loaded;
+            if( e.type == "load" ) {
+                loaded = e.total;
+            }
+
+            var percentage = Math.round((loaded * 100) / e.total);
+            var seconds_elapsed =   ( new Date().getTime() - scope.progressAt.getTime() )/1000;
+            var bytes_per_second =  seconds_elapsed ? loaded / seconds_elapsed : 0 ;
+            var remaining_bytes =   e.total - loaded;
+            var seconds_remaining = seconds_elapsed ? remaining_bytes / bytes_per_second : 'calculating' ;
+
+            $('#ptext').text( 
+                bytesFormat(loaded, 3) + ' of ' + bytesFormat(e.total) +
+                ' (' + bytesFormat(bytes_per_second) + '/s)'
+            );
+            $('#pbar')
+                .css('width', percentage + '%')
+                .text( percentage + '%' );
+        }
+    };
+
     scope.showLoader = function(message, callback) {
+        console.log("LOADER> " + message);
         $('#loader_message').text(message);
         if( !scope.isLoading() ) {
             // console.log("LOADER SHOWING");
@@ -187,12 +211,20 @@ app.controller('PMController', ['$scope', function (scope) {
                 keyboard: false 
             });
         } else if( callback ) {
-            callback();
+            // be friendly, be async! :P
+            setTimeout( callback, 500 );
         }
     };
 
     scope.hideLoader = function() {
         $('#loader_message').text('');
+
+        scope.progressAt = null;
+        $('#ptext').text('');
+        $('#pbar')
+            .css('width', '0%')
+            .text( '' );
+
         if( scope.isLoading() ) {
             // console.log("LOADER HIDING");
             // https://stackoverflow.com/questions/14451052/in-twitter-bootstrap-how-do-i-unbind-an-event-from-the-closing-of-a-modal-dialo
@@ -526,11 +558,12 @@ app.controller('PMController', ['$scope', function (scope) {
                 var data = record.Encrypt( scope.key );
                 var size = data.length;
 
+                scope.progressAt = new Date();
                 scope.showLoader("Adding record ...", function(){
                     scope.arc.AddRecord( title, expire_at, prune, data, 'aes', size, function(record) {
                         scope.getStore(function() {});
                     },
-                    scope.errorHandler );
+                    scope.errorHandler ).uploadProgress(scope.trackProgress);
                 });
             }, 0 );
         });
@@ -541,6 +574,7 @@ app.controller('PMController', ['$scope', function (scope) {
 
         scope.showLoader( "Buffering data ...", function() {
             // start reading data when loader is shown
+            scope.progressAt = new Date();
             scope.arc.GetRecordBuffer( secret.ID, function(data){
                 // start decrypting data when message is updated
                 scope.showLoader( "Decrypting data ...", function() {
@@ -567,7 +601,7 @@ app.controller('PMController', ['$scope', function (scope) {
                     scope.hideLoader();
                 });
 
-            }, scope.errorHandler );
+            }, scope.errorHandler ).progress(scope.trackProgress);
         });
     };
 
@@ -618,13 +652,14 @@ app.controller('PMController', ['$scope', function (scope) {
             var data = record.Encrypt( scope.key )
             var size = data.length
 
+            scope.progressAt = new Date();
             scope.showLoader("Updating Record ...", function(){
                 scope.arc.UpdateRecord( scope.secret.ID, title, expire_at, prune, data, 'aes', size, function(record) {
                     scope.setSecret(null);
                     scope.setError(null);
                     scope.getStore(function(){});
                 },
-                scope.errorHandler );
+                scope.errorHandler ).uploadProgress(scope.trackProgress);
             });
 
         });

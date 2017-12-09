@@ -36,6 +36,16 @@ footer a:hover {
     color: #ccc;
 }
 
+.progress {
+    background-color: transparent;
+}
+
+#ptext {
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+    margin-left: 2px;
+}
+
 .modal-full {
   width: 100%;
   height: 100%;

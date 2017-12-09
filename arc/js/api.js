@@ -45,7 +45,7 @@ Arc.prototype.Api = function( method, path, data, success, error, raw ) {
     this.onRequestStart( method + ' ' + path );
 
     var arc = this;
-    $.ajax({
+    return $.ajax({
         type: method,
         url: path,
         beforeSend: function (xhr) {
@@ -147,7 +147,7 @@ Arc.prototype.SetStore = function( id, success, error ) {
 
 Arc.prototype.GetRecordBuffer = function( record_id, success, error ) {
     var path = '/api/store/' + this.store.ID + '/record/' + record_id + '/buffer';
-    this.Api( 'GET', path, null, success, error, true );
+    return this.Api( 'GET', path, null, success, error, true );
 };
 
 Arc.prototype.AddRecord = function( title, expire_at, prune, data, encryption, size, success, error ) {
@@ -164,7 +164,7 @@ Arc.prototype.AddRecord = function( title, expire_at, prune, data, encryption, s
         'Size': size,
     };
 
-    this.Api( 'POST', '/api/store/' + this.store.ID + '/records', record, success, error );
+    return this.Api( 'POST', '/api/store/' + this.store.ID + '/records', record, success, error );
 }
 
 Arc.prototype.UpdateRecord = function( id, title, expire_at, prune, data, encryption, size, success, error) {
@@ -181,7 +181,7 @@ Arc.prototype.UpdateRecord = function( id, title, expire_at, prune, data, encryp
         'Encryption': encryption,
         'Size': size
     };
-    this.Api( 'PUT', '/api/store/' + this.store.ID + '/record/' + id, record, success, error );
+    return this.Api( 'PUT', '/api/store/' + this.store.ID + '/record/' + id, record, success, error );
 }
 
 Arc.prototype.DeleteRecord = function( record, success, error ) {

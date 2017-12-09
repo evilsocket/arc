@@ -21,6 +21,7 @@
   <script type="text/javascript" src="/js/libs/jquery/jquery.editable.js"></script>
   <script type="text/javascript" src="/js/libs/jquery/jquery.timeago.js"></script>
   <script type="text/javascript" src="/js/libs/jquery/jquery-sortable.js"></script>
+  <script type="text/javascript" src="/js/libs/jquery/jq-ajax-progress.min.js"></script>
   <script type="text/javascript" src="/js/libs/bootstrap/bootstrap.bundle.min.js"></script>
   <script type="text/javascript" src="/js/libs/bootstrap/bootstrap-datetimepicker.min.js"></script>
   <script type="text/javascript" src="/js/libs/angular/angular.min.js"></script>
@@ -42,7 +43,7 @@
   <div class="container-fluid" id="ngscope" ng-app="PM" ng-controller="PMController">
 
     <div ng-include src="'/views/modals/error.html?v=2'"></div>
-    <div ng-include src="'/views/modals/loader.html'"></div>
+    <div ng-include src="'/views/modals/loader.html?v=6'"></div>
 
     <!-- if user is not logged, show login -->
     <div id="login" class="container" ng-if="!arc.IsLogged()" ng-include src="'/views/login.html?v=3'"></div>

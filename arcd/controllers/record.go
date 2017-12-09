@@ -8,6 +8,7 @@
 package controllers
 
 import (
+	"fmt"
 	"github.com/evilsocket/arc/arcd/log"
 	"github.com/evilsocket/arc/arcd/models"
 	"github.com/evilsocket/arc/arcd/utils"
@@ -74,6 +75,7 @@ func GetRecordBuffer(c *gin.Context) {
 	} else {
 		size := uint64(len(buffer.Data))
 		log.Api(log.DEBUG, c, "Streaming %s of buffer %d.", utils.FormatBytes(size), buffer.ID)
+		c.Writer.Header().Set("Content-Length", fmt.Sprintf("%d", len(buffer.Data)))
 		c.Data(200, "application/octect-stream", []byte(buffer.Data))
 	}
 }
