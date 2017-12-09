@@ -96,10 +96,15 @@ FileEntry.prototype.RenderToList = function(list, idx) {
 
         g_FilesMap[entry_id] = file;
 
-        rendered += '<small class="text-muted">' + bytesFormat( file.size ) + '</small> '; 
-
         if( file.type.indexOf("image/") != 0 ) {
+            var type = "";
+            if( file.type ) {
+                type = file.type + ' / ';
+            }
+            rendered += '<small class="text-muted">' + type + bytesFormat( file.size ) + '</small> '; 
             rendered += '<a href="javascript:downloadFor(\''+entry_id+'\')"><i class="fa fa-download" aria-hidden="true"></i></a> '; 
+        } else {
+            rendered += '<small class="text-muted">' + bytesFormat( file.size ) + '</small> '; 
         }
     }
  
