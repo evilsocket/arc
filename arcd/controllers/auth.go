@@ -55,7 +55,7 @@ func Auth(c *gin.Context) {
 
 	if err := c.BindJSON(&auth); err != nil {
 		utils.BadRequest(c)
-	} else if auth.Username != config.Conf.Username || auth.Password != config.Conf.Password {
+	} else if config.Conf.Auth(auth.Username, auth.Password) == false {
 		log.Warningf("Invalid login credentials: user='%s' pass='%s'.", log.Bold(auth.Username), log.Bold(auth.Password))
 		utils.Forbidden(c, "Invalid login credentials.")
 	} else if token, err := middlewares.GenerateToken([]byte(config.Conf.Secret), auth.Username); err != nil {

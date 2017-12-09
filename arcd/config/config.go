@@ -8,6 +8,8 @@
 package config
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"github.com/evilsocket/arc/arcd/log"
 	"io/ioutil"
@@ -75,4 +77,13 @@ func Load(filename string) error {
 	}
 
 	return json.Unmarshal(raw, &Conf)
+}
+
+func (c Configuration) Auth(username, password string) bool {
+	if c.Username != username {
+		return false
+	}
+
+	hash := sha256.Sum256([]byte(password))
+	return hex.EncodeToString(hash[:]) == c.Password
 }

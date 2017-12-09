@@ -44,6 +44,10 @@ Now copy the `sample_config.json` file to a new `config.json` file, customize it
 
     ./arcd -config config.json -app ../arc
 
+The `password` field is the SHA256 checksum of your password, you can generate a new one with:
+
+    echo -n "your-new-password" | sha256sum
+
 Browse `http://localhost:8080/` and login with the credentials you specified in the `config.json` file.
 
 **Note**
@@ -59,7 +63,7 @@ You will find a `sample_config.json` file inside the `arcd` folder of the projec
     "address": "127.0.0.1",
     "port": 8080,
     "username": "arc",
-    "password": "arc",
+    "password": "404fcfb394d23199f6d95f1f36bd2beb6df8564f993f44517f6015fcd16101a9",
     "database": "~/arc.db",
     "token_duration": 60,
     "scheduler": {
