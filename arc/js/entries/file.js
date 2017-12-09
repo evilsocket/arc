@@ -11,6 +11,27 @@ const ENTRY_TYPE_FILE = 4;
 
 var g_FilesMap = {};
 
+function FilesAdd(id, reader, file) {
+    console.log( "+ FILES[" + id + "] = '" + file.name + "', " + file.type + ", " + file.size + " b" );
+    g_FilesMap[id] = {
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        updated_at: file.lastModified,
+        data: reader.result 
+    };
+}
+
+function FilesGet(id) {
+    console.log( "< FILES[" + id + "]" );
+    return g_FilesMap[id];
+}
+
+function FilesDel(id) {
+    console.log( "- FILES[" + id + "]" );
+    delete g_FilesMap[id];
+}
+
 function FileEntry(name, value) {
     Entry.call( this, ENTRY_TYPE_FILE, name, value );
 }
@@ -45,9 +66,7 @@ FileEntry.prototype.RenderToList = function(list, idx) {
     var rendered = '<div class="entry-edit">';
     
     if( this.is_new == false ) {
-        console.log("FILE_MAP["+entry_id+"] => " + this.value.length + " bytes." );
-
-        g_FilesMap[entry_id] = this.value;
+        g_FilesMap[entry_id] = JSON.parse(this.value);
 
         rendered += '<small class="text-muted">' + bytesFormat( this.value.length ) + '</small> '; 
         rendered += '<a href="javascript:downloadFor(\''+entry_id+'\')"><i class="fa fa-download" aria-hidden="true"></i></a> '; 
@@ -74,8 +93,7 @@ FileEntry.prototype.OnRendered = function(id) {
         var reader = new FileReader();
 
         reader.onload = function () {
-            console.log( "FILES_MAP['" + elem_id + "'] => " + reader.result.length + " bytes." );
-            g_FilesMap[elem_id] = reader.result;
+            FilesAdd(elem_id, reader, file);
         };
 
         editable.text( file.name );

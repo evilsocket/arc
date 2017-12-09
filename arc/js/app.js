@@ -27,18 +27,17 @@ function editEntryFor(id) {
 
 function downloadFor(id) {
     var name = $('#editable_' +  id).text();
-    var data = g_FilesMap[id];
+    var file = FilesGet(id);
 
-    console.log( "Dowloading " + data.length + " bytes of data as " + name );
+    console.log( "Dowloading " + file.size + " bytes of data as " + name + " (" + file.type + ")" );
 
     // https://stackoverflow.com/questions/23795034/creating-a-blob-or-a-file-from-javascript-binary-string-changes-the-number-of-by
-    var bytes = new Uint8Array(data.length);
-    for (var i=0; i<data.length; i++)
-        bytes[i] = data.charCodeAt(i);
-    data = bytes;
+    var bytes = new Uint8Array(file.size);
+    for( var i = 0; i < file.size; i++ ) {
+        bytes[i] = file.data.charCodeAt(i);
+    }
 
-    var file = new File([data], name);
-    console.log(file);
+    file = new File([bytes], name, {type: file.type});
     saveAs(file);
 }
 
@@ -557,14 +556,13 @@ app.controller('PMController', ['$scope', function (scope) {
                     var value = input.attr('type') == 'checkbox' ? input.is(':checked') ? '1' : '0' : input.val();
 
                     if( type == ENTRY_TYPE_FILE ) {
-                        console.log( "Reading item " + entry_id + " from file map." );
-                        value = g_FilesMap[entry_id];
-                        console.log( "  " + entry_id + " => " + value.length + " bytes." );
-                        // free the memory!
-                        delete g_FilesMap[entry_id];
+                        var file = FilesGet(entry_id);
+                        // free the memory
+                        FilesDel(entry_id);
+                        value = JSON.stringify(file);
                     }
 
-                    record.AddEntry(new Entry( type, name, value ));
+                    record.AddEntry(new Entry( type, name, value));
                 }
                 var data = record.Encrypt( scope.key );
                 var size = data.length;
@@ -650,11 +648,10 @@ app.controller('PMController', ['$scope', function (scope) {
                 var value = input.attr('type') == 'checkbox' ? input.is(':checked') ? '1' : '0' : input.val();
 
                 if( type == ENTRY_TYPE_FILE ) {
-                    console.log( "Reading item " + entry_id + " from file map." );
-                    value = g_FilesMap[entry_id];
-                    console.log( "  " + entry_id + " => " + value.length + " bytes." );
+                    var file = FilesGet(entry_id);
                     // free the memory!
-                    delete g_FilesMap[entry_id];
+                    FilesDel(entry_id);
+                    value = JSON.stringify(file);
                 }
 
                 record.AddEntry(new Entry( type, name, value ));
