@@ -155,6 +155,12 @@ PasswordEntry.prototype.OnRendered = function(id) {
     var elem = $('#' + elem_id);
 
     var options = {
+        rules: {
+            activated: {
+                wordTwoCharacterClasses: true,
+                wordRepetitions: true
+            }
+        },
         ui: {
             bootstrap4: true,
             container: "#secret_entry_" + id,
