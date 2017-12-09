@@ -20,6 +20,15 @@ function FilesAdd(id, reader, file) {
         updated_at: file.lastModified,
         data: reader.result 
     };
+
+    var $preview = $('#preview_' + id);
+    if( file.type.indexOf("image/") == 0 ) {
+        if( $preview ) {
+            $preview.attr( 'src', "data:text/plain;base64," + btoa(g_FilesMap[id].data) ).show();
+        }
+    } else {
+        $preview.hide();
+    }
 }
 
 function FilesGet(id) {
@@ -47,18 +56,35 @@ FileEntry.prototype.Icon = function() {
     return 'cloud-upload';
 }
 
-FileEntry.prototype.formGroup = function(input, id) {
+FileEntry.prototype.formGroup = function(input, id, mime) {
     var id = this.id(id);
-    return '<div class="form-group">' + 
-             '<span class="editable label entry-title label-default label-' + this.type + '" id="editable_' + id + '">' + this.name + '</span>' +
-             '<label class="upload btn btn-default" for="' + id + '"><i class="fa fa-upload" aria-hidden="true"></i>' +
-                input +
-             '</label>' +
-            '</div>';
+
+    if( mime && mime.indexOf("image/") == 0 ) {
+        var file = FilesGet(id);
+
+        html = '<div class="media">' +
+                  '<img id="preview_' + id + '" onclick="javascript:downloadFor(\'' + id + '\')" class="preview-image mr-3" src="data:text/plain;base64,' + btoa(file.data) + '"/>' +
+                  '<div class="media-body">' +
+                    '<h5 class="editable entry-title mt-0" id="editable_' + id + '">' + this.name + '</h5>' +
+                    input + 
+                    '<label class="upload btn btn-default" for="' + id + '"><i class="fa fa-upload" aria-hidden="true"></i></label>' +
+                  '</div>' +
+               '</div>';
+    }
+    else {
+        html = '<div class="form-group">' + 
+                 '<span class="editable label entry-title label-default label-' + this.type + '" id="editable_' + id + '">' + this.name + ' </span>' + 
+                    '<label class="upload btn btn-default" for="' + id + '"><i class="fa fa-upload" aria-hidden="true"></i>' +
+                    input +
+                 '</label>' +
+                '</div>';
+    }
+
+    return html;
 }
 
-FileEntry.prototype.Render = function(with_value, id){
-     return this.formGroup( this.input('file', false, id), id ); 
+FileEntry.prototype.Render = function(idx, mime){
+     return this.formGroup( this.input('file', false, idx), idx, mime); 
 }
 
 FileEntry.prototype.RenderToList = function(list, idx) {
@@ -66,15 +92,20 @@ FileEntry.prototype.RenderToList = function(list, idx) {
     var rendered = '<div class="entry-edit">';
     
     if( this.is_new == false ) {
-        g_FilesMap[entry_id] = JSON.parse(this.value);
+        var file = JSON.parse(this.value)
 
-        rendered += '<small class="text-muted">' + bytesFormat( this.value.length ) + '</small> '; 
-        rendered += '<a href="javascript:downloadFor(\''+entry_id+'\')"><i class="fa fa-download" aria-hidden="true"></i></a> '; 
+        g_FilesMap[entry_id] = file;
+
+        rendered += '<small class="text-muted">' + bytesFormat( file.size ) + '</small> '; 
+
+        if( file.type.indexOf("image/") != 0 ) {
+            rendered += '<a href="javascript:downloadFor(\''+entry_id+'\')"><i class="fa fa-download" aria-hidden="true"></i></a> '; 
+        }
     }
  
     rendered +=   '<a href="javascript:removeEntry('+idx+')"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
                 '</div>' +
-                this.Render(true, idx);
+                this.Render(idx, this.is_new ? null : g_FilesMap[entry_id].type);
 
     list.append( '<li class="secret-entry-item" id="secret_entry_' + idx + '">' + rendered + '</li>' );
 
@@ -92,7 +123,7 @@ FileEntry.prototype.OnRendered = function(id) {
         var file = fileInput.files[0];
         var reader = new FileReader();
 
-        reader.onload = function () {
+        reader.onload = function (e) {
             FilesAdd(elem_id, reader, file);
         };
 

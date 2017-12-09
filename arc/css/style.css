@@ -40,6 +40,10 @@ footer a:hover {
     background-color: transparent;
 }
 
+img.preview-image {
+    max-width: 128px;
+}
+
 #ptext {
     font-size: 0.8rem;
     margin-bottom: 4px;
