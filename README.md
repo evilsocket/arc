@@ -70,6 +70,11 @@ You will find a `sample_config.json` file inside the `arcd` folder of the projec
         "enabled": true,
         "period": 10
     },
+    "backups": {
+        "enabled": true,
+        "period": 1800,
+        "folder": "~/"
+    },
     "tls": {
         "enabled": false,
         "certificate": "/some/certificate.pem",
@@ -88,8 +93,9 @@ It is necessary to change only the `username` and `password` access parameters o
 | password | API access password `sha256` hash. |
 | database | SQLite database file path. |
 | token\_duration | Validity in minutes of a JWT API token after it's being generated. |
-| scheduler.enabled | Enable the scheduling and pruning of expired records. |
-| scheduler.period | Delay in seconds between one period and another of the scheduler. |
+| backups.enabled | Enable automatic backups. |
+| backups.period | Number of seconds between one backup and the next one. |
+| backups.folder | Destination folder for the backup file. |
 | tls.enabled | Run `arcd` on HTTPS. |
 | tls.certificate | HTTPS certificate. |
 | tls.key | HTTPS private key. |

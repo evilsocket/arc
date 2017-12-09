@@ -9,6 +9,11 @@
         "enabled": true,
         "period": 10
     },
+    "backups": {
+        "enabled": true,
+        "period": 1800,
+        "folder": "~/"
+    },
     "tls": {
         "enabled": false,
         "certificate": "/some/certificate.pem",

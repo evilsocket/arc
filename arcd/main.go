@@ -11,6 +11,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path"
 	"time"
 
 	"github.com/evilsocket/arc/arcd/app"
@@ -65,6 +66,21 @@ func arcLoadApp(r *gin.Engine) *app.App {
 	r.Use(middlewares.ServeStatic("/", webapp.Path, webapp.Manifest.Index))
 
 	return webapp
+}
+
+func arcBackupper() {
+	period := time.Duration(config.Conf.Backups.Period) * time.Second
+	filename := path.Join(config.Conf.Backups.Folder, "arcd_backup.json")
+
+	log.Infof("Backup task started with a %v period to %s", period, filename)
+	for {
+		time.Sleep(period)
+
+		log.Infof("Backup to %s ...", filename)
+		if err := models.Export("", filename); err != nil {
+			log.Errorf("Error while creating the backup file: %s.", err)
+		}
+	}
 }
 
 func arcScheduler() {
@@ -153,6 +169,13 @@ func main() {
 		go arcScheduler()
 	} else {
 		log.Warningf("Scheduler is disabled.")
+	}
+
+	if config.Conf.Backups.Enabled {
+		log.Infof("Starting backup task with a period of %ds ...", config.Conf.Backups.Period)
+		go arcBackupper()
+	} else {
+		log.Warningf("Backups are disabled.")
 	}
 
 	gin.SetMode(gin.ReleaseMode)

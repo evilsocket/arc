@@ -12,6 +12,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"github.com/evilsocket/arc/arcd/log"
+	"github.com/evilsocket/arc/arcd/utils"
 	"io/ioutil"
 )
 
@@ -24,6 +25,7 @@ const (
 	defPassword        = "arc"
 	defTokenDuration   = 60
 	defSchedulerPeriod = 15
+	defBackupsEnabled  = false
 )
 
 // Server TLS configuration.
@@ -39,6 +41,13 @@ type schConfig struct {
 	Period  int  `json:"period"`
 }
 
+// Backups configuration.
+type bkConfig struct {
+	Enabled bool   `json:"enabled"`
+	Period  int    `json:"period"`
+	Folder  string `json:"folder"`
+}
+
 // Arc server configuration.
 // swagger:response
 type Configuration struct {
@@ -51,6 +60,7 @@ type Configuration struct {
 	TokenDuration int       `json:"token_duration"`
 	CheckExpired  int       `json:"check_expired"`
 	Scheduler     schConfig `json:"scheduler"`
+	Backups       bkConfig  `json:"backups"`
 	TLS           tlsConfig `json:"tls"`
 }
 
@@ -62,7 +72,12 @@ var Conf = Configuration{
 	Username:      defUsername,
 	Password:      defPassword,
 	TokenDuration: defTokenDuration,
-	TLS:           tlsConfig{Enabled: false},
+	TLS: tlsConfig{
+		Enabled: false,
+	},
+	Backups: bkConfig{
+		Enabled: defBackupsEnabled,
+	},
 	Scheduler: schConfig{
 		Enabled: true,
 		Period:  defSchedulerPeriod,
@@ -76,7 +91,17 @@ func Load(filename string) error {
 		return err
 	}
 
-	return json.Unmarshal(raw, &Conf)
+	err = json.Unmarshal(raw, &Conf)
+	if err != nil {
+		return err
+	}
+
+	// fix path
+	if Conf.Backups.Folder, err = utils.ExpandPath(Conf.Backups.Folder); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (c Configuration) Auth(username, password string) bool {
