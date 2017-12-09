@@ -33,6 +33,7 @@ var (
 	conf_file = ""
 	debug     = false
 	logfile   = ""
+	no_colors = false
 	no_auth   = false
 	export    = false
 	import_fn = ""
@@ -47,6 +48,7 @@ func init() {
 	flag.BoolVar(&no_auth, "no-auth", no_auth, "Disable authenticaion.")
 	flag.BoolVar(&debug, "debug", debug, "Enable debug logs.")
 	flag.StringVar(&logfile, "logfile", logfile, "Log messages to this file instead of standard error.")
+	flag.BoolVar(&no_colors, "no-colors", no_colors, "DIsable colored output.")
 
 	flag.StringVar(&import_fn, "import", import_fn, "Import stores from this JSON export file.")
 	flag.BoolVar(&export, "export", export, "Export store to JSON file, requires --store and --output parameters.")
@@ -104,6 +106,8 @@ func main() {
 	var err error
 
 	flag.Parse()
+
+	log.WithColors = !no_colors
 
 	if logfile != "" {
 		log.Output, err = os.Create(logfile)
