@@ -2,7 +2,6 @@
 
 DEPENDENCIES=github.com/gin-gonic/gin \
 			 github.com/mattn/go-sqlite3 \
-			 github.com/gin-contrib/gzip \
 			 github.com/jinzhu/gorm \
 			 github.com/dgrijalva/jwt-go 
 

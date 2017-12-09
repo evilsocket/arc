@@ -19,7 +19,6 @@ import (
 	"github.com/evilsocket/arc/arcd/middlewares"
 	"github.com/evilsocket/arc/arcd/models"
 
-	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 )
 
@@ -143,7 +142,7 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 
 	r := gin.New()
-	r.Use(gzip.Gzip(gzip.DefaultCompression))
+	// r.Use(gzip.Gzip(gzip.DefaultCompression))
 
 	webapp := arcLoadApp(r)
 
