@@ -85,7 +85,7 @@ It is necessary to change only the `username` and `password` access parameters o
 | address | IP address to bind the `arcd` server to. |
 | port | TCP to bind the `arcd` server to. |
 | username | API access username. |
-| password | API access passwrd. |
+| password | API access password `sha256` hash. |
 | database | SQLite database file path. |
 | token\_duration | Validity in minutes of a JWT API token after it's being generated. |
 | scheduler.enabled | Enable the scheduling and pruning of expired records. |
