@@ -404,6 +404,10 @@ ul li.placeholder:before {
     font-size: 0.8rem;
 }
 
+#loader_modal {
+    margin-top: 5%;
+}
+
 .loader {
     border: 16px solid #f3f3f3; 
     border-top: 16px solid #3498db; 
