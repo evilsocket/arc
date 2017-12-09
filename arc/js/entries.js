@@ -12,6 +12,7 @@ var REGISTERED_TYPES = [
     new PasswordEntry( "Password", "" ),
     new TextEntry( "Text", "" ),
     new MarkdownEntry( "Markdown", "" ),
+    new HTMLEntry( "HTML", "" ),
     new FileEntry( "File", "" ),
 ];
 

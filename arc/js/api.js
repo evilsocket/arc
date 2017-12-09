@@ -26,7 +26,6 @@ Arc.prototype.IsLogged = function() {
 
 Arc.prototype.HasStore = function() {
     var hasStore = this.IsLogged() && ( this.store != null );
-    console.log( "hasStore = " + hasStore );
     return hasStore;
 }
 
