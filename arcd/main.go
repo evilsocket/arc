@@ -185,7 +185,7 @@ func main() {
 	log.Infof("arcd is serving the app %s on %s ...", log.Bold(webapp.String()), log.Bold(address))
 
 	if config.Conf.TLS.Enabled {
-		if err = r.RunTLS(address, config.Conf.TLS.PemFile, config.Conf.TLS.KeyFile); err != nil {
+		if err = r.RunTLS(address, config.Conf.TLS.Certificate, config.Conf.TLS.Key); err != nil {
 			log.Fatal(err)
 		}
 	} else {

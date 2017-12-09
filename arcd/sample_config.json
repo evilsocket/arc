@@ -11,7 +11,7 @@
     },
     "tls": {
         "enabled": false,
-        "pem": "/some/file.pem",
-        "key": "/some/file.key"
+        "certificate": "/some/certificate.pem",
+        "key": "/some/key.pem"
     }
 }

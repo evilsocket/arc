@@ -68,8 +68,8 @@ You will find a `sample_config.json` file inside the `arcd` folder of the projec
     },
     "tls": {
         "enabled": false,
-        "pem": "/some/file.pem",
-        "key": "/some/file.key"
+        "certificate": "/some/certificate.pem",
+        "key": "/some/key.pem"
     }
 }
 ```
@@ -87,7 +87,7 @@ It is necessary to change only the `username` and `password` access parameters o
 | scheduler.enabled | Enable the scheduling and pruning of expired records. |
 | scheduler.period | Delay in seconds between one period and another of the scheduler. |
 | tls.enabled | Run `arcd` on HTTPS. |
-| tls.pem | HTTPS certificate. |
+| tls.certificate | HTTPS certificate. |
 | tls.key | HTTPS private key. |
 
 ## Export and import stores.

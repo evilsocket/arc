@@ -26,9 +26,9 @@ const (
 
 // Server TLS configuration.
 type tlsConfig struct {
-	Enabled bool   `json:"enabled"`
-	PemFile string `json:"pem"`
-	KeyFile string `json:"key"`
+	Enabled     bool   `json:"enabled"`
+	Certificate string `json:"certificate"`
+	Key         string `json:"key"`
 }
 
 // Scheduler configuration.
