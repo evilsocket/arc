@@ -71,9 +71,9 @@ You will find a `sample_config.json` file inside the `arcd` folder of the projec
         "period": 10
     },
     "backups": {
-        "enabled": true,
+        "enabled": false,
         "period": 1800,
-        "folder": "~/"
+        "folder": "/some/backup/path/"
     },
     "tls": {
         "enabled": false,
