@@ -85,9 +85,9 @@ func GetRecordBuffer(c *gin.Context) {
 		if buffer.Compressed {
 			c.Writer.Header().Set("Content-Encoding", "gzip")
 			c.Writer.Header().Set("Vary", "Accept-Encoding")
-		} else {
-			c.Writer.Header().Set("Content-Length", fmt.Sprintf("%d", len(buffer.Data)))
 		}
+
+		c.Writer.Header().Set("Content-Length", fmt.Sprintf("%d", len(buffer.Data)))
 
 		c.Data(200, "application/octect-stream", []byte(buffer.Data))
 	}
