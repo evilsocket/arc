@@ -11,6 +11,7 @@ package models
 import (
 	"encoding/json"
 	"github.com/evilsocket/arc/arcd/log"
+	"github.com/evilsocket/arc/arcd/utils"
 	"io/ioutil"
 	"time"
 )
@@ -110,7 +111,7 @@ func Export(store_id string, filename string) (err error) {
 		return
 	}
 
-	log.Infof("Exported %d bytes to %s.", len(buffer), filename)
+	log.Infof("Exported %s to %s.", utils.FormatBytes(uint64(len(buffer))), filename)
 
 	return nil
 }
