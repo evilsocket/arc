@@ -14,8 +14,8 @@ var AESIterations = 100;
 function AESEncrypt(message, passphrase) {
     var salt = CryptoJS.lib.WordArray.random(AESSaltSize);
     var key  = CryptoJS.PBKDF2( passphrase, salt, {
-        KeySize: AESKeySize / 32,
-        Iterations: AESIterations
+        keySize: AESKeySize / 32,
+        iterations: AESIterations
     });
 
     var iv = CryptoJS.lib.WordArray.random(AESIvSize);
@@ -38,8 +38,8 @@ function AESDecrypt(encrypted, passphrase) {
 
     var salt = CryptoJS.enc.Hex.parse( encrypted.substr(salt_idx, salt_size) );
     var key = CryptoJS.PBKDF2( passphrase, salt, {
-        KeySize: AESKeySize / 32,
-        Iterations: AESIterations
+        keySize: AESKeySize / 32,
+        iterations: AESIterations
     });
 
     var iv = CryptoJS.enc.Hex.parse( encrypted.substr(iv_idx, iv_size) )
