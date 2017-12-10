@@ -97,14 +97,16 @@ func DeleteRecord(c *gin.Context) {
 func UpdateRecord(c *gin.Context) {
 	store_id := c.Params.ByName("id")
 	record_id := c.Params.ByName("r_id")
-	record, err := models.GetRecord(store_id, record_id)
+	record, err := models.GetRecordWithBuffer(store_id, record_id)
 	if err != nil {
 		utils.NotFound(c)
 	} else if err := c.BindJSON(&record); err != nil {
 		utils.BadRequest(c)
 	}
 
-	record.Buffer = models.NewBuffer(record.Encryption, record.Data)
+	record.Buffer.Data = record.Data
+	record.Buffer.Encryption = record.Encryption
+
 	if err := models.Save(&record); err != nil {
 		utils.ServerError(c, err)
 	} else {

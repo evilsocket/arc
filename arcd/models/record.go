@@ -81,3 +81,11 @@ func GetRecord(store_id, id string) (record Record, err error) {
 	err = db.Where("store_id = ?", store_id).Where("id = ?", id).Find(&record).Error
 	return
 }
+
+func GetRecordWithBuffer(store_id, id string) (record Record, err error) {
+	err = db.Where("store_id = ?", store_id).Where("id = ?", id).Find(&record).Error
+	if err == nil {
+		db.Model(record).Related(&record.Buffer)
+	}
+	return
+}
