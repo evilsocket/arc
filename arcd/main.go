@@ -20,6 +20,7 @@ import (
 	"github.com/evilsocket/arc/arcd/log"
 	"github.com/evilsocket/arc/arcd/middlewares"
 	"github.com/evilsocket/arc/arcd/models"
+	"github.com/evilsocket/arc/arcd/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -167,6 +168,14 @@ func main() {
 	if err := models.PruneZombieBuffers(); err != nil {
 		log.Fatal(err)
 	}
+
+	if err := models.Vacuum(); err != nil {
+		log.Fatal(err)
+	}
+
+	stats, _ := os.Stat(config.Conf.Database)
+
+	log.Infof("Database is %s", utils.FormatBytes(uint64(stats.Size())))
 
 	if config.Conf.Scheduler.Enabled {
 		log.Infof("Starting scheduler with a period of %ds ...", config.Conf.Scheduler.Period)

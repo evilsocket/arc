@@ -74,8 +74,21 @@ func GetRecordBuffer(c *gin.Context) {
 		utils.NotFound(c)
 	} else {
 		size := uint64(len(buffer.Data))
-		log.Api(log.DEBUG, c, "Streaming %s of buffer %d.", utils.FormatBytes(size), buffer.ID)
-		c.Writer.Header().Set("Content-Length", fmt.Sprintf("%d", len(buffer.Data)))
+		desc := ""
+
+		if buffer.Compressed {
+			desc = "compressed "
+		}
+
+		log.Api(log.DEBUG, c, "Streaming %s of %sbuffer %d.", utils.FormatBytes(size), desc, buffer.ID)
+		// Let the client handle the decompression :P
+		if buffer.Compressed {
+			c.Writer.Header().Set("Content-Encoding", "gzip")
+			c.Writer.Header().Set("Vary", "Accept-Encoding")
+		} else {
+			c.Writer.Header().Set("Content-Length", fmt.Sprintf("%d", len(buffer.Data)))
+		}
+
 		c.Data(200, "application/octect-stream", []byte(buffer.Data))
 	}
 }
@@ -104,8 +117,7 @@ func UpdateRecord(c *gin.Context) {
 		utils.BadRequest(c)
 	}
 
-	record.Buffer.Data = record.Data
-	record.Buffer.Encryption = record.Encryption
+	record.Buffer.SetData(record.Encryption, record.Data)
 
 	if err := models.Save(&record); err != nil {
 		utils.ServerError(c, err)

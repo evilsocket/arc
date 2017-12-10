@@ -5,6 +5,7 @@
     "password": "404fcfb394d23199f6d95f1f36bd2beb6df8564f993f44517f6015fcd16101a9",
     "database": "~/arc.db",
     "token_duration": 60,
+    "compression": true,
     "scheduler": {
         "enabled": true,
         "period": 10

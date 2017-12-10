@@ -44,6 +44,10 @@ func Setup() (created bool, err error) {
 	return created, nil
 }
 
+func Vacuum() error {
+	return db.Exec("VACUUM").Error
+}
+
 func Save(obj interface{}) error {
 	return db.Save(obj).Error
 }

@@ -26,6 +26,7 @@ const (
 	defTokenDuration   = 60
 	defSchedulerPeriod = 15
 	defBackupsEnabled  = false
+	defCompression     = true
 )
 
 // Server TLS configuration.
@@ -58,6 +59,7 @@ type Configuration struct {
 	Username      string    `json:"username"`
 	Password      string    `json:"password"`
 	TokenDuration int       `json:"token_duration"`
+	Compression   bool      `json:"compression"`
 	CheckExpired  int       `json:"check_expired"`
 	Scheduler     schConfig `json:"scheduler"`
 	Backups       bkConfig  `json:"backups"`
@@ -72,6 +74,7 @@ var Conf = Configuration{
 	Username:      defUsername,
 	Password:      defPassword,
 	TokenDuration: defTokenDuration,
+	Compression:   defCompression,
 	TLS: tlsConfig{
 		Enabled: false,
 	},

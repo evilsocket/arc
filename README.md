@@ -66,6 +66,7 @@ You will find a `sample_config.json` file inside the `arcd` folder of the projec
     "password": "404fcfb394d23199f6d95f1f36bd2beb6df8564f993f44517f6015fcd16101a9",
     "database": "~/arc.db",
     "token_duration": 60,
+    "compression": true,
     "scheduler": {
         "enabled": true,
         "period": 10
@@ -93,6 +94,7 @@ It is necessary to change only the `username` and `password` access parameters o
 | password | API access password `sha256` hash. |
 | database | SQLite database file path. |
 | token\_duration | Validity in minutes of a JWT API token after it's being generated. |
+| compression | Enable or disable records compression. |
 | backups.enabled | Enable automatic backups. |
 | backups.period | Number of seconds between one backup and the next one. |
 | backups.folder | Destination folder for the backup file. |
