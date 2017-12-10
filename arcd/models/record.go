@@ -58,6 +58,23 @@ func (r *Record) BeforeDelete() (err error) {
 	return DeleteBuffer(r.BufferID)
 }
 
+// There was a bug, a fix was done, this prunes the zombie records.
+func PruneZombieBuffers() error {
+	var zombies []Buffer
+	if err := db.Raw("SELECT buffers.* FROM buffers LEFT JOIN records ON records.buffer_id = buffers.id WHERE records.id IS NULL").Scan(&zombies).Error; err != nil {
+		return err
+	}
+
+	for _, zombie := range zombies {
+		log.Warningf("Pruning zombie buffer %d.", zombie.ID)
+		if err := Delete(&zombie); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func Records(store_id string) (records []Record, err error) {
 	err = db.Where("store_id = ?", store_id).Order("updated_at desc").Find(&records).Error
 	return

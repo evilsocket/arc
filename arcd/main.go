@@ -164,6 +164,10 @@ func main() {
 		return
 	}
 
+	if err := models.PruneZombieBuffers(); err != nil {
+		log.Fatal(err)
+	}
+
 	if config.Conf.Scheduler.Enabled {
 		log.Infof("Starting scheduler with a period of %ds ...", config.Conf.Scheduler.Period)
 		go arcScheduler()
