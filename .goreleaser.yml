@@ -29,4 +29,4 @@ builds:
 archive:
   format: tar.gz
   files:
-      - arc
+      - arc/*
