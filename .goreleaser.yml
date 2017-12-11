@@ -12,7 +12,7 @@ builds:
       - CGO_ENABLED=1
       - CC=arm-linux-gnueabi-gcc
     hooks:
-      pre: env
+      pre: echo $(env)
 
 # post: ./script.sh
 archive:
