@@ -2,16 +2,29 @@ builds:
   - main: arcd/main.go
     binary: arcd
     goos:
-      - windows
-      - darwin
       - linux
     goarch:
       - amd64
+
+  - main: arcd/main.go
+    binary: arcd
+    goos:
+      - linux
+    goarch:
       - arm
     env:
+      - C=arm-linux-gnueabi-gcc
       - CGO_ENABLED=1
-    hooks:
-      pre: ./set_arm_env.sh
+
+  - main: arcd/main.go
+    binary: arcd
+    goos:
+      - windows
+    goarch:
+      - amd64
+    env:
+      - CC=x86_64-w64-mingw32-gcc
+      - CGO_ENABLED=1
 
 archive:
   format: tar.gz

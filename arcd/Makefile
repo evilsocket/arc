@@ -18,7 +18,7 @@ export GOPATH
 default: build
 
 build: 
-	go build -v $(FLAGS) -o $(TARGET) $(SRC_PATH)
+	@go build $(FLAGS) -o $(TARGET) $(SRC_PATH)
 
 # http://godoc.org/code.google.com/p/go.tools/cmd/vet
 # go get code.google.com/p/go.tools/cmd/vet
