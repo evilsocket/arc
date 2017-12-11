@@ -27,6 +27,11 @@ builds:
       - CGO_ENABLED=1
 
 archive:
+  wrap_in_directory: true
   format: tar.gz
+  format_overrides:
+    - goos: windows
+      format: zip
   files:
-      - arc/*
+      - arc/**
+
