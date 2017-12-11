@@ -28,7 +28,5 @@ builds:
 
 archive:
   format: tar.gz
-  replacements:
-    darwin: macOS
-
-
+  files:
+      - arc

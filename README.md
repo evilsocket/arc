@@ -40,7 +40,7 @@ Download, install dependencies and compile the `arcd` server component:
     make vendor_get
     make
 
-If you want to build for `arm` from another architecture (ie: you're building for your Raspberry Pi from your laptop):
+If you want to build for `arm` from another architecture (ie: you're building for your Raspberry Pi from your laptop), you can refer to the `.goreleaser.yml` file for platform and arch specific flags:
 
     # on your laptop
     sudo apt-get install gcc-arm-linux-gnueabi
