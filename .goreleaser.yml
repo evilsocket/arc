@@ -1,0 +1,15 @@
+builds:
+  - main: arcd/main.go
+    binary: arcd
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm
+
+archive:
+  format: tar.gz
+  replacements:
+    darwin: macOS
