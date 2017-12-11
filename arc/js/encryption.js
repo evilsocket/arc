@@ -28,6 +28,11 @@ function AESEncrypt(message, passphrase) {
     return salt.toString()+ iv.toString() + encrypted.toString();
 }
 
+/*
+ * Encrypted data format is:
+ *
+ * [hex salt] + [hex iv] + [base64 encrypted data]
+ */
 function AESDecrypt(encrypted, passphrase) {
     // data is hex encoded
     var salt_idx  = 0;
