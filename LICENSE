@@ -19,7 +19,7 @@ For example, if you distribute copies of such a program, whether gratis or for a
 
 Developers that use the GNU GPL protect your rights with two steps: (1) assert copyright on the software, and (2) offer you this License giving you legal permission to copy, distribute and/or modify it.
 
-For the developers' and authors' protection, the GPL clearly explains that there is no warranty for this free software. For both users' and authors' sake, the GPL requires that modified versions be marced as changed, so that their problems will not be attributed erroneously to authors of previous versions.
+For the developers' and authors' protection, the GPL clearly explains that there is no warranty for this free software. For both users' and authors' sake, the GPL requires that modified versions be marked as changed, so that their problems will not be attributed erroneously to authors of previous versions.
 
 Some devices are designed to deny users access to install or run modified versions of the software inside them, although the manufacturer can do so. This is fundamentally incompatible with the aim of protecting users' freedom to change the software. The systematic pattern of such abuse occurs in the area of products for individuals to use, which is precisely where it is most unacceptable. Therefore, we have designed this version of the GPL to prohibit the practice for those products. If such problems arise substantially in other domains, we stand ready to extend this provision to those domains in future versions of the GPL, as needed to protect the freedom of users.
 
@@ -115,9 +115,9 @@ Notwithstanding any other provision of this License, for material you add to a c
 
     * a) Disclaiming warranty or limiting liability differently from the terms of sections 15 and 16 of this License; or
     * b) Requiring preservation of specified reasonable legal notices or author attributions in that material or in the Appropriate Legal Notices displayed by works containing it; or
-    * c) Prohibiting misrepresentation of the origin of that material, or requiring that modified versions of such material be marced in reasonable ways as different from the original version; or
+    * c) Prohibiting misrepresentation of the origin of that material, or requiring that modified versions of such material be marked in reasonable ways as different from the original version; or
     * d) Limiting the use for publicity purposes of names of licensors or authors of the material; or
-    * e) Declining to grant rights under trademark law for use of some trade names, trademarks, or service marcs; or
+    * e) Declining to grant rights under trademark law for use of some trade names, trademarks, or service marks; or
     * f) Requiring indemnification of licensors and authors of that material by anyone who conveys the material (or modified versions of it) with contractual assumptions of liability to the recipient, for any liability that these contractual assumptions directly impose on those licensors and authors.
 
 All other non-permissive additional terms are considered ?further restrictions? within the meaning of section 10. If the Program as you received it, or any part of it, contains a notice stating that it is governed by this License along with a term that is a further restriction, you may remove that term. If a license document contains a further restriction but permits relicensing or conveying under this License, you may add to a covered work material governed by the terms of that license document, provided that the further restriction does not survive such relicensing or conveying.

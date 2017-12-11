@@ -33,5 +33,7 @@ archive:
     - goos: windows
       format: zip
   files:
+      - LICENSE
+      - README.md
       - arc/**/*
 
