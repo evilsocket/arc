@@ -33,5 +33,5 @@ archive:
     - goos: windows
       format: zip
   files:
-      - arc/**
+      - arc/**/*
 
