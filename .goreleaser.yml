@@ -8,6 +8,8 @@ builds:
     goarch:
       - amd64
       - arm
+    env:
+      - CGO_ENABLED=1
     hooks:
       pre: ./set_arm_env.sh
 
