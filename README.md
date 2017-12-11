@@ -40,6 +40,13 @@ Download, install dependencies and compile the `arcd` server component:
     make vendor_get
     make
 
+If you want to build for `arm` from another architecture (ie: you're building for your Raspberry Pi from your laptop):
+
+    # on your laptop
+    sudo apt-get install gcc-arm-linux-gnueabi
+    cd arc/arcd
+    env CC=arm-linux-gnueabi-gcc CGO_ENABLED=1 GOOS=linux GOARM=6 GOARCH=arm make
+    
 Now copy the `sample_config.json` file to a new `config.json` file, customize it and run the `arc` web application:
 
     ./arcd -config config.json -app ../arc
