@@ -8,6 +8,8 @@ builds:
     goarch:
       - amd64
       - arm
+    env:
+      - CGO_ENABLED=1
 
 archive:
   format: tar.gz
