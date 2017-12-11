@@ -34,7 +34,6 @@ function AESEncrypt(message, passphrase) {
  * [hex salt] + [hex iv] + [base64 encrypted data]
  */
 function AESDecrypt(encrypted, passphrase) {
-    // data is hex encoded
     var salt_idx  = 0;
     var salt_size = AESSaltSize * 2;
     var iv_idx    = salt_size;
