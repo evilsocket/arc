@@ -508,6 +508,7 @@ app.controller('PMController', ['$scope', function (scope) {
 
     scope.showSecretModal = function(is_new, title, date, expired_at, prune, size) {
         if( is_new == true ) {
+            $('#secret_meta').text('');
             $('#cleartext-warning').show();
             $('.btn-new').show();
             $('.btn-edit').hide();
