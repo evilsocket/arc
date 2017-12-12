@@ -128,6 +128,7 @@ app.controller('PMController', ['$scope', function (scope) {
     scope.stores = null;
     scope.filter = null;
     scope.timeout = null;
+    scope.trackTotal = 0;
     scope.registeredTypes = REGISTERED_TYPES;
     scope.templates = REGISTERED_TEMPLATES;
 
@@ -181,26 +182,43 @@ app.controller('PMController', ['$scope', function (scope) {
     };
 
     scope.trackProgress = function(e){
+        var clen = 0, loaded = e.loaded;
         if(e.lengthComputable) {
-            var loaded = e.loaded;
-            if( e.type == "load" ) {
-                loaded = e.total;
-            }
-
-            var percentage = Math.round((loaded * 100) / e.total);
-            var seconds_elapsed =   ( new Date().getTime() - scope.progressAt.getTime() )/1000;
-            var bytes_per_second =  seconds_elapsed ? loaded / seconds_elapsed : 0 ;
-            var remaining_bytes =   e.total - loaded;
-            var seconds_remaining = seconds_elapsed ? remaining_bytes / bytes_per_second : 'calculating' ;
-
-            $('#ptext').text( 
-                bytesFormat(loaded, 3) + ' of ' + bytesFormat(e.total) +
-                ' (' + bytesFormat(bytes_per_second) + '/s)'
-            );
-            $('#pbar')
-                .css('width', percentage + '%')
-                .text( percentage + '%' );
+            clen = e.total;
+        } else {
+            // https://stackoverflow.com/questions/15097712/how-can-i-use-deflated-gzipped-content-with-an-xhr-onprogress-function
+            clen = e.target.getResponseHeader('x-decompress-content-length');
         }
+
+        if( !clen ) {
+            clen = scope.trackTotal;
+        }
+
+        if( e.type == "load" ) {
+            loaded = e.total;
+        }
+
+        if( !clen ) {
+            var tot = "?";
+            var percentage = "??? %";
+            var remaining_bytes =  "?";
+            var seconds_remaining = "?";
+        } else {
+            var tot = bytesFormat(clen);
+            var percentage = Math.round((loaded * 100) / clen);
+            var remaining_bytes =  clen - loaded;
+            var seconds_remaining = seconds_elapsed ? remaining_bytes / bytes_per_second : 'calculating' ;
+        }
+
+        var seconds_elapsed =   ( new Date().getTime() - scope.progressAt.getTime() )/1000;
+        var bytes_per_second =  seconds_elapsed ? loaded / seconds_elapsed : 0 ;
+
+        $('#ptext').text( 
+            bytesFormat(loaded, 3) + ' of ' + tot + ' (' + bytesFormat(bytes_per_second) + '/s)'
+        );
+        $('#pbar')
+            .css('width', percentage + '%')
+            .text( percentage + '%' );
     };
 
     scope.showLoader = function(message, callback) {
@@ -567,6 +585,7 @@ app.controller('PMController', ['$scope', function (scope) {
                 var data = record.Encrypt( scope.key );
                 var size = data.length;
 
+                scope.trackTotal = size;
                 scope.progressAt = new Date();
                 scope.showLoader("Adding record ...", function(){
                     scope.arc.AddRecord( title, expire_at, prune, data, 'aes', size, function(record) {
@@ -581,6 +600,7 @@ app.controller('PMController', ['$scope', function (scope) {
     scope.onShowSecret = function(secret) {
         console.log( "Loading record " + secret.ID );
 
+        scope.trackTotal = secret.Size;
         scope.showLoader( "Buffering data ...", function() {
             // start reading data when loader is shown
             scope.progressAt = new Date();
@@ -660,6 +680,7 @@ app.controller('PMController', ['$scope', function (scope) {
             var data = record.Encrypt( scope.key )
             var size = data.length
 
+            scope.trackTotal = size;
             scope.progressAt = new Date();
             scope.showLoader("Updating Record ...", function(){
                 scope.arc.UpdateRecord( scope.secret.ID, title, expire_at, prune, data, 'aes', size, function(record) {
