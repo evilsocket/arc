@@ -534,7 +534,7 @@ app.controller('PMController', ['$scope', function (scope) {
 
         $('#secret_expired_at').trigger('change');
         $('#secret_title').text(title);
-        $('#secret_entry_list').html('').sortable();
+        $('#secret_entry_list').html('').sortable({handle: 'i.fa-arrows'});
         $('#secret_modal').modal();
     };
 

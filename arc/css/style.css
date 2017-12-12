@@ -140,6 +140,10 @@ div.entry-edit {
     margin-bottom: 5px;
 }
 
+div.entry-edit a {
+    margin-left: 5px;
+}
+
 div.tb-container {
     padding: 0;
     margin: 0;

@@ -139,6 +139,7 @@ PasswordEntry.prototype.RenderToList = function(list, idx) {
     var entry_id = this.id(idx);
     var rendered = '<div class="entry-edit">' +
                       '<a href="javascript:removeEntry('+idx+')"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
+                      '<a href="#" onclick="return false"><i class="fa fa-arrows" aria-hidden="true"></i></a>' +
                    '</div>' +
                    this.Render(true, idx) +
                    '<div class="pwstrength_viewport_progress"></div>';
