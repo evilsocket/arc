@@ -506,7 +506,7 @@ app.controller('PMController', ['$scope', function (scope) {
                parts[1] + '.000000000' + tz + ":00";
     };
 
-    scope.showSecretModal = function(is_new, title, date, expired_at, prune) {
+    scope.showSecretModal = function(is_new, title, date, expired_at, prune, size) {
         if( is_new == true ) {
             $('#cleartext-warning').show();
             $('.btn-new').show();
@@ -523,6 +523,7 @@ app.controller('PMController', ['$scope', function (scope) {
                 $('#secret_expired_at').val(to_picker);
             }
 
+            $('#secret_meta').text("This record is " + bytesFormat(size) + " and has been updated " + $.timeago(date) + ".");
             $('#cleartext-warning').hide();
             $('.btn-new').hide();
             $('.btn-edit').show();
@@ -619,7 +620,7 @@ app.controller('PMController', ['$scope', function (scope) {
                         $('#record_lock_' + secret.ID ).removeClass("fa-lock").addClass("fa-unlock");
                         $('#record_status_' + secret.ID ).removeClass("status-locked").addClass("status-unlocked");
 
-                        scope.showSecretModal(false, record.title, secret.UpdatedAt, secret.ExpiredAt, secret.Prune);
+                        scope.showSecretModal(false, record.title, secret.UpdatedAt, secret.ExpiredAt, secret.Prune, secret.Size);
 
                         var list = $('#secret_entry_list'); 
                         for( var i = 0; i < record.entries.length; i++ ){
