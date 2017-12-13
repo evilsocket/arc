@@ -163,7 +163,7 @@ func main() {
 		return
 	}
 
-	signal.Notify(signals)
+	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
 	go arcSignalHandler()
 
 	if config.Conf.Scheduler.Enabled {
