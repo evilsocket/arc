@@ -1,6 +1,6 @@
 # Arc
 
-Arc is a manager for your secrets made of `arcd`, a RESTful API server written in Go which exposes read and write primitives for **encrypted records** on a sqlite database file.
+Arc is a manager for your secrets made of `arcd`, a RESTful API server written in Go which exposes read and write primitives for **encrypted records** on disk
 
 ![arcd](https://i.imgur.com/swC00gX.png)
 
@@ -67,7 +67,7 @@ You will find a `sample_config.json` file inside the `arcd` folder of the projec
     "port": 8080,
     "username": "arc",
     "password": "404fcfb394d23199f6d95f1f36bd2beb6df8564f993f44517f6015fcd16101a9",
-    "database": "~/arc.db",
+    "database": "~/arcdb",
     "token_duration": 60,
     "compression": true,
     "scheduler": {
@@ -95,7 +95,7 @@ It is necessary to change only the `username` and `password` access parameters o
 | port | TCP to bind the `arcd` server to. |
 | username | API access username. |
 | password | API access password `sha256` hash. |
-| database | SQLite database file path. |
+| database | Database root directory. |
 | token\_duration | Validity in minutes of a JWT API token after it's being generated. |
 | compression | Enable or disable records compression. |
 | backups.enabled | Enable automatic backups. |
