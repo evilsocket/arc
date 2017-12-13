@@ -8,7 +8,9 @@
 package db
 
 import (
+	"github.com/evilsocket/arc/arcd/log"
 	"sort"
+	"time"
 )
 
 func getStoreById(store_id string) (store *Record, err error) {
@@ -155,4 +157,14 @@ func PrunableRecords() (records []*Record, err error) {
 	}
 
 	return
+}
+
+func Flush() {
+	log.Infof("Flushing database ...")
+
+	start := time.Now()
+	dbIndex.Flush()
+	elapsed := time.Since(start)
+
+	log.Infof("Database flushed in %s.", elapsed)
 }

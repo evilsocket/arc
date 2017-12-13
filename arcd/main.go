@@ -11,6 +11,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"os/signal"
 	"path"
 	"time"
 
@@ -30,6 +31,7 @@ const (
 )
 
 var (
+	signals   = make(chan os.Signal, 1)
 	apppath   = ""
 	conf_file = ""
 	debug     = false
@@ -107,6 +109,14 @@ func arcScheduler() {
 	}
 }
 
+func arcSignalHandler() {
+	log.Infof("Signal handler started.")
+	s := <-signals
+	log.Warningf("RECEIVED SIGNAL: %s", s)
+	db.Flush()
+	os.Exit(1)
+}
+
 func main() {
 	var err error
 
@@ -152,6 +162,9 @@ func main() {
 		}
 		return
 	}
+
+	signal.Notify(signals)
+	go arcSignalHandler()
 
 	if config.Conf.Scheduler.Enabled {
 		log.Infof("Starting scheduler with a period of %ds ...", config.Conf.Scheduler.Period)

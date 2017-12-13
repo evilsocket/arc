@@ -109,3 +109,12 @@ func (i *Index) Records() map[uint64]*Record {
 	defer i.Unlock()
 	return i.records
 }
+
+func (i *Index) Flush() {
+	i.Lock()
+	defer i.Unlock()
+
+	for _, r := range i.records {
+		r.meta.Flush()
+	}
+}
