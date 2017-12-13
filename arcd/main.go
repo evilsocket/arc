@@ -95,7 +95,7 @@ func arcScheduler() {
 			for _, r := range store.Children() {
 				meta := r.Meta()
 				if r.Expired() && meta.Prune {
-					log.Infof("Pruning record %d ...", meta.Id)
+					log.Infof("Pruning record %d ( %s ) ...", meta.Id, meta.Title)
 					if _, err := store.Del(meta.Id); err != nil {
 						log.Errorf("Error while deleting record %d: %s.", meta.Id, err)
 					}
