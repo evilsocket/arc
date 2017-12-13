@@ -5,7 +5,6 @@ builds:
       - CGO_ENABLED=0
     goos:
       - linux
-      - bsd
       - darwin
       - windows
     goarch:
@@ -25,3 +24,11 @@ archive:
       - README.md
       - arc/**/*
 
+fpm:
+  homepage:  https://github.com/evilsocket/arc
+  description: API server for your secrets. 
+  maintainer: Simone Margaritelli <evilsocket@protonmail.com>
+  license: GPL3
+  formats:
+    - deb
+    - rpm
