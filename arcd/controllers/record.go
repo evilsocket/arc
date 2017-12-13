@@ -94,7 +94,7 @@ func GetRecordBuffer(c *gin.Context) {
 		}
 
 		size := record.Size()
-		log.Api(log.DEBUG, c, "Streaming %s (%d b) of %sbuffer.", utils.FormatBytes(size), size, desc)
+		log.Api(log.INFO, c, "Streaming %s (%d b) of %sbuffer.", utils.FormatBytes(size), size, desc)
 		// Let the client handle the decompression :P
 		if is_compressed {
 			c.Writer.Header().Set("Content-Encoding", "gzip")
@@ -102,9 +102,7 @@ func GetRecordBuffer(c *gin.Context) {
 			c.Writer.Header().Set("Vary", "Accept-Encoding")
 		}
 
-		clen := fmt.Sprintf("%d", size)
-
-		c.Writer.Header().Set("Content-Length", clen)
+		c.Writer.Header().Set("Content-Length", fmt.Sprintf("%d", size))
 		c.File(datapath)
 	}
 }
