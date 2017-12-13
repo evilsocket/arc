@@ -143,7 +143,6 @@ app.controller('PMController', ['$scope', function (scope) {
                 message = message.responseJSON.message;
             }
 
-            console.log(message);
             $('#error_body').html(message);
             $('#error_modal').modal();
         } else {

@@ -93,7 +93,7 @@ func GetRecordBuffer(c *gin.Context) {
 			desc = "compressed "
 		}
 
-		log.Api(log.INFO, c, "Streaming %s (%d b) of %sbuffer.", utils.FormatBytes(meta.Size), meta.Size, desc)
+		log.Infof("Streaming %s (%d b) of %sbuffer.", utils.FormatBytes(meta.Size), meta.Size, desc)
 
 		// Let the client handle the decompression :P
 		if meta.Compressed {
