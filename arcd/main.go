@@ -13,6 +13,7 @@ import (
 	"os"
 	"os/signal"
 	"path"
+	"syscall"
 	"time"
 
 	"github.com/evilsocket/arc/arcd/app"
