@@ -43,7 +43,7 @@ func Setup() (created bool, err error) {
 		}
 	}
 
-	log.Debugf("dbNextId=%d", dbNextId)
+	log.Debugf("  dbNextId=%d", dbNextId)
 
 	return created, nil
 }
