@@ -8,14 +8,14 @@
 package controllers
 
 import (
+	"github.com/evilsocket/arc/arcd/db"
 	"github.com/evilsocket/arc/arcd/log"
-	"github.com/evilsocket/arc/arcd/models"
 	"github.com/evilsocket/arc/arcd/utils"
 	"github.com/gin-gonic/gin"
 )
 
 func ListStores(c *gin.Context) {
-	stores, err := models.Stores()
+	stores, err := db.Stores()
 	if err != nil {
 		utils.NotFound(c)
 	} else {
@@ -25,32 +25,32 @@ func ListStores(c *gin.Context) {
 }
 
 func CreateStore(c *gin.Context) {
-	var store models.Store
-	if err := c.BindJSON(&store); err != nil {
+	var meta db.Meta
+	if err := c.BindJSON(&meta); err != nil {
 		utils.BadRequest(c)
-	} else if err := models.Create(&store); err != nil {
+	} else if store, err := db.Create(meta); err != nil {
 		utils.ServerError(c, err)
 	} else {
-		log.Api(log.INFO, c, "Created store %d.", store.ID)
+		log.Api(log.INFO, c, "Created store %d.", store.Id)
 		c.JSON(200, store)
 	}
 }
 
 func GetStore(c *gin.Context) {
-	store, err := models.GetStore(c.Params.ByName("id"))
+	store, err := db.GetStore(c.Params.ByName("id"))
 	if err != nil {
 		utils.NotFound(c)
 	} else {
 		log.Api(log.DEBUG, c, "Requested store %s.", c.Params.ByName("id"))
-		c.JSON(200, store)
+		c.JSON(200, store.Meta())
 	}
 }
 
 func DeleteStore(c *gin.Context) {
-	store, err := models.GetStore(c.Params.ByName("id"))
+	store, err := db.GetStore(c.Params.ByName("id"))
 	if err != nil {
 		utils.NotFound(c)
-	} else if err := models.Delete(&store); err != nil {
+	} else if err := db.Delete(store); err != nil {
 		utils.ServerError(c, err)
 	} else {
 		log.Api(log.INFO, c, "Deleted store %s.", c.Params.ByName("id"))
@@ -59,12 +59,13 @@ func DeleteStore(c *gin.Context) {
 }
 
 func UpdateStore(c *gin.Context) {
-	store, err := models.GetStore(c.Params.ByName("id"))
+	store, err := db.GetStore(c.Params.ByName("id"))
+	var meta db.Meta
 	if err != nil {
 		utils.NotFound(c)
-	} else if err := c.BindJSON(&store); err != nil {
+	} else if err := c.BindJSON(&meta); err != nil {
 		utils.BadRequest(c)
-	} else if err := models.Save(&store); err != nil {
+	} else if err := store.Update(meta); err != nil {
 		utils.ServerError(c, err)
 	} else {
 		log.Api(log.INFO, c, "Updated store %s.", c.Params.ByName("id"))

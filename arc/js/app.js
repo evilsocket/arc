@@ -182,20 +182,15 @@ app.controller('PMController', ['$scope', function (scope) {
     };
 
     scope.trackProgress = function(e){
-        var clen = 0, loaded = e.loaded;
-        if(e.lengthComputable) {
-            clen = e.total;
-        } else {
-            // https://stackoverflow.com/questions/15097712/how-can-i-use-deflated-gzipped-content-with-an-xhr-onprogress-function
-            clen = e.target.getResponseHeader('x-decompress-content-length');
-        }
-
-        if( !clen ) {
-            clen = scope.trackTotal;
-        }
+        var clen = scope.trackTotal, 
+            loaded = e.loaded;
 
         if( e.type == "load" ) {
-            loaded = e.total;
+            loaded = clen;
+        }
+
+        if( loaded > clen ) {
+            clen = loaded;
         }
 
         if( !clen ) {
@@ -210,7 +205,7 @@ app.controller('PMController', ['$scope', function (scope) {
             var seconds_remaining = seconds_elapsed ? remaining_bytes / bytes_per_second : 'calculating' ;
         }
 
-        var seconds_elapsed =   ( new Date().getTime() - scope.progressAt.getTime() )/1000;
+        var seconds_elapsed =   ( new Date().getTime() - scope.progressAt.getTime() ) / 1000;
         var bytes_per_second =  seconds_elapsed ? loaded / seconds_elapsed : 0 ;
 
         $('#ptext').text( 
@@ -259,7 +254,7 @@ app.controller('PMController', ['$scope', function (scope) {
         else {
             scope.setStatus("Loading passwords store ...");
             scope.arc.SetStore( scope.store_id, function() {
-                document.title = scope.arc.store.Title;
+                document.title = scope.arc.store.title;
 
                 scope.hideLoader();
                 scope.setupTimeout();
@@ -328,10 +323,10 @@ app.controller('PMController', ['$scope', function (scope) {
     };
 
     scope.setTimeoutIfLess = function(record) {
-        var expires = Date.parse(record.ExpiredAt),
+        var expires = Date.parse(record.expired_at),
             now = Date.now();
 
-        if( expires > now || ( expires <= now && record.Prune ) ) {
+        if( expires > now || ( expires <= now && record.prune ) ) {
             var tm = expires - now;
             if( tm <= scope.Timeout.max ) {
                 if( tm < scope.Timeout.min ) {
@@ -347,7 +342,7 @@ app.controller('PMController', ['$scope', function (scope) {
     scope.setupTimeout = function() {
         for( var i = 0; i < this.arc.records.length; i++ ) {
             var record = this.arc.records[i];
-            if( record.ExpiredAt != ZERO_DATETIME ) {
+            if( record.expired_at != ZERO_DATETIME ) {
                 this.setTimeoutIfLess(record);
             }
         }
@@ -409,16 +404,16 @@ app.controller('PMController', ['$scope', function (scope) {
     };
 
     scope.doesExpire = function(record) {
-        return ( record.ExpiredAt != ZERO_DATETIME );
+        return ( record.expired_at != ZERO_DATETIME );
     };
 
     scope.isExpired = function(record) {
-        return ( scope.doesExpire(record) && Date.parse(record.ExpiredAt) <= Date.now() );
+        return ( scope.doesExpire(record) && Date.parse(record.expired_at) <= Date.now() );
     }
 
     scope.filterSecret = function(record) {
         if( scope.filter != null ) {
-            return ( record.Title.toLowerCase().indexOf(scope.filter.toLowerCase()) != -1 );
+            return ( record.title.toLowerCase().indexOf(scope.filter.toLowerCase()) != -1 );
         }
         return true;
     };
@@ -600,28 +595,28 @@ app.controller('PMController', ['$scope', function (scope) {
     };
 
     scope.onShowSecret = function(secret) {
-        console.log( "Loading record " + secret.ID );
+        console.log( "Loading record " + secret.id );
 
-        scope.trackTotal = secret.Size;
+        scope.trackTotal = secret.size;
         scope.showLoader( "Buffering data ...", function() {
             // start reading data when loader is shown
             scope.progressAt = new Date();
-            scope.arc.GetRecordBuffer( secret.ID, function(data){
+            scope.arc.GetRecordBuffer( secret.id, function(data){
                 // start decrypting data when message is updated
                 scope.showLoader( "Decrypting data ...", function() {
-                    var record = new Record(secret.Title);
+                    var record = new Record(secret.title);
                     record.Decrypt( scope.key, data );
                     if( record.HasError() == true ) {
-                        $('#record_error_' + secret.ID).html(record.error);
-                        $('#record_status_' + secret.ID ).addClass("status-error");
+                        $('#record_error_' + secret.id).html(record.error);
+                        $('#record_status_' + secret.id ).addClass("status-error");
                     }
                     else {
                         scope.setSecret(secret)
 
-                        $('#record_lock_' + secret.ID ).removeClass("fa-lock").addClass("fa-unlock");
-                        $('#record_status_' + secret.ID ).removeClass("status-locked").addClass("status-unlocked");
+                        $('#record_lock_' + secret.id ).removeClass("fa-lock").addClass("fa-unlock");
+                        $('#record_status_' + secret.id ).removeClass("status-locked").addClass("status-unlocked");
 
-                        scope.showSecretModal(false, record.title, secret.UpdatedAt, secret.ExpiredAt, secret.Prune, secret.Size);
+                        scope.showSecretModal(false, record.title, secret.updated_at, secret.expired_at, secret.prune, secret.size);
 
                         var list = $('#secret_entry_list'); 
                         for( var i = 0; i < record.entries.length; i++ ){
@@ -685,7 +680,7 @@ app.controller('PMController', ['$scope', function (scope) {
             scope.trackTotal = size;
             scope.progressAt = new Date();
             scope.showLoader("Updating Record ...", function(){
-                scope.arc.UpdateRecord( scope.secret.ID, title, expire_at, prune, data, 'aes', size, function(record) {
+                scope.arc.UpdateRecord( scope.secret.id, title, expire_at, prune, data, 'aes', size, function(record) {
                     scope.setSecret(null);
                     scope.setError(null);
                     scope.getStore(function(){});

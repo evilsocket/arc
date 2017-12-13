@@ -83,7 +83,7 @@
             </small>
           </li>          
 
-          <li class="list-group-item store-list-item" ng-repeat="s in stores" ng-click="onShowStore(s.ID)">
+          <li class="list-group-item store-list-item" ng-repeat="s in stores" ng-click="onShowStore(s.id)">
             <span ng-include src="'/views/store_list_item.html'"></span>
           </li>
         </ul>
@@ -103,7 +103,7 @@
                 <div class="store-media">
                   <i class="fa fa-database" aria-hidden="true"></i>
                 </div>
-                <h5 class="editable" id="store_title">{{ arc.store.Title }}</h5>
+                <h5 class="editable" id="store_title">{{ arc.store.title }}</h5>
                 <script type="text/javascript">
                   $('#store_title').editable(function(v){
                     $('#ngscope').scope().onStoreTitleChanged(v);
@@ -148,7 +148,7 @@
             </small>
           </li>       
 
-          <li class="list-group-item" id="secret_list_item_{{ r.ID }}" ng-if="filterSecret(r)" ng-repeat="r in arc.records" ng-click="onShowSecret(r)">
+          <li class="list-group-item" id="secret_list_item_{{ r.id }}" ng-if="filterSecret(r)" ng-repeat="r in arc.records" ng-click="onShowSecret(r)">
             <span ng-include src="'/views/secret_list_item.html?v=17'"></span>
           </li>
         </ul>

@@ -3,28 +3,11 @@ builds:
     binary: arcd
     goos:
       - linux
-    goarch:
-      - amd64
-
-  - main: arcd/main.go
-    binary: arcd
-    goos:
-      - linux
-    goarch:
-      - arm
-    env:
-      - CC=arm-linux-gnueabi-gcc
-      - CGO_ENABLED=1
-
-  - main: arcd/main.go
-    binary: arcd
-    goos:
       - windows
+      - darwin
     goarch:
+      - amd
       - amd64
-    env:
-      - CC=x86_64-w64-mingw32-gcc
-      - CGO_ENABLED=1
 
 archive:
   wrap_in_directory: true

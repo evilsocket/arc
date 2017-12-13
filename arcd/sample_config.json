@@ -3,7 +3,7 @@
     "port": 8080,
     "username": "arc",
     "password": "404fcfb394d23199f6d95f1f36bd2beb6df8564f993f44517f6015fcd16101a9",
-    "database": "~/arc.db",
+    "database": "~/db",
     "token_duration": 60,
     "compression": true,
     "scheduler": {

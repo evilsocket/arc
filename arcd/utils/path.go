@@ -8,10 +8,18 @@
 package utils
 
 import (
+	"os"
 	"os/user"
 	"path/filepath"
 	"strings"
 )
+
+func Exists(path string) bool {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return false
+	}
+	return true
+}
 
 func ExpandPath(path string) (string, error) {
 	if strings.HasPrefix(path, "~") {

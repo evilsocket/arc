@@ -57,10 +57,6 @@ The `password` field is the SHA256 checksum of your password, you can generate a
 
 Browse `http://localhost:8080/` and login with the credentials you specified in the `config.json` file.
 
-**Note**
-
-The first time the `arcd` server executes the `arc` web application. it will automatically import some example stores from the `arc/seeds.json` seed file (encryption key is `vault`).
-
 ## Configuration
 
 You will find a `sample_config.json` file inside the `arcd` folder of the project, this is the example configuration you need to customize the first time.

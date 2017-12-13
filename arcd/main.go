@@ -17,10 +17,9 @@ import (
 	"github.com/evilsocket/arc/arcd/app"
 	"github.com/evilsocket/arc/arcd/config"
 	"github.com/evilsocket/arc/arcd/controllers"
+	"github.com/evilsocket/arc/arcd/db"
 	"github.com/evilsocket/arc/arcd/log"
 	"github.com/evilsocket/arc/arcd/middlewares"
-	"github.com/evilsocket/arc/arcd/models"
-	"github.com/evilsocket/arc/arcd/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -39,7 +38,6 @@ var (
 	no_auth   = false
 	export    = false
 	import_fn = ""
-	store_id  = ""
 	output    = "arc.json"
 	dbIsNew   = false
 )
@@ -53,8 +51,7 @@ func init() {
 	flag.BoolVar(&no_colors, "no-colors", no_colors, "DIsable colored output.")
 
 	flag.StringVar(&import_fn, "import", import_fn, "Import stores from this JSON export file.")
-	flag.BoolVar(&export, "export", export, "Export store to JSON file, requires --store and --output parameters.")
-	flag.StringVar(&store_id, "store", store_id, "Store id to export or empty for all the existing stores.")
+	flag.BoolVar(&export, "export", export, "Export store to JSON file, requires --output parameter.")
 	flag.StringVar(&output, "output", output, "Export file name.")
 }
 
@@ -78,7 +75,7 @@ func arcBackupper() {
 		time.Sleep(period)
 
 		log.Infof("Backup to %s ...", filename)
-		if err := models.Export("", filename); err != nil {
+		if err := db.Export(filename); err != nil {
 			log.Errorf("Error while creating the backup file: %s.", err)
 		}
 	}
@@ -92,30 +89,21 @@ func arcScheduler() {
 	for {
 		time.Sleep(period)
 
-		expired, prunable, err := models.CountExpired()
-		if err != nil {
-			log.Errorf("Error while counting expired records: %s.", err)
-			continue
-		} else if expired == 0 {
-			continue
-		} else if prunable <= 0 {
-			log.Debugf("%d expired records, no prunable elements.", expired)
-			continue
-		}
+		db.Lock()
 
-		log.Infof("Found %d prunable elements out of %d total expired records.", prunable, expired)
-		records, err := models.PrunableRecords()
-		if err != nil {
-			log.Errorf("Error while running scheduler queryrecord: %s.", err)
-			continue
-		}
-
-		for _, record := range records {
-			log.Warningf("Pruning record %d: '%s' (expired at %s)\n", record.ID, log.Bold(record.Title), record.ExpiredAt)
-			if err := models.Delete(&record); err != nil {
-				log.Errorf("Error while deleting record %d: %s.\n", record.ID, err)
+		for _, store := range db.GetStores() {
+			for _, r := range store.Children() {
+				meta := r.Meta()
+				if r.Expired() && meta.Prune {
+					log.Infof("Pruning record %d ...", meta.Id)
+					if _, err := store.Del(meta.Id); err != nil {
+						log.Errorf("Error while deleting record %d: %s.", meta.Id, err)
+					}
+				}
 			}
 		}
+
+		db.Unlock()
 	}
 }
 
@@ -149,33 +137,21 @@ func main() {
 		}
 	}
 
-	if dbIsNew, err = models.Setup(); err != nil {
+	if dbIsNew, err = db.Setup(); err != nil {
 		log.Fatal(err)
 	}
 
 	if export == true {
-		if err = models.Export(store_id, output); err != nil {
+		if err = db.Export(output); err != nil {
 			log.Fatal(err)
 		}
 		return
 	} else if import_fn != "" {
-		if err = models.Import(import_fn); err != nil {
+		if err = db.Import(import_fn); err != nil {
 			log.Fatal(err)
 		}
 		return
 	}
-
-	if err := models.PruneZombieBuffers(); err != nil {
-		log.Fatal(err)
-	}
-
-	if err := models.Vacuum(); err != nil {
-		log.Fatal(err)
-	}
-
-	stats, _ := os.Stat(config.Conf.Database)
-
-	log.Infof("Database is %s", utils.FormatBytes(uint64(stats.Size())))
 
 	if config.Conf.Scheduler.Enabled {
 		log.Infof("Starting scheduler with a period of %ds ...", config.Conf.Scheduler.Period)
@@ -194,16 +170,8 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 
 	r := gin.New()
-	// r.Use(gzip.Gzip(gzip.DefaultCompression))
 
 	webapp := arcLoadApp(r)
-
-	if dbIsNew && len(webapp.Seeds) > 0 {
-		log.Warningf("Seeding database with %d store(s) ...", len(webapp.Seeds))
-		if err = models.ImportStores(webapp.Seeds); err != nil {
-			log.Fatal(err)
-		}
-	}
 
 	api := r.Group("/api")
 	r.POST("/auth", controllers.Auth)

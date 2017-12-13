@@ -5,18 +5,19 @@
  *
  * See LICENSE.
  */
-package models
+package db
 
 import (
 	"github.com/evilsocket/arc/arcd/config"
 	"github.com/evilsocket/arc/arcd/log"
 	"github.com/evilsocket/arc/arcd/utils"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"os"
 )
 
-var db *gorm.DB
+var (
+	dbIndex  Index
+	dbNextId = uint64(0)
+)
 
 func Setup() (created bool, err error) {
 	if config.Conf.Database, err = utils.ExpandPath(config.Conf.Database); err != nil {
@@ -31,31 +32,30 @@ func Setup() (created bool, err error) {
 		log.Infof("Loading database %s ...", log.Bold(config.Conf.Database))
 	}
 
-	if db, err = gorm.Open("sqlite3", config.Conf.Database); err != nil {
+	dbIndex, err = LoadIndex(config.Conf.Database)
+	if err != nil {
 		return false, err
 	}
 
-	log.Debugf("Migrating models ...")
+	for id, _ := range dbIndex.Records() {
+		if id > dbNextId {
+			dbNextId = id + 1
+		}
+	}
 
-	db.AutoMigrate(&Store{})
-	db.AutoMigrate(&Record{})
-	db.AutoMigrate(&Buffer{})
+	log.Debugf("dbNextId=%d", dbNextId)
 
 	return created, nil
 }
 
-func Vacuum() error {
-	return db.Exec("VACUUM").Error
+func Lock() {
+	dbIndex.Lock()
 }
 
-func Save(obj interface{}) error {
-	return db.Save(obj).Error
+func Unlock() {
+	dbIndex.Unlock()
 }
 
-func Create(obj interface{}) error {
-	return db.Create(obj).Error
-}
-
-func Delete(obj interface{}) error {
-	return db.Delete(obj).Error
+func GetStores() map[uint64]*Record {
+	return dbIndex.Records()
 }

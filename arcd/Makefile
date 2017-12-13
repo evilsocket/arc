@@ -1,8 +1,8 @@
 .PHONY: build fmt lint run test vendor_clean vendor_get vendor_update vet
 
 DEPENDENCIES=github.com/gin-gonic/gin \
-			 github.com/mattn/go-sqlite3 \
-			 github.com/jinzhu/gorm \
+			 github.com/theckman/go-flock \
+		 	 github.com/stretchr/testify/assert \
 			 github.com/dgrijalva/jwt-go 
 
 SRC_PATH=.

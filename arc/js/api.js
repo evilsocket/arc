@@ -70,6 +70,64 @@ Arc.prototype.Api = function( method, path, data, success, error, raw ) {
     });
 }
 
+Arc.prototype.ApiStream = function( method, path, meta, blob, success, error ) {
+    var arc = this;
+    
+    console.log( method + ' ' + path );
+
+    this.onRequestStart( method + ' ' + path );
+
+    /*
+     * I wish I cold use this, but on mobile FormData is not
+     * well supported yet :(
+
+      var form_data = new FormData();
+      var file = new File(
+          [blob],
+          'data',
+          { type: 'application/octet-stream' }
+      );
+     
+      form_data.append( "meta", JSON.stringify(meta) );
+      form_data.append( "data", file );
+    */
+
+    var boundary = "AJAX-----------------------" + (new Date).getTime();
+    var ctype = "multipart/form-data; boundary=" + boundary
+    var CRLF = "\r\n";
+    var form_data = "--" + boundary + CRLF +
+                    "Content-Disposition: form-data; name=\"meta\"" + CRLF + CRLF +
+                    JSON.stringify(meta) + CRLF +
+                    "--" + boundary + CRLF +
+                    "Content-Disposition: form-data; name=\"data\"; filename=\"data\"" + CRLF +
+                    "Content-Type: application/octet-stream" + CRLF + CRLF +
+                    blob + CRLF + 
+                    "--" + boundary + "--" + CRLF;
+
+    return $.ajax({
+        type: method,
+        url: path,
+        beforeSend: function (xhr) {
+            if( arc.token != null ) {
+                xhr.setRequestHeader('Authorization', 'Bearer: ' + arc.token);
+            }
+        },
+        success: function(r) {
+            arc.onRequestDone(true);            
+            success(r);
+        },
+        error: function(e) {
+            arc.onRequestDone(false);            
+            error(e);
+        },
+        cache: false,
+        processData: false,
+        contentType: ctype,
+        data: form_data,
+        timeout: 60 * 60 * 1000
+    });
+}
+
 Arc.prototype.Logout = function() {
     console.log( "Logging out, deleting token " + this.token );
     this.token = null;
@@ -109,9 +167,9 @@ Arc.prototype.Stores = function(success, error) {
 }
 
 Arc.prototype.Records = function( store, success, error ) {
-    console.log( "Loading store-" + store.ID + " records ..." );
+    console.log( "Loading store-" + store.id + " records ..." );
     var arc = this;
-    this.Api( 'GET', '/api/store/' + store.ID + '/records', null, function(records){
+    this.Api( 'GET', '/api/store/' + store.id + '/records', null, function(records){
         arc.records = records;
         success();
     }, error );
@@ -153,7 +211,7 @@ Arc.prototype.SetStore = function( id, success, error ) {
 }
 
 Arc.prototype.GetRecordBuffer = function( record_id, success, error ) {
-    var path = '/api/store/' + this.store.ID + '/record/' + record_id + '/buffer';
+    var path = '/api/store/' + this.store.id + '/record/' + record_id + '/buffer';
     return this.Api( 'GET', path, null, success, error, true );
 };
 
@@ -163,15 +221,14 @@ Arc.prototype.AddRecord = function( title, expire_at, prune, data, encryption, s
     }
 
     var record = {
-        'Title': title,
-        'Data': data,
-        'ExpiredAt': expire_at,
-        'Prune': prune,
-        'Encryption': encryption,
-        'Size': size,
+        'title': title,
+        'expired_at': expire_at,
+        'prune': prune,
+        'encryption': encryption,
+        'size': size
     };
 
-    return this.Api( 'POST', '/api/store/' + this.store.ID + '/records', record, success, error );
+    return this.ApiStream( 'POST', '/api/store/' + this.store.id + '/records', record, data, success, error );
 }
 
 Arc.prototype.UpdateRecord = function( id, title, expire_at, prune, data, encryption, size, success, error) {
@@ -179,21 +236,19 @@ Arc.prototype.UpdateRecord = function( id, title, expire_at, prune, data, encryp
         return error("No store has been selected.");
     }
     var record = {
-        'ID': id,
-        'StoreID': this.store.ID,
-        'Title': title,
-        'ExpiredAt': expire_at,
-        'Prune': prune,
-        'Data': data,
-        'Encryption': encryption,
-        'Size': size
+        'title': title,
+        'expired_at': expire_at,
+        'prune': prune,
+        'encryption': encryption,
+        'size': size
     };
-    return this.Api( 'PUT', '/api/store/' + this.store.ID + '/record/' + id, record, success, error );
+
+    return this.ApiStream( 'PUT', '/api/store/' + this.store.id + '/record/' + id, record, data, success, error );
 }
 
 Arc.prototype.DeleteRecord = function( record, success, error ) {
     if( this.HasStore() == false ) {
         return error("No store has been selected.");
     }
-    this.Api( 'DELETE', '/api/store/' + this.store.ID + '/record/' + record.ID, null, success, error );
+    this.Api( 'DELETE', '/api/store/' + this.store.id + '/record/' + record.id, null, success, error );
 }
