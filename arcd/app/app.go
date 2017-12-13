@@ -60,10 +60,7 @@ func Open(path string) (err error, app *App) {
 		return
 	}
 
-	// seeds_fn := path + "/" + kSeedsFileName
 	manifest_fn := path + "/" + kManifestFileName
-
-	// seeds := make([]db.Store, 0)
 	manifest := Manifest{
 		Name:        "?",
 		Version:     "0.0.0",
@@ -83,25 +80,9 @@ func Open(path string) (err error, app *App) {
 		}
 	}
 
-	/*
-		if _, err = os.Stat(seeds_fn); err == nil {
-			log.Debugf("Loading seeds from %s ...", log.Bold(seeds_fn))
-			raw, ferr := ioutil.ReadFile(seeds_fn)
-			if ferr != nil {
-				err = ferr
-				return
-			}
-
-			if err = json.Unmarshal(raw, &seeds); err != nil {
-				return
-			}
-		}
-	*/
-
 	app = &App{
 		Path:     path,
 		Manifest: manifest,
-		//	Seeds:    seeds,
 	}
 
 	return nil, app
