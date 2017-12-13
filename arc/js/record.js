@@ -25,6 +25,7 @@ Record.prototype.HasError = function() {
     return ( this.error != null );
 }
 
+/* Return a Promise */
 Record.prototype.Encrypt = function( key ) {
     for( var i = 0; i < this.entries.length; i++ ) {
         this.entries[i].is_new = false;
@@ -35,51 +36,52 @@ Record.prototype.Encrypt = function( key ) {
     console.log( "Encrypting " + data.length + " bytes of record." );
     // console.log(data);
 
-    data = AESEncrypt( data, key );
-
-    console.log( "Encrypted data is " + data.length + " bytes." );
-    // console.log(data);
-
-    return data
+    /* currenlty fake Promise */
+    return Promise.resolve(AESEncrypt(data, key))
+	.then((encrypted) => {
+	    console.log( "Encrypted data is " + encrypted.length + " bytes." );
+	    return encrypted;
+	});
 }
 
 Record.prototype.isValidData = function(data) {
     return ( data == "[]" || data.indexOf('"value"') != -1 );
 }
 
+/* Return a Promise */
 Record.prototype.Decrypt = function( key, data ) {
     console.log( "Decrypting " + data.length + " bytes of record." );
     // console.log(data);
 
-    try {
-        data = AESDecrypt( data, key );
-        // console.log(data);
-        data = data.toString(CryptoJS.enc.Utf8);
-        // console.log(data);
-    }
-    catch(err) {
-        console.error(err);
-        this.SetError( "Error while decrypting record data." );
-        return;
-    }
+    const that = this;
+    /* currently fake Promise */
+    return Promise.resolve(AESDecrypt(data, key))
+	.then((decrypted) => {
+	    try {
+		decrypted = decrypted.toString(CryptoJS.enc.Utf8);
+	    } catch (error) {
+		throw "Error while decrypting record data.";
+	    }
 
-    console.log( "Decrypted data is " + data.length + " bytes." );
+	    console.log( "Decrypted data is " + decrypted.length + " bytes." );
 
-    // quick and dirty check
-    if( this.isValidData(data) == false ) {
-        this.SetError( "Error while decrypting record data." );
-    } else {
-        var objects = JSON.parse(data);
+	    // quick and dirty check
+	    if( that.isValidData(decrypted) === false ) {
+		throw "Error while decrypting record data.";
+	    } else {
+		const objects = JSON.parse(decrypted);
 
-        console.log( "Record has " + objects.length + " entries." );
-        // console.log(data);
+		console.log( "Record has " + objects.length + " entries." );
 
-        this.entries = [];
-        for( var i = 0; i < objects.length; i++ ) {
-            var entry = TypeFactory(objects[i]);
-            // console.log( "record.entries[" + i + "] = " + entry.TypeName() );
-            this.entries.push(entry);
-        }
-    }
+		that.entries = [];
+		for( var i = 0; i < objects.length; i++ ) {
+		    var entry = TypeFactory(objects[i]);
+		    // console.log( "record.entries[" + i + "] = " + entry.TypeName() );
+		    that.entries.push(entry);
+		}
+	    }
+	}).catch((error) => {
+	    console.error(error);
+	    that.setError(error);
+	});
 }
-
