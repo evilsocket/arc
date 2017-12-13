@@ -8,14 +8,7 @@
 package db
 
 import (
-	"errors"
 	"sort"
-)
-
-var (
-	ERR_INVALID_ID       = errors.New("Invalid ID specified.")
-	ERR_STORE_NOT_FOUND  = errors.New("Store not found.")
-	ERR_RECORD_NOT_FOUND = errors.New("Record not found.")
 )
 
 func getStoreById(store_id string) (store *Record, err error) {

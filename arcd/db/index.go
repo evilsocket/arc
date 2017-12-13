@@ -8,18 +8,12 @@
 package db
 
 import (
-	"fmt"
 	"github.com/evilsocket/arc/arcd/log"
 	"github.com/evilsocket/arc/arcd/utils"
 	"github.com/theckman/go-flock"
 	"path/filepath"
 	"strings"
 )
-
-func ToID(value string) (id uint64, err error) {
-	_, err = fmt.Sscanf(value, "%d", &id)
-	return
-}
 
 type Index struct {
 	path    string
