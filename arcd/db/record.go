@@ -29,6 +29,7 @@ func CreateRecord(root_path string, meta Meta, reader *io.Reader) (record *Recor
 	log.Debugf("Creating record %d:'%s' on '%s' with reader %v...", meta.Id, meta.Title, root_path, reader)
 
 	if root_path, err = utils.ExpandPath(root_path); err != nil {
+		log.Errorf("Error expanding %s: %s", root_path, err)
 		return nil, err
 	}
 
@@ -38,6 +39,7 @@ func CreateRecord(root_path string, meta Meta, reader *io.Reader) (record *Recor
 	if utils.Exists(record_path) == false {
 		log.Debugf("Creating record path '%s' ...", record_path)
 		if err = os.MkdirAll(record_path, os.ModePerm); err != nil {
+			log.Errorf("Error creating folder %s: %s", record_path, err)
 			return nil, err
 		}
 	}
@@ -61,6 +63,7 @@ func CreateRecord(root_path string, meta Meta, reader *io.Reader) (record *Recor
 	if reader != nil {
 		err = record.UpdateBuffer(*reader)
 		if err != nil {
+			log.Errorf("Error while updating the buffer: %s", err)
 			return nil, err
 		}
 	}
@@ -72,6 +75,7 @@ func OpenRecord(path string) (record *Record, err error) {
 	log.Debugf("Opening record from path '%s' ...", path)
 
 	if path, err = utils.ExpandPath(path); err != nil {
+		log.Errorf("Error expanding %s: %s", path, err)
 		return nil, err
 	}
 
@@ -154,12 +158,14 @@ func (r *Record) compress() (err error) {
 	datapath := r.DataPath()
 	reader, err := os.Open(datapath)
 	if err != nil {
+		log.Errorf("Error while opening %s: %s.", datapath, err)
 		return err
 	}
 
 	tmp_filename := datapath + ".tmp.gz"
 	writer, err := os.Create(tmp_filename)
 	if err != nil {
+		log.Errorf("Error while creating %s: %s.", tmp_filename, err)
 		return err
 	}
 	defer writer.Close()
@@ -168,6 +174,7 @@ func (r *Record) compress() (err error) {
 
 	_, err = io.Copy(gzipper, reader)
 	if err != nil {
+		log.Errorf("Error while compressing %s: %s.", tmp_filename, err)
 		return err
 	}
 
@@ -176,6 +183,7 @@ func (r *Record) compress() (err error) {
 
 	err = os.Rename(tmp_filename, datapath)
 	if err != nil {
+		log.Errorf("Error while renaming %s to %s: %s.", tmp_filename, datapath, err)
 		return err
 	}
 
@@ -200,10 +208,12 @@ func (r *Record) UpdateBuffer(reader io.Reader) (err error) {
 	start := time.Now()
 	writer, err := os.Create(datapath)
 	if err != nil {
+		log.Errorf("Error while creating %s: %s.", datapath, err)
 		return err
 	}
 	written, err := io.Copy(writer, reader)
 	if err != nil {
+		log.Errorf("Error while writing to %s: %s.", datapath, err)
 		writer.Close()
 		return err
 	}

@@ -41,16 +41,18 @@ func LoadIndex(path string) (i Index, err error) {
 
 	matches, err := filepath.Glob(filepath.Join(path, "*"))
 	if err != nil {
+		log.Errorf("Error while globbing folder %s: %s", path, err)
 		return i, err
 	}
 
-	for _, m := range matches {
-		name := strings.Replace(m, path+"/", "", -1)
+	for _, folder := range matches {
+		name := strings.Replace(folder, path+"/", "", -1)
 		id, err := ToID(name)
 		if err == nil {
-			meta_path := filepath.Join(m, "meta.json")
+			meta_path := filepath.Join(folder, "meta.json")
 			if utils.Exists(meta_path) {
-				child, err := OpenRecord(m)
+				log.Debugf("Loading record from %s ...", folder)
+				child, err := OpenRecord(folder)
 				if err == nil {
 					i.records[id] = child
 				}

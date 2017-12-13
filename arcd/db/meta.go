@@ -45,10 +45,12 @@ func (m *Meta) FlushNoLock() error {
 
 	buff, err := json.Marshal(m)
 	if err != nil {
+		log.Errorf("Error while serializing meta file: %s", err)
 		return err
 	}
 
 	if err = ioutil.WriteFile(m.path, buff, 0644); err != nil {
+		log.Errorf("Error while writing meta file to %s: %s", m.path, err)
 		return err
 	}
 
@@ -103,8 +105,10 @@ func CreateMeta(path string, values Meta) (meta *Meta, err error) {
 	}
 
 	if err = meta.SetPath(path); err != nil {
+		log.Errorf("Error setting path %s: %s", path, err)
 		return nil, err
 	} else if err = meta.Flush(); err != nil {
+		log.Errorf("Error flushing meta file: %s", err)
 		return nil, err
 	}
 
@@ -116,7 +120,7 @@ func OpenMeta(path string) (meta *Meta, err error) {
 
 	buff, err := ioutil.ReadFile(path)
 	if err != nil {
-		log.Errorf("%s", err)
+		log.Errorf("Error opening %s: %s", path, err)
 		return nil, err
 	}
 
