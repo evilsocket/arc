@@ -266,6 +266,8 @@ func (r *Record) Del(id uint64) (deleted *Record, err error) {
 		return nil, ERR_RECORD_NOT_FOUND
 	}
 
+	deleted.Delete()
+
 	r.Lock()
 	defer r.Unlock()
 
