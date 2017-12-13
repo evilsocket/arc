@@ -87,22 +87,22 @@ func GetRecordBuffer(c *gin.Context) {
 	if utils.Exists(datapath) == false {
 		utils.NotFound(c)
 	} else {
-		is_compressed := record.Meta().Compressed
+		meta := record.Meta()
 		desc := ""
-		if is_compressed {
+		if meta.Compressed {
 			desc = "compressed "
 		}
 
-		size := record.Size()
-		log.Api(log.INFO, c, "Streaming %s (%d b) of %sbuffer.", utils.FormatBytes(size), size, desc)
+		log.Api(log.INFO, c, "Streaming %s (%d b) of %sbuffer.", utils.FormatBytes(meta.Size), meta.Size, desc)
+
 		// Let the client handle the decompression :P
-		if is_compressed {
+		if meta.Compressed {
 			c.Writer.Header().Set("Content-Encoding", "gzip")
 			c.Writer.Header().Set("Content-Type", "application/octet-stream")
 			c.Writer.Header().Set("Vary", "Accept-Encoding")
 		}
 
-		c.Writer.Header().Set("Content-Length", fmt.Sprintf("%d", size))
+		c.Writer.Header().Set("Content-Length", fmt.Sprintf("%d", meta.Size))
 		c.File(datapath)
 	}
 }

@@ -151,11 +151,11 @@ func (r *Record) Update(meta Meta) (err error) {
 }
 
 func (r *Record) compress() (err error) {
-	log.Infof("Compressing file ...")
+	datapath := r.DataPath()
+
+	log.Infof("Compressing buffer %s ...", datapath)
 
 	start := time.Now()
-
-	datapath := r.DataPath()
 	reader, err := os.Open(datapath)
 	if err != nil {
 		log.Errorf("Error while opening %s: %s.", datapath, err)
@@ -203,7 +203,7 @@ func (r *Record) UpdateBuffer(reader io.Reader) (err error) {
 
 	datapath := r.DataPath()
 
-	log.Infof("Writing buffer to %s ...", datapath)
+	log.Debugf("Writing buffer to %s ...", datapath)
 
 	start := time.Now()
 	writer, err := os.Create(datapath)
@@ -224,7 +224,7 @@ func (r *Record) UpdateBuffer(reader io.Reader) (err error) {
 	r.meta.Size = uint64(written)
 	r.meta.Compressed = false
 
-	log.Infof("Wrote %s (%d b) in %s ...", utils.FormatBytes(r.meta.Size), r.meta.Size, elapsed)
+	log.Debugf("Wrote %s (%d b) in %s ...", utils.FormatBytes(r.meta.Size), r.meta.Size, elapsed)
 
 	if config.Conf.Compression && r.meta.Size > 1024 {
 		err := r.compress()

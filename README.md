@@ -111,11 +111,7 @@ You can export stores and their encrypted records to a JSON file:
 
     ./arcd -config config.json -output ~/backup.json -export
 
-Or export only one store by its numeric id:
-
-    ./arcd -config config.json -output ~/arc_store_1.json -export -store 1 
-
-Such export files can be later imported with:
+Exported files can be later imported with:
 
     ./arcd -config config.json -import ~/backup.json
 
