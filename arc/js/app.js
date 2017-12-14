@@ -620,16 +620,15 @@ app.controller('PMController', ['$scope', function (scope) {
 			for( let i = 0; i < record.entries.length; i++ ){
 			    record.entries[i].RenderToList( list, i );
 			}
-			scope.hideLoader();
 		    }).catch((error) => {
 			if( record.HasError() === true ) {
 			    $('#record_error_' + secret.id).html(record.error);
 			    $('#record_status_' + secret.id ).addClass("status-error");
 			}
-			scope.errorHandler(error.message);
 		    }); /* end Promise */
+		    scope.hideLoader();
 		});
-            }).progress(scope.trackProgress);
+            }, scope.errorHandler).progress(scope.trackProgress);
         });
     };
 

@@ -60,7 +60,7 @@ Record.prototype.Decrypt = function( key, data ) {
 	objects.forEach((o) => that.entries.push(TypeFactory(o)));
     }).catch((error) => {
 	console.error(error);
-	that.SetError(error);
-	throw error;
+	that.SetError("Error while decrypting record data.");
+	throw "Error while decrypting record data.";
     });
 }
