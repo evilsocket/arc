@@ -11,7 +11,7 @@ const AESIterations = 100;
  * Encryptions goes in this way:
  * message -> array_buffer -> (AES ENCRYPTION) -> array_buffer -> [hex_salt] + [hex_iv] + [base64_enc]
  */
-function AESEncrypt2(message, passphrase) {
+function AESEncrypt(message, passphrase) {
     return pbkdf2({
 	passphrase,
 	derivedKeyAlgo: {"name": "AES-CBC", "length": AESKeySize},
@@ -36,7 +36,7 @@ function AESEncrypt2(message, passphrase) {
  * Decryption goes in this way:
  * [hex_salt] + [hex_iv] + [base64 enc] -> array_buffer -> (AES DECRYPTION) -> array_buffer -> message
  */
-function AESDecrypt2(encrypted, passphrase) {
+function AESDecrypt(encrypted, passphrase) {
     const salt_idx  = 0;
     const salt_size = AESSaltSize * 2;
     const iv_idx    = salt_size;

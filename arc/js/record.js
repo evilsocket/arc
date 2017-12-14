@@ -32,7 +32,7 @@ Record.prototype.Encrypt = function( key ) {
     const data = JSON.stringify(this.entries); 
     console.log(`Encrypting ${data.length} bytes of record.`);
 
-    return AESEncrypt2(data, key).then((encrypted) => {
+    return AESEncrypt(data, key).then((encrypted) => {
 	console.log(`Encrypted data is ${encrypted.length} bytes.`);
 	return encrypted;
     });
@@ -46,7 +46,7 @@ Record.prototype.Decrypt = function( key, data ) {
     console.log(`Decrypting ${data.length} bytes of record.`);
     const that = this;
 
-    return AESDecrypt2(data, key).then((decrypted) => {
+    return AESDecrypt(data, key).then((decrypted) => {
 	console.log(`Decrypted data is ${decrypted.length} bytes.`);
 
 	// quick and dirty check
