@@ -559,41 +559,38 @@ app.controller('PMController', ['$scope', function (scope) {
         $('#secret_modal').modal('hide');
 
         scope.showLoader("Encrypting record ...", function(){
-	    new Promise((res, rej) => {
-		// Execute asynchronously to not block the ui.
-		window.setTimeout(() => {
-                    const record = new Record(title);
-                    for( let i = 0; i < entries.length; i++ ) {
-			const input = $(entries[i]);
-			const entry_id = input.attr('id');
-			const type = parseInt( input.attr('data-entry-type') );
-			const name = $(names[i]).text();
-			let value = input.attr('type') === 'checkbox' ? input.is(':checked') ? '1' : '0' : input.val();
+            // Execute asynchronously to not block the ui.
+            setTimeout( function() {
+                var record = new Record(title);
+                for( var i = 0; i < entries.length; i++ ) {
+                    var input = $(entries[i]);
+                    var entry_id = input.attr('id');
+                    var type = parseInt( input.attr('data-entry-type') );
+                    var name = $(names[i]).text();
+                    var value = input.attr('type') == 'checkbox' ? input.is(':checked') ? '1' : '0' : input.val();
 
-			if( type === ENTRY_TYPE_FILE ) {
-                            const file = FilesGet(entry_id);
-                            // free the memory
-                            FilesDel(entry_id);
-                            value = JSON.stringify(file);
-			}
-			record.AddEntry(new Entry( type, name, value));
+                    if( type == ENTRY_TYPE_FILE ) {
+                        var file = FilesGet(entry_id);
+                        // free the memory
+                        FilesDel(entry_id);
+                        value = JSON.stringify(file);
                     }
-		    res(record);
-		}, 0);
-	    }).then((record) => {
-		return record.Encrypt( scope.key );
-	    }).then((encrypted) => {
-		const size = encrypted.length;
 
-		scope.trackTotal = size;
-		scope.progressAt = new Date();
-		scope.showLoader("Adding record ...", function(){
-		    scope.arc.AddRecord( title, expire_at, prune, encrypted, 'aes', size, function(record) {
-			scope.getStore(function() {});
-		    }, scope.errorHandler ).uploadProgress(scope.trackProgress);
-		});
-	    }); /* end Promise */
-	});
+                    record.AddEntry(new Entry( type, name, value));
+                }
+                var data = record.Encrypt( scope.key );
+                var size = data.length;
+
+                scope.trackTotal = size;
+                scope.progressAt = new Date();
+                scope.showLoader("Adding record ...", function(){
+                    scope.arc.AddRecord( title, expire_at, prune, data, 'aes', size, function(record) {
+                        scope.getStore(function() {});
+                    },
+                    scope.errorHandler ).uploadProgress(scope.trackProgress);
+                });
+            }, 0 );
+        });
     };
 
     scope.onShowSecret = function(secret) {
@@ -606,29 +603,29 @@ app.controller('PMController', ['$scope', function (scope) {
             scope.arc.GetRecordBuffer( secret.id, function(data){
                 // start decrypting data when message is updated
                 scope.showLoader( "Decrypting data ...", function() {
+                    var record = new Record(secret.title);
+                    record.Decrypt( scope.key, data );
+                    if( record.HasError() == true ) {
+                        $('#record_error_' + secret.id).html(record.error);
+                        $('#record_status_' + secret.id ).addClass("status-error");
+                    }
+                    else {
+                        scope.setSecret(secret)
 
-                    const record = new Record(secret.title);
-                    record.Decrypt( scope.key, data ).then(() => {
-			if( record.HasError() === true ) {
-			    $('#record_error_' + secret.id).html(record.error);
-			    $('#record_status_' + secret.id ).addClass("status-error");
-			}
-			else {
-			    scope.setSecret(secret)
+                        $('#record_lock_' + secret.id ).removeClass("fa-lock").addClass("fa-unlock");
+                        $('#record_status_' + secret.id ).removeClass("status-locked").addClass("status-unlocked");
 
-			    $('#record_lock_' + secret.id ).removeClass("fa-lock").addClass("fa-unlock");
-			    $('#record_status_' + secret.id ).removeClass("status-locked").addClass("status-unlocked");
+                        scope.showSecretModal(false, record.title, secret.updated_at, secret.expired_at, secret.prune, secret.size);
 
-			    scope.showSecretModal(false, record.title, secret.updated_at, secret.expired_at, secret.prune, secret.size);
+                        var list = $('#secret_entry_list'); 
+                        for( var i = 0; i < record.entries.length; i++ ){
+                            record.entries[i].RenderToList( list, i );
+                        }
+                    }
 
-			    const list = $('#secret_entry_list');
-			    for( let i = 0; i < record.entries.length; i++ ){
-				record.entries[i].RenderToList( list, i );
-			    }
-			}
-			scope.hideLoader();
-		    });  /* end Promise */
-		});
+                    scope.hideLoader();
+                });
+
             }, scope.errorHandler ).progress(scope.trackProgress);
         });
     };
@@ -676,19 +673,20 @@ app.controller('PMController', ['$scope', function (scope) {
                 record.AddEntry(new Entry( type, name, value ));
             }
             
-            record.Encrypt( scope.key ).then((encrypted) => {
-		const size = encrypted.length;
+            var data = record.Encrypt( scope.key )
+            var size = data.length
 
-		scope.trackTotal = size;
-		scope.progressAt = new Date();
-		scope.showLoader("Updating Record ...", function(){
-		    scope.arc.UpdateRecord( scope.secret.id, title, expire_at, prune, encrypted, 'aes', size, function(record) {
-			scope.setSecret(null);
-			scope.setError(null);
-			scope.getStore(function(){});
-		    }, scope.errorHandler ).uploadProgress(scope.trackProgress);
-		});
-	    }); /* end Promise */
+            scope.trackTotal = size;
+            scope.progressAt = new Date();
+            scope.showLoader("Updating Record ...", function(){
+                scope.arc.UpdateRecord( scope.secret.id, title, expire_at, prune, data, 'aes', size, function(record) {
+                    scope.setSecret(null);
+                    scope.setError(null);
+                    scope.getStore(function(){});
+                },
+                scope.errorHandler ).uploadProgress(scope.trackProgress);
+            });
+
         });
     };
 
