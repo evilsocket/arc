@@ -1,4 +1,6 @@
-window.crypto.subtle = window.crypto.webkitSubtle;
+if (window.crypto && !window.crypto.subtle && window.crypto.webkitSubtle) {
+    window.crypto.subtle = window.crypto.webkitSubtle;
+}
 
 const crypto_utils = {
     /* size in bytes */
