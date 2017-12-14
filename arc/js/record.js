@@ -16,7 +16,6 @@ Record.prototype.AddEntry = function(entry) {
 }
 
 Record.prototype.SetError = function(error) {
-    console.log( "RECORD ERROR: " + error);
     this.entries = [];
     this.error = error;
 }
@@ -61,6 +60,7 @@ Record.prototype.Decrypt = function( key, data ) {
 	objects.forEach((o) => that.entries.push(TypeFactory(o)));
     }).catch((error) => {
 	console.error(error);
-	that.setError(error);
+	that.SetError(error);
+	throw error;
     });
 }

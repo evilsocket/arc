@@ -1,4 +1,8 @@
-if (window.crypto && !window.crypto.subtle && window.crypto.webkitSubtle) {
+if (!window.crypto) {
+    alert("This browser doesn't support WebCrypto");
+}
+
+if (!window.crypto.subtle && window.crypto.webkitSubtle) {
     window.crypto.subtle = window.crypto.webkitSubtle;
 }
 

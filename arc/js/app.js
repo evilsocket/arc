@@ -606,31 +606,30 @@ app.controller('PMController', ['$scope', function (scope) {
             scope.progressAt = new Date();
             scope.arc.GetRecordBuffer( secret.id, function(data){
                 // start decrypting data when message is updated
+                const record = new Record(secret.title);
                 scope.showLoader( "Decrypting data ...", function() {
-
-                    const record = new Record(secret.title);
                     record.Decrypt( scope.key, data ).then(() => {
+			scope.setSecret(secret)
+
+			$('#record_lock_' + secret.id ).removeClass("fa-lock").addClass("fa-unlock");
+			$('#record_status_' + secret.id ).removeClass("status-locked").addClass("status-unlocked");
+
+			scope.showSecretModal(false, record.title, secret.updated_at, secret.expired_at, secret.prune, secret.size);
+
+			const list = $('#secret_entry_list');
+			for( let i = 0; i < record.entries.length; i++ ){
+			    record.entries[i].RenderToList( list, i );
+			}
+			scope.hideLoader();
+		    }).catch((error) => {
 			if( record.HasError() === true ) {
 			    $('#record_error_' + secret.id).html(record.error);
 			    $('#record_status_' + secret.id ).addClass("status-error");
 			}
-			else {
-			    scope.setSecret(secret)
-
-			    $('#record_lock_' + secret.id ).removeClass("fa-lock").addClass("fa-unlock");
-			    $('#record_status_' + secret.id ).removeClass("status-locked").addClass("status-unlocked");
-
-			    scope.showSecretModal(false, record.title, secret.updated_at, secret.expired_at, secret.prune, secret.size);
-
-			    const list = $('#secret_entry_list');
-			    for( let i = 0; i < record.entries.length; i++ ){
-				record.entries[i].RenderToList( list, i );
-			    }
-			}
-			scope.hideLoader();
-		    });  /* end Promise */
+			scope.errorHandler(error.message);
+		    }); /* end Promise */
 		});
-            }, scope.errorHandler ).progress(scope.trackProgress);
+            }).progress(scope.trackProgress);
         });
     };
 
