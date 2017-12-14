@@ -25,22 +25,17 @@ Record.prototype.HasError = function() {
     return ( this.error != null );
 }
 
+/* Return a Promise */
 Record.prototype.Encrypt = function( key ) {
-    for( var i = 0; i < this.entries.length; i++ ) {
-        this.entries[i].is_new = false;
-    }
+    this.entries.forEach((e) => e.is_new = false);
 
-    var data = JSON.stringify(this.entries); 
+    const data = JSON.stringify(this.entries); 
+    console.log(`Encrypting ${data.length} bytes of record.`);
 
-    console.log( "Encrypting " + data.length + " bytes of record." );
-    // console.log(data);
-
-    data = AESEncrypt( data, key );
-
-    console.log( "Encrypted data is " + data.length + " bytes." );
-    // console.log(data);
-
-    return data
+    return AESEncrypt(data, key).then((encrypted) => {
+	console.log(`Encrypted data is ${encrypted.length} bytes.`);
+	return encrypted;
+    });
 }
 
 Record.prototype.isValidData = function(data) {
@@ -48,38 +43,24 @@ Record.prototype.isValidData = function(data) {
 }
 
 Record.prototype.Decrypt = function( key, data ) {
-    console.log( "Decrypting " + data.length + " bytes of record." );
-    // console.log(data);
+    console.log(`Decrypting ${data.length} bytes of record.`);
+    const that = this;
 
-    try {
-        data = AESDecrypt( data, key );
-        // console.log(data);
-        data = data.toString(CryptoJS.enc.Utf8);
-        // console.log(data);
-    }
-    catch(err) {
-        console.error(err);
-        this.SetError( "Error while decrypting record data." );
-        return;
-    }
+    return AESDecrypt(data, key).then((decrypted) => {
+	console.log(`Decrypted data is ${decrypted.length} bytes.`);
 
-    console.log( "Decrypted data is " + data.length + " bytes." );
+	// quick and dirty check
+	if (that.isValidData(decrypted) === false)
+	    throw "Error while decrypting record data.";
 
-    // quick and dirty check
-    if( this.isValidData(data) == false ) {
-        this.SetError( "Error while decrypting record data." );
-    } else {
-        var objects = JSON.parse(data);
+	const objects = JSON.parse(decrypted);
 
-        console.log( "Record has " + objects.length + " entries." );
-        // console.log(data);
+	console.log(`Record has ${objects.length} entries.`);
 
-        this.entries = [];
-        for( var i = 0; i < objects.length; i++ ) {
-            var entry = TypeFactory(objects[i]);
-            // console.log( "record.entries[" + i + "] = " + entry.TypeName() );
-            this.entries.push(entry);
-        }
-    }
+	that.entries = [];
+	objects.forEach((o) => that.entries.push(TypeFactory(o)));
+    }).catch((error) => {
+	console.error(error);
+	that.setError(error);
+    });
 }
-
