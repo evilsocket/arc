@@ -1,3 +1,5 @@
+windows.crypto.subtle = window.crypto.webkitSubtle;
+
 const crypto_utils = {
     /* size in bytes */
     getRandomValues: (nelements, size = 1, signed = false) => {
