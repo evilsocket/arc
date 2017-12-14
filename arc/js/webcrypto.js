@@ -1,4 +1,4 @@
-windows.crypto.subtle = window.crypto.webkitSubtle;
+window.crypto.subtle = window.crypto.webkitSubtle;
 
 const crypto_utils = {
     /* size in bytes */
@@ -6,16 +6,16 @@ const crypto_utils = {
 	let buffer;
 	switch (size) {
 	case 2:
-	    buffer = signed === true ? new Int16Array(nelements) : new Uint32Array(nelements)
+	    buffer = signed === true ? new Int16Array(nelements) : new Uint32Array(nelements);
 	    window.crypto.getRandomValues(buffer);
 	    break;
 	case 4:
-	    buffer = signed === true ? new Int32Array(nelements) : new Uint32Array(nelements)
+	    buffer = signed === true ? new Int32Array(nelements) : new Uint32Array(nelements);
 	    window.crypto.getRandomValues(buffer);
 	    break;
 	case 1:
 	default:
-	    buffer = signed === true ? new Int8Array(nelements) : new Uint8Array(nelements)
+	    buffer = signed === true ? new Int8Array(nelements) : new Uint8Array(nelements);
 	    window.crypto.getRandomValues(buffer);
 	}
 	return buffer;
