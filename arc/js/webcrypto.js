@@ -1,8 +1,21 @@
 const crypto_utils = {
     /* size in bytes */
-    getRandomValues: (size) => {
-	const buffer = new Uint8Array(size);
-	window.crypto.getRandomValues(buffer);
+    getRandomValues: (nelements, size = 1, signed = false) => {
+	let buffer;
+	switch (size) {
+	case 2:
+	    buffer = signed === true ? new Int16Array(nelements) : new Uint32Array(nelements)
+	    window.crypto.getRandomValues(buffer);
+	    break;
+	case 4:
+	    buffer = signed === true ? new Int32Array(nelements) : new Uint32Array(nelements)
+	    window.crypto.getRandomValues(buffer);
+	    break;
+	case 1:
+	default:
+	    buffer = signed === true ? new Int8Array(nelements) : new Uint8Array(nelements)
+	    window.crypto.getRandomValues(buffer);
+	}
 	return buffer;
     },
 
