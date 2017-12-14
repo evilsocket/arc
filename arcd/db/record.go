@@ -181,6 +181,9 @@ func (r *Record) compress() (err error) {
 	gzipper.Flush()
 	gzipper.Close()
 
+	r.Lock()
+	defer r.Unlock()
+
 	err = os.Rename(tmp_filename, datapath)
 	if err != nil {
 		log.Errorf("Error while renaming %s to %s: %s.", tmp_filename, datapath, err)
@@ -192,6 +195,7 @@ func (r *Record) compress() (err error) {
 
 	r.meta.Size = uint64(stats.Size())
 	r.meta.Compressed = true
+	r.meta.FlushNoLock()
 
 	log.Infof("Compressed %s (%d b) in %s.", utils.FormatBytes(r.meta.Size), r.meta.Size, elapsed)
 	return nil
@@ -221,19 +225,22 @@ func (r *Record) UpdateBuffer(reader io.Reader) (err error) {
 	writer.Close()
 
 	elapsed := time.Since(start)
+
 	r.meta.Size = uint64(written)
 	r.meta.Compressed = false
+	r.meta.FlushNoLock()
 
 	log.Debugf("Wrote %s (%d b) in %s ...", utils.FormatBytes(r.meta.Size), r.meta.Size, elapsed)
 
 	if config.Conf.Compression && r.meta.Size > 1024 {
-		err := r.compress()
-		if err != nil {
-			return err
-		}
+		go func() {
+			log.Infof("Starting asynchronous compression.")
+			err := r.compress()
+			if err != nil {
+				log.Errorf("Error while compressing %s: %s.", datapath, err)
+			}
+		}()
 	}
-
-	r.meta.FlushNoLock()
 
 	return nil
 }
