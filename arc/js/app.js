@@ -126,6 +126,7 @@ app.controller('PMController', ['$scope', function (scope) {
     scope.secret = null;
     scope.store_id = null;
     scope.stores = null;
+    scope.secrets = {};
     scope.filter = null;
     scope.timeout = null;
     scope.trackTotal = 0;
@@ -347,15 +348,17 @@ app.controller('PMController', ['$scope', function (scope) {
         }
     };
 
-    scope.onShowStore = function(id) {
+    scope.onShowStore = function(id, callback) {
+        scope.setRoute("/" + id);
         scope.store_id = id;
         scope.setStatus("Loading passwords store ...");
-        scope.getStore(function(){}, true);
+        scope.getStore(callback, true);
     };
 
     scope.doSelectStore = function() {
         scope.arc.Stores(function(stores){
             document.title = "Select store"
+            scope.setRoute("/");
             scope.delTimeout();
                    
             scope.stores = stores;
@@ -384,7 +387,7 @@ app.controller('PMController', ['$scope', function (scope) {
 
                 scope.setError(null);
                 scope.$apply();
-                scope.doSelectStore();
+                scope.route();
             },
             scope.errorHandler );
         }
@@ -530,7 +533,9 @@ app.controller('PMController', ['$scope', function (scope) {
         $('#secret_expired_at').trigger('change');
         $('#secret_title').text(title);
         $('#secret_entry_list').html('').sortable({handle: 'i.fa-arrows'});
-        $('#secret_modal').modal();
+        $('#secret_modal').modal().on('hidden.bs.modal', function(){
+            scope.setRoute("/" + scope.store_id);  
+        });
     };
 
     scope.onNewSecret = function() {null
@@ -595,7 +600,20 @@ app.controller('PMController', ['$scope', function (scope) {
         });
     };
 
-    scope.onShowSecret = function(secret) {
+    scope.getSecretById = function(id) {
+        for( var i = 0; i < scope.arc.records.length; i++ ) {
+            var secret = scope.arc.records[i];
+            if( secret.id == id ){
+                return secret;
+            }
+        }
+
+        alert( "WTF?! " + id );
+    };
+
+    scope.onShowSecret = function(id) {
+        var secret = scope.getSecretById(id);
+
         console.log( "Loading record " + secret.id );
 
         scope.trackTotal = secret.size;
@@ -608,6 +626,7 @@ app.controller('PMController', ['$scope', function (scope) {
                     var record = new Record(secret.title);
                     record.Decrypt( secret.encryption, scope.key, data, 
                         function(){
+                            scope.setRoute("/" + scope.store_id + "/" + id);
                             scope.setSecret(secret)
 
                             $('#record_lock_' + secret.id ).removeClass("fa-lock").addClass("fa-unlock");
@@ -737,7 +756,57 @@ app.controller('PMController', ['$scope', function (scope) {
         }
     };
 
+    scope.setRoute = function(route) {
+        if(history.pushState) {
+            history.pushState(null, null, '#!#' + route);
+        }
+        else {
+            location.hash = '#!#' + route;
+        }
+    };
+
+    scope.getRoute = function() {
+        var hash = location.hash;
+        if( hash.indexOf("#!#") == 0 ) {
+            return decodeURIComponent(location.hash.substr(3));
+        }
+        return "";
+    };
+
+    scope.parseRoute = function(route) {
+        var parts = route.split('/'),
+            n_parts = parts.length,
+            store_id = null,
+            record_id = null;
+        
+        if( n_parts >= 2 && !isNaN(parts[1]) ){
+            store_id = parseInt(parts[1]);
+        } 
+        
+        if( store_id != null && n_parts >= 3 && !isNaN(parts[2]) ){
+            record_id = parseInt(parts[2]);
+        }
+
+        return [store_id, record_id];
+    };
+
+    scope.route = function() {
+        var route = this.getRoute();
+        var [ store_id, record_id ] = this.parseRoute(route);
+        
+        if( store_id == null ) {
+            scope.doSelectStore();
+        } 
+        else if( record_id == null ) {
+            scope.onShowStore(store_id);
+        } else {
+            scope.onShowStore(store_id, function(){
+                scope.onShowSecret(record_id);
+            });
+        }
+    };
+
     if( scope.key != null ){
-        scope.doSelectStore();
+        scope.route();
     }
 }]);

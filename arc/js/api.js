@@ -12,12 +12,6 @@ function Arc(on_req_executed) {
     this.store = null;
     this.config = null;
     this.records = null;
-    this.req = null;
-    this.req_started = null;
-    this.req_time = null;
-    this.on_req_executed = on_req_executed || function(success, req, time){
-        console.log( req + " executed " + ( success ? "succesfully" : "with errors" ) + " in " + time + " ms." );
-    };
 }
 
 Arc.prototype.IsLogged = function() {
@@ -29,23 +23,7 @@ Arc.prototype.HasStore = function() {
     return hasStore;
 }
 
-Arc.prototype.onRequestStart = function( req ) {
-    this.req = req;
-    this.req_time = null;
-    this.req_started = new Date();
-}
-
-Arc.prototype.onRequestDone = function( success ) {
-    this.req_time = ( new Date() ) - this.req_started;
-    this.on_req_executed( success, this.req, this.req_time );
-}
-
 Arc.prototype.Api = function( method, path, data, success, error, raw ) {
-    var dataType = raw ? undefined : 'json';
-    console.log( method + ' ' + path + ' (' + dataType + ')' );
-
-    this.onRequestStart( method + ' ' + path );
-
     var arc = this;
     return $.ajax({
         type: method,
@@ -55,29 +33,17 @@ Arc.prototype.Api = function( method, path, data, success, error, raw ) {
                 xhr.setRequestHeader('Authorization', 'Bearer: ' + arc.token);
             }
         },
-        success: function(r) {
-            arc.onRequestDone(true);            
-            success(r);
-        },
-        error: function(e) {
-            arc.onRequestDone(false);            
-            error(e);
-        },
+        success: success,
+        error: error,
         data: data ? JSON.stringify(data) : null,
         contentType: "application/json",
-        dataType: dataType,
+        dataType: raw ? undefined : 'json',
         cache: false,
         timeout: 60 * 60 * 1000
     });
 }
 
 Arc.prototype.ApiStream = function( method, path, meta, blob, success, error ) {
-    var arc = this;
-    
-    console.log( method + ' ' + path );
-
-    this.onRequestStart( method + ' ' + path );
-
     /*
      * I wish I cold use this, but on mobile FormData is not
      * well supported yet :(
@@ -92,7 +58,7 @@ Arc.prototype.ApiStream = function( method, path, meta, blob, success, error ) {
       form_data.append( "meta", JSON.stringify(meta) );
       form_data.append( "data", file );
     */
-
+    var arc = this;
     var boundary = "AJAX-----------------------" + (new Date).getTime();
     var ctype = "multipart/form-data; boundary=" + boundary
     var CRLF = "\r\n";
@@ -113,14 +79,8 @@ Arc.prototype.ApiStream = function( method, path, meta, blob, success, error ) {
                 xhr.setRequestHeader('Authorization', 'Bearer: ' + arc.token);
             }
         },
-        success: function(r) {
-            arc.onRequestDone(true);            
-            success(r);
-        },
-        error: function(e) {
-            arc.onRequestDone(false);            
-            error(e);
-        },
+        success: success,
+        error: error,
         cache: false,
         processData: false,
         contentType: ctype,
