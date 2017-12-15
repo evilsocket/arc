@@ -578,17 +578,19 @@ app.controller('PMController', ['$scope', function (scope) {
 
                     record.AddEntry(new Entry( type, name, value));
                 }
-                var data = record.Encrypt( scope.key );
-                var size = data.length;
 
-                scope.trackTotal = size;
-                scope.progressAt = new Date();
-                scope.showLoader("Adding record ...", function(){
-                    scope.arc.AddRecord( title, expire_at, prune, data, 'aes', size, function(record) {
-                        scope.getStore(function() {});
-                    },
-                    scope.errorHandler ).uploadProgress(scope.trackProgress);
+                record.Encrypt(scope.key).then(function(data){
+                    var size = data.length;
+                    scope.trackTotal = size;
+                    scope.progressAt = new Date();
+                    scope.showLoader("Adding record ...", function(){
+                        scope.arc.AddRecord( title, expire_at, prune, data, 'aes', size, function(record) {
+                            scope.getStore(function() {});
+                        },
+                        scope.errorHandler ).uploadProgress(scope.trackProgress);
+                    });
                 });
+
             }, 0 );
         });
     };
@@ -604,26 +606,31 @@ app.controller('PMController', ['$scope', function (scope) {
                 // start decrypting data when message is updated
                 scope.showLoader( "Decrypting data ...", function() {
                     var record = new Record(secret.title);
-                    record.Decrypt( scope.key, data );
-                    if( record.HasError() == true ) {
-                        $('#record_error_' + secret.id).html(record.error);
-                        $('#record_status_' + secret.id ).addClass("status-error");
-                    }
-                    else {
-                        scope.setSecret(secret)
+                    record.Decrypt( scope.key, data, 
+                        function(){
+                            scope.setSecret(secret)
 
-                        $('#record_lock_' + secret.id ).removeClass("fa-lock").addClass("fa-unlock");
-                        $('#record_status_' + secret.id ).removeClass("status-locked").addClass("status-unlocked");
+                            $('#record_lock_' + secret.id ).removeClass("fa-lock").addClass("fa-unlock");
+                            $('#record_status_' + secret.id ).removeClass("status-locked").addClass("status-unlocked");
 
-                        scope.showSecretModal(false, record.title, secret.updated_at, secret.expired_at, secret.prune, secret.size);
+                            scope.showSecretModal(false, record.title, secret.updated_at, secret.expired_at, secret.prune, secret.size);
 
-                        var list = $('#secret_entry_list'); 
-                        for( var i = 0; i < record.entries.length; i++ ){
-                            record.entries[i].RenderToList( list, i );
+                            var list = $('#secret_entry_list'); 
+                            for( var i = 0; i < record.entries.length; i++ ){
+                                record.entries[i].RenderToList( list, i );
+                            }
+
+                            scope.hideLoader();
+                        }, 
+                        function(error){
+                            if( error )
+                                console.log(error);
+                            $('#record_error_' + secret.id).html("Error while decrypting record data.");
+                            $('#record_status_' + secret.id ).addClass("status-error");
+
+                            scope.hideLoader();
                         }
-                    }
-
-                    scope.hideLoader();
+                    );
                 });
 
             }, scope.errorHandler ).progress(scope.trackProgress);
@@ -673,20 +680,19 @@ app.controller('PMController', ['$scope', function (scope) {
                 record.AddEntry(new Entry( type, name, value ));
             }
             
-            var data = record.Encrypt( scope.key )
-            var size = data.length
-
-            scope.trackTotal = size;
-            scope.progressAt = new Date();
-            scope.showLoader("Updating Record ...", function(){
-                scope.arc.UpdateRecord( scope.secret.id, title, expire_at, prune, data, 'aes', size, function(record) {
-                    scope.setSecret(null);
-                    scope.setError(null);
-                    scope.getStore(function(){});
-                },
-                scope.errorHandler ).uploadProgress(scope.trackProgress);
+            record.Encrypt(scope.key).then(function(data){
+                var size = data.length
+                scope.trackTotal = size;
+                scope.progressAt = new Date();
+                scope.showLoader("Updating Record ...", function(){
+                    scope.arc.UpdateRecord( scope.secret.id, title, expire_at, prune, data, 'aes', size, function(record) {
+                        scope.setSecret(null);
+                        scope.setError(null);
+                        scope.getStore(function(){});
+                    },
+                    scope.errorHandler ).uploadProgress(scope.trackProgress);
+                });
             });
-
         });
     };
 
