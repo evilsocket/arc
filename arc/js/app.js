@@ -606,7 +606,7 @@ app.controller('PMController', ['$scope', function (scope) {
                 // start decrypting data when message is updated
                 scope.showLoader( "Decrypting data ...", function() {
                     var record = new Record(secret.title);
-                    record.Decrypt( scope.key, data, 
+                    record.Decrypt( secret.encryption, scope.key, data, 
                         function(){
                             scope.setSecret(secret)
 

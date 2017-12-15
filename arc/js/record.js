@@ -44,19 +44,25 @@ Record.prototype.Encrypt = function( key ) {
     return AESEncrypt( data, key );
 }
 
-Record.prototype.Decrypt = function( key, data, success, error ) {
-    console.log( "Decrypting " + data.length + " bytes of data." );
+Record.prototype.Decrypt = function( algo, key, data, success, error ) {
     var record = this;
-    AESDecrypt( data, key ).then(function(decrypted){
+    const on_data = function(decrypted) {
         console.log( "Decrypted " + decrypted.length + " bytes of plaintext." );
         try {
             record.fromData(decrypted);
             success();
         }
         catch(e) {
-           error(e); 
+            error(e); 
         }
-    })
-    .catch(error);
+    };
+
+    if( algo == 'none' ) {
+        on_data(data);
+    }
+    else {
+        console.log( "Decrypting " + data.length + " bytes of data." );
+        AESDecrypt( data, key ).then(on_data).catch(error);
+    }
 }
 
