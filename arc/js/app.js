@@ -98,6 +98,12 @@ app.filter('timeago', function() {
     }
 });
 
+app.filter('uptime', function() {
+    return function(date) {
+       return $.timeago(date).replace(' ago', '');
+    }
+});
+
 app.filter('expiration', function() {
     return function(date) {
         // Expired
@@ -132,6 +138,11 @@ app.controller('PMController', ['$scope', function (scope) {
     scope.trackTotal = 0;
     scope.registeredTypes = REGISTERED_TYPES;
     scope.templates = REGISTERED_TEMPLATES;
+    scope.latency = 0;
+    scope.status = {
+        online: true,
+        started: new Date(),
+    };
 
     scope.setError = function(message) {
         scope.setStatus(null);
@@ -260,7 +271,9 @@ app.controller('PMController', ['$scope', function (scope) {
                 scope.setupTimeout();
                 scope.setError(null);
                 scope.$apply();
-                success();
+                if( success ) {
+                    success();
+                }
             },
             scope.errorHandler );
         }
@@ -358,7 +371,7 @@ app.controller('PMController', ['$scope', function (scope) {
     scope.doSelectStore = function() {
         scope.arc.Stores(function(stores){
             document.title = "Select store"
-            scope.setRoute("/");
+            scope.setRoute(null);
             scope.delTimeout();
                    
             scope.stores = stores;
@@ -383,8 +396,6 @@ app.controller('PMController', ['$scope', function (scope) {
 
         if( scope.setKey( $('#key').val(), persist ) == true ) { 
             scope.arc.Login( username, password, persist, function(token) {
-                setInterval( function(){ scope.updateSessionTime(); }, 1000 );
-
                 scope.setError(null);
                 scope.$apply();
                 scope.route();
@@ -734,7 +745,18 @@ app.controller('PMController', ['$scope', function (scope) {
         }
     };
 
-    scope.updateSessionTime = function() {
+    scope.updateServerStatus = function() {
+        scope.latencyRequested = Date.now();
+        scope.arc.Status(function(s){
+            scope.latency = Date.now() - scope.latencyRequested;
+            scope.status = s; 
+            scope.$apply();
+        },
+        function(){
+            scope.status.online = false;
+            scope.$apply();
+        });
+
         if( scope.arc.config != null ) {
             var token_duration_minutes = scope.arc.config.token_duration;
             var token_life = Date.now() - scope.arc.token_time;
@@ -757,11 +779,12 @@ app.controller('PMController', ['$scope', function (scope) {
     };
 
     scope.setRoute = function(route) {
+        route = route ? '#!#' + route : '#';
         if(history.pushState) {
-            history.pushState(null, null, '#!#' + route);
+            history.pushState(null, null, route);
         }
         else {
-            location.hash = '#!#' + route;
+            location.hash = route;
         }
     };
 
@@ -791,6 +814,8 @@ app.controller('PMController', ['$scope', function (scope) {
     };
 
     scope.route = function() {
+        setInterval( function(){ scope.updateServerStatus(); }, 1000 );
+
         var route = this.getRoute();
         var [ store_id, record_id ] = this.parseRoute(route);
         

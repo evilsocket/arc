@@ -85,6 +85,8 @@ func OpenRecord(path string) (record *Record, err error) {
 		return nil, err
 	}
 
+	Size += meta.Size
+
 	i, err := LoadIndex(path)
 	if err != nil {
 		return nil, err
@@ -193,9 +195,11 @@ func (r *Record) compress() (err error) {
 	elapsed := time.Since(start)
 	stats, _ := os.Stat(datapath)
 
+	Size -= r.meta.Size
 	r.meta.Size = uint64(stats.Size())
 	r.meta.Compressed = true
 	r.meta.FlushNoLock()
+	Size += r.meta.Size
 
 	log.Infof("Compressed %s (%d b) in %s.", utils.FormatBytes(r.meta.Size), r.meta.Size, elapsed)
 	return nil
@@ -206,6 +210,11 @@ func (r *Record) UpdateBuffer(reader io.Reader) (err error) {
 	defer r.Unlock()
 
 	datapath := r.DataPath()
+
+	if utils.Exists(datapath) {
+		stats, _ := os.Stat(datapath)
+		Size -= uint64(stats.Size())
+	}
 
 	log.Debugf("Writing buffer to %s ...", datapath)
 
@@ -229,6 +238,7 @@ func (r *Record) UpdateBuffer(reader io.Reader) (err error) {
 	r.meta.Size = uint64(written)
 	r.meta.Compressed = false
 	r.meta.FlushNoLock()
+	Size += r.meta.Size
 
 	log.Debugf("Wrote %s (%d b) in %s ...", utils.FormatBytes(r.meta.Size), r.meta.Size, elapsed)
 
@@ -273,7 +283,11 @@ func (r *Record) Del(id uint64) (deleted *Record, err error) {
 		return nil, ERR_RECORD_NOT_FOUND
 	}
 
+	for cid, _ := range deleted.children.records {
+		deleted.Del(cid)
+	}
 	deleted.Delete()
+	Size -= deleted.Size()
 
 	r.Lock()
 	defer r.Unlock()

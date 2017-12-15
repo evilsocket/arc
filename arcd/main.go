@@ -26,11 +26,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const (
-	APP_NAME    = "arcd"
-	APP_VERSION = "0.9.0"
-)
-
 var (
 	signals   = make(chan os.Signal, 1)
 	apppath   = ""
@@ -140,7 +135,7 @@ func main() {
 		log.MinLevel = log.INFO
 	}
 
-	log.Infof("%s is starting ...", log.Bold(APP_NAME+" v"+APP_VERSION))
+	log.Infof("%s is starting ...", log.Bold(config.APP_NAME+" v"+config.APP_VERSION))
 
 	if conf_file != "" {
 		if err = config.Load(conf_file); err != nil {
@@ -198,6 +193,7 @@ func main() {
 
 	controllers.App = webapp
 
+	api.GET("/status", controllers.GetStatus)
 	api.GET("/manifest", controllers.GetManifest)
 	api.GET("/config", controllers.GetConfig)
 

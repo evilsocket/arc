@@ -15,6 +15,8 @@ import (
 )
 
 var (
+	Size = uint64(0)
+
 	dbIndex  Index
 	dbNextId = uint64(0)
 )

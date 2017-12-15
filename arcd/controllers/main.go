@@ -5,7 +5,6 @@
  *
  * See LICENSE.
  */
-
 // Arc is an API server for your secrets.
 //
 //     Schemes: http, https
@@ -20,3 +19,69 @@
 //
 // swagger:meta
 package controllers
+
+import (
+	"github.com/evilsocket/arc/arcd/app"
+	"github.com/evilsocket/arc/arcd/config"
+	"github.com/evilsocket/arc/arcd/db"
+	"github.com/evilsocket/arc/arcd/log"
+	"github.com/gin-gonic/gin"
+	"time"
+)
+
+type Status struct {
+	Online  bool      `json:"online"`
+	Started time.Time `json:"started"`
+	Version string    `json:"version"`
+	Size    *uint64   `json:"size"`
+}
+
+var App *app.App
+var ServerStatus = Status{
+	Online:  true,
+	Started: time.Now(),
+	Version: config.APP_VERSION,
+	Size:    &db.Size,
+}
+
+// swagger:route GET /api/status status getStatus
+//
+// Handler returning the current server status.
+//
+// Produces:
+//     - application/json
+//
+// Responses:
+//        200: Status
+func GetStatus(c *gin.Context) {
+	log.Api(log.DEBUG, c, "Requested status.")
+	c.JSON(200, ServerStatus)
+}
+
+// swagger:route GET /api/manifest manifest getManifest
+//
+// Handler returning the current web application manifest.
+//
+// Produces:
+//     - application/json
+//
+// Responses:
+//        200: Manifest
+func GetManifest(c *gin.Context) {
+	log.Api(log.DEBUG, c, "Requested manifest.")
+	c.JSON(200, App.Manifest)
+}
+
+// swagger:route GET /api/config configuration getConfig
+//
+// Handler returning the current server configuration.
+//
+// Produces:
+//     - application/json
+//
+// Responses:
+//        200: Configuration
+func GetConfig(c *gin.Context) {
+	log.Api(log.DEBUG, c, "Requested configuration.")
+	c.JSON(200, config.Conf)
+}

@@ -123,6 +123,10 @@ Arc.prototype.Login = function(username, password, persist, success, error) {
     error);
 }
 
+Arc.prototype.Status = function( success, error ) {
+    return this.Api( 'GET', '/api/status', null, success, error );
+};
+
 Arc.prototype.Stores = function(success, error) {
     this.Api( 'GET', '/api/stores', null, success, error );
 }
