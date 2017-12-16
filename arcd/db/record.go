@@ -296,11 +296,7 @@ func (r *Record) Del(id uint64) (deleted *Record, err error) {
 		return nil, ERR_RECORD_NOT_FOUND
 	}
 
-	for cid, _ := range deleted.children.records {
-		deleted.Del(cid)
-	}
 	deleted.Delete()
-	Size -= deleted.Size()
 
 	r.Lock()
 	defer r.Unlock()
@@ -329,6 +325,10 @@ func (r *Record) Close() {
 }
 
 func (r *Record) Delete() error {
+	for _, child := range r.children.records {
+		child.Delete()
+	}
 	log.Debugf("Deleting record %s ...", r.path)
+	Size -= r.Size()
 	return os.RemoveAll(r.path)
 }
