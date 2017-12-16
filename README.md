@@ -128,6 +128,21 @@ Exported files can be later imported with:
 
     ./arcd -config config.json -import ~/backup.json
 
+## Useful Commands
+
+Allow the `arcd` binary to bind to privileged ports without having root privileges:
+
+    sudo setcap 'cap_net_bind_service=+ep' arcd
+
+Generate self signed certificate in order to use Arc on HTTPS:
+
+    openssl req -new -x509 -sha256 -key key.pem -out certificate-pem -days 365  
+
+Lines to add to `/etc/rc.local` in order to make arcd start at boot (running as `pi` user, configuration, logs and and ui are in the home folder):
+
+    export ARC=/home/pi/
+    sudo -H -u pi bash -c "$ARC/arcd -config $ARC/config.json -app $ARC/arc -log-file $ARC/arcd.log &"
+
 ## Bugs
 
 Before opening an issue, please make sure it is not already part of [a known bug](https://github.com/evilsocket/arc/issues?q=is%3Aopen+is%3Aissue+label%3Abug).
