@@ -9,6 +9,7 @@ package events
 
 import (
 	"crypto/tls"
+	"fmt"
 	"github.com/evilsocket/arc/arcd/config"
 	"github.com/evilsocket/arc/arcd/log"
 	"github.com/evilsocket/arc/arcd/utils"
@@ -29,7 +30,7 @@ func Report(event Event) {
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
 	m := gomail.NewMessage()
-	m.SetHeader("From", smtp.Username)
+	m.SetHeader("From", fmt.Sprintf("Arc Reporting System <%s>", smtp.Username))
 	m.SetHeader("To", config.Conf.Scheduler.Reports.To)
 	m.SetHeader("Subject", event.Title)
 	m.SetBody("text/html", event.Description)
