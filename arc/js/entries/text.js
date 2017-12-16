@@ -23,5 +23,17 @@ TextEntry.prototype.Icon = function() {
 }
 
 TextEntry.prototype.Render = function(with_value, id){
-    return this.formGroup( this.textarea(false, with_value, id), id );
+    return this.formGroup(
+        '<div ' +
+            'data-entry-type="' + this.type + '" ' +
+            'class="div-editable" ' + 
+            'id="' + this.id(id) + '" ' +
+            'contenteditable="true">'+this.value+"</div>"
+    );
 }
+
+TextEntry.prototype.OnRendered = function(id) {
+    Entry.prototype.OnRendered.call( this, id );
+}
+
+

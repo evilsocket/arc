@@ -458,3 +458,9 @@ div.notifications {
     border-top: 5px solid #eee;
     margin-top: 10px;
 }
+
+.div-editable {
+    width: 100%;
+    min-height: 50px;
+    border: 1px solid #eee;
+}
