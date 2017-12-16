@@ -15,10 +15,10 @@ import (
 
 func Login(successful bool, address string, username string, password string) Event {
 	if successful {
-		desc := fmt.Sprintf("Address %s successfully logged into Arc server.", address)
+		desc := fmt.Sprintf("Address %s successfully logged into the Arc server.", address)
 		return New("login_ok", "Successful login.", desc)
 	} else {
-		desc := fmt.Sprintf("Address <b>%s</b> tried to log into Arc server with username <b>%s</b> and password <b>%s</b>.",
+		desc := fmt.Sprintf("Address <b>%s</b> tried to log into the Arc server with username <b>%s</b> and password <b>%s</b>.",
 			html.EscapeString(address),
 			html.EscapeString(username),
 			html.EscapeString(password))
