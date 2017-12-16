@@ -247,7 +247,7 @@ app.controller('PMController', ['$scope', function (scope) {
             });
         } else if( callback ) {
             // be friendly, be async! :P
-            setTimeout( callback, 500 );
+            setTimeout( callback, 0 );
         }
     };
 
