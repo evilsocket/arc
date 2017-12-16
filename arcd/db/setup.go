@@ -12,16 +12,19 @@ import (
 	"github.com/evilsocket/arc/arcd/log"
 	"github.com/evilsocket/arc/arcd/utils"
 	"os"
+	"time"
 )
 
 var (
-	Size = uint64(0)
-
 	dbIndex  Index
 	dbNextId = uint64(0)
+
+	Size = uint64(0)
 )
 
 func Setup() (created bool, err error) {
+	started := time.Now()
+
 	if config.Conf.Database, err = utils.ExpandPath(config.Conf.Database); err != nil {
 		return false, err
 	}
@@ -45,7 +48,10 @@ func Setup() (created bool, err error) {
 		}
 	}
 
+	elapsed := time.Since(started)
+
 	log.Debugf("  dbNextId=%d", dbNextId)
+	log.Infof("%s of records loaded in %s.", utils.FormatBytes(Size), elapsed)
 
 	return created, nil
 }
