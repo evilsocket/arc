@@ -787,9 +787,16 @@ app.controller('PMController', ['$scope', function (scope) {
             scope.prevEvents = scope.status.events;
             scope.$apply();
         },
-        function(){
-            scope.status.online = false;
-            scope.$apply();
+        function(e){
+            console.log(e);
+
+            if( e.status == 403 ) {
+                window.localStorage.clear();
+                window.location.reload();
+            } else {
+                scope.status.online = false;
+                scope.$apply();
+            }
         });
 
         if( scope.arc.config != null ) {
