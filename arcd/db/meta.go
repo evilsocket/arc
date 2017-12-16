@@ -24,6 +24,7 @@ type Meta struct {
 	UpdatedAt  time.Time `json:"updated_at"`
 	ExpiredAt  time.Time `json:"expired_at"`
 	Prune      bool      `json:"prune"`
+	Notified   bool      `json:"notified"`
 	Compressed bool      `json:"compressed"`
 	Size       uint64    `json:"size"`
 	NextId     uint64    `json:"next_id"`
@@ -101,6 +102,7 @@ func CreateMeta(path string, values Meta) (meta *Meta, err error) {
 		Prune:      values.Prune,
 		Compressed: values.Compressed,
 		Size:       values.Size,
+		Notified:   false,
 		NextId:     1,
 	}
 

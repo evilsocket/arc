@@ -107,6 +107,19 @@ func (r *Record) Meta() *Meta {
 	return r.meta
 }
 
+func (r *Record) WasNotified() bool {
+	r.Lock()
+	defer r.Unlock()
+	return r.meta.Notified
+}
+
+func (r *Record) SetNotified(notified bool) {
+	r.Lock()
+	defer r.Unlock()
+	r.meta.Notified = notified
+	r.meta.FlushNoLock()
+}
+
 func (r *Record) Id() uint64 {
 	return r.meta.Id
 }

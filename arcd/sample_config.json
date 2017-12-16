@@ -1,5 +1,5 @@
 {
-    "address": "127.0.0.1",
+    "address": "0.0.0.0",
     "port": 8080,
     "username": "arc",
     "password": "404fcfb394d23199f6d95f1f36bd2beb6df8564f993f44517f6015fcd16101a9",
@@ -8,7 +8,18 @@
     "compression": true,
     "scheduler": {
         "enabled": true,
-        "period": 10
+        "period": 10,
+        "reports": {
+            "enabled": false,
+            "filter": [ "login_ok", "login_ko", "record_expired" ],
+            "to": "youremail@gmail.com",
+            "smtp":{
+                "address": "smtp.gmail.com",
+                "port": 587,
+                "username": "youremail@gmail.com",
+                "password": "your smtp password"
+            }
+        }
     },
     "backups": {
         "enabled": false,

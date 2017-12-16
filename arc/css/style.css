@@ -429,3 +429,25 @@ ul li.placeholder:before {
 #secret_meta {
     margin-left: 7px;
 }
+
+div.notifications {
+    font-size: 1.0rem;
+    position: absolute;
+    right: 10px;
+    top: 15px;
+    z-index: 99;
+}
+
+.event-time {
+    border-left:1px solid #ccc; 
+    padding-left:10px;
+    margin-left:5px;
+}
+
+#dropdownToggle {
+    color: white;
+}
+
+.dropdown-toggle::after {
+    display:none
+}

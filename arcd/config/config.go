@@ -36,10 +36,27 @@ type tlsConfig struct {
 	Key         string `json:"key"`
 }
 
+// SMTP configuration.
+type SMTPConfig struct {
+	Address  string `json:"address"`
+	Port     int    `json:"port"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+// Reports configuration.
+type rpConfig struct {
+	Enabled bool       `json:"enabled"`
+	Filter  []string   `json:"filter"`
+	To      string     `json:"to"`
+	SMTP    SMTPConfig `json:"smtp"`
+}
+
 // Scheduler configuration.
 type schConfig struct {
-	Enabled bool `json:"enabled"`
-	Period  int  `json:"period"`
+	Enabled bool     `json:"enabled"`
+	Period  int      `json:"period"`
+	Reports rpConfig `json:"reports"`
 }
 
 // Backups configuration.

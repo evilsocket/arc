@@ -1,0 +1,17 @@
+<div class="dropdown">
+  <a id="dropdownToggle" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="#">
+    <i class="fa fa-exclamation-circle" aria-hidden="true"></i> {{ status.events.length }}
+  </a>
+  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownToggle">
+    <a class="dropdown-item" href="#" ng-repeat="e in status.events" ng-click="showEvent($index)">
+      <small>{{ e.Title }}</small> <small class="event-time">{{ e.Time | timeago }}</small>
+    </a>
+    <div class="dropdown-divider"></div>
+    <small>
+      <a class="dropdown-item" ng-click="clearEvents()" href="#">
+        <i class="fa fa-trash-o" aria-hidden="true"></i> Clear
+      </a>
+    </small>
+  </div>
+</div>
+

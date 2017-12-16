@@ -76,6 +76,7 @@ function onGenerate(n) {
 
 function bytesFormat(bytes, precision) {
     if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
+    if (bytes == 0) return '0 B';
     if (typeof precision === 'undefined') precision = 1;
     var units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB'],
         number = Math.floor(Math.log(bytes) / Math.log(1024));
@@ -86,6 +87,12 @@ Number.prototype.pad = function(size) {
     var s = String(this);
     while (s.length < (size || 2)) {s = "0" + s;}
     return s;
+};
+
+String.prototype.stripTags = function() {
+    var div = document.createElement("div");
+    div.innerHTML = this;
+    return div.textContent || div.innerText || "";
 };
 
 var app = angular.module('PM', [], function($interpolateProvider) {
@@ -139,9 +146,11 @@ app.controller('PMController', ['$scope', function (scope) {
     scope.registeredTypes = REGISTERED_TYPES;
     scope.templates = REGISTERED_TEMPLATES;
     scope.latency = 0;
+    scope.prevEvents = [];
     scope.status = {
         online: true,
         started: new Date(),
+        events: []
     };
 
     scope.setError = function(message) {
@@ -745,11 +754,37 @@ app.controller('PMController', ['$scope', function (scope) {
         }
     };
 
+    scope.showEvent = function(idx) {
+        var e = scope.status.events[idx];
+        $('#event_title').html( e.Title );
+        $('#event_time').html( e.Time );
+        $('#event_body').html( e.Description );
+        $('#event_modal').modal();
+    };
+
+    scope.clearEvents = function() {
+        console.log("Clearing events.");
+        scope.arc.ClearEvents();
+    };
+
     scope.updateServerStatus = function() {
         scope.latencyRequested = Date.now();
         scope.arc.Status(function(s){
             scope.latency = Date.now() - scope.latencyRequested;
             scope.status = s; 
+
+            if( scope.status.events.length > scope.prevEvents.length ) {
+                var n_new = scope.status.events.length - scope.prevEvents.length;
+                for( var i = 0; i < n_new; i++ ) {
+                    var e = scope.status.events[i];
+                    $.notify( e.Description.stripTags(), {
+                        'title': e.Title.stripTags(),
+                        'icon':  location.protocol + '//' + location.hostname+(location.port ? ':'+location.port: '')+"/img/logo.png" 
+                    });
+                }
+            }
+
+            scope.prevEvents = scope.status.events;
             scope.$apply();
         },
         function(){

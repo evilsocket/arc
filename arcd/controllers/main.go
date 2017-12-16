@@ -24,16 +24,18 @@ import (
 	"github.com/evilsocket/arc/arcd/app"
 	"github.com/evilsocket/arc/arcd/config"
 	"github.com/evilsocket/arc/arcd/db"
+	"github.com/evilsocket/arc/arcd/events"
 	"github.com/evilsocket/arc/arcd/log"
 	"github.com/gin-gonic/gin"
 	"time"
 )
 
 type Status struct {
-	Online  bool      `json:"online"`
-	Started time.Time `json:"started"`
-	Version string    `json:"version"`
-	Size    *uint64   `json:"size"`
+	Online  bool            `json:"online"`
+	Started time.Time       `json:"started"`
+	Version string          `json:"version"`
+	Size    *uint64         `json:"size"`
+	Events  *[]events.Event `json:"events"`
 }
 
 var App *app.App
@@ -42,6 +44,7 @@ var ServerStatus = Status{
 	Started: time.Now(),
 	Version: config.APP_VERSION,
 	Size:    &db.Size,
+	Events:  &events.Pool,
 }
 
 // swagger:route GET /api/status status getStatus
@@ -54,7 +57,12 @@ var ServerStatus = Status{
 // Responses:
 //        200: Status
 func GetStatus(c *gin.Context) {
-	log.Api(log.DEBUG, c, "Requested status.")
+	// log.Api(log.DEBUG, c, "Requested status.")
+	c.JSON(200, ServerStatus)
+}
+
+func ClearEvents(c *gin.Context) {
+	events.Clear()
 	c.JSON(200, ServerStatus)
 }
 

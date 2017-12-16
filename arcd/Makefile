@@ -2,6 +2,7 @@
 
 DEPENDENCIES=github.com/gin-gonic/gin \
 			 github.com/theckman/go-flock \
+			 gopkg.in/gomail.v2 \
 		 	 github.com/stretchr/testify/assert \
 			 github.com/dgrijalva/jwt-go 
 

@@ -20,6 +20,7 @@ import (
 	"github.com/evilsocket/arc/arcd/config"
 	"github.com/evilsocket/arc/arcd/controllers"
 	"github.com/evilsocket/arc/arcd/db"
+	"github.com/evilsocket/arc/arcd/events"
 	"github.com/evilsocket/arc/arcd/log"
 	"github.com/evilsocket/arc/arcd/middlewares"
 
@@ -92,10 +93,17 @@ func arcScheduler() {
 		for _, store := range db.GetStores() {
 			for _, r := range store.Children() {
 				meta := r.Meta()
-				if r.Expired() && meta.Prune {
-					log.Infof("Pruning record %d ( %s ) ...", meta.Id, meta.Title)
-					if _, err := store.Del(meta.Id); err != nil {
-						log.Errorf("Error while deleting record %d: %s.", meta.Id, err)
+				if r.Expired() {
+					if r.WasNotified() == false {
+						events.Add(events.RecordExpired(r))
+						r.SetNotified(true)
+					}
+
+					if meta.Prune {
+						log.Infof("Pruning record %d ( %s ) ...", meta.Id, meta.Title)
+						if _, err := store.Del(meta.Id); err != nil {
+							log.Errorf("Error while deleting record %d: %s.", meta.Id, err)
+						}
 					}
 				}
 			}
@@ -196,6 +204,8 @@ func main() {
 	api.GET("/status", controllers.GetStatus)
 	api.GET("/manifest", controllers.GetManifest)
 	api.GET("/config", controllers.GetConfig)
+
+	api.GET("/events/clear", controllers.ClearEvents)
 
 	api.GET("/stores", controllers.ListStores)
 	api.POST("/stores", controllers.CreateStore)

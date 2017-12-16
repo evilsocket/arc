@@ -127,6 +127,10 @@ Arc.prototype.Status = function( success, error ) {
     return this.Api( 'GET', '/api/status', null, success, error );
 };
 
+Arc.prototype.ClearEvents = function( success, error ) {
+    return this.Api( 'GET', '/api/events/clear', null, success, error );
+};
+
 Arc.prototype.Stores = function(success, error) {
     this.Api( 'GET', '/api/stores', null, success, error );
 }

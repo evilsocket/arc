@@ -9,10 +9,12 @@ package controllers
 
 import (
 	"github.com/evilsocket/arc/arcd/config"
+	"github.com/evilsocket/arc/arcd/events"
 	"github.com/evilsocket/arc/arcd/log"
 	"github.com/evilsocket/arc/arcd/middlewares"
 	"github.com/evilsocket/arc/arcd/utils"
 	"github.com/gin-gonic/gin"
+	"strings"
 )
 
 // Authentication credentials.
@@ -57,10 +59,22 @@ func Auth(c *gin.Context) {
 		utils.BadRequest(c)
 	} else if config.Conf.Auth(auth.Username, auth.Password) == false {
 		log.Warningf("Invalid login credentials: user='%s' pass='%s'.", log.Bold(auth.Username), log.Bold(auth.Password))
+		events.Add(
+			events.Login(false,
+				strings.Split(c.Request.RemoteAddr, ":")[0],
+				auth.Username,
+				auth.Password,
+			))
 		utils.Forbidden(c, "Invalid login credentials.")
 	} else if token, err := middlewares.GenerateToken([]byte(config.Conf.Secret), auth.Username); err != nil {
 		utils.ServerError(c, err)
 	} else {
+		events.Add(
+			events.Login(true,
+				strings.Split(c.Request.RemoteAddr, ":")[0],
+				auth.Username,
+				auth.Password,
+			))
 		log.Api(log.INFO, c, "User %s requested new API token", log.Bold(auth.Username))
 		c.JSON(200, gin.H{"token": token})
 	}
