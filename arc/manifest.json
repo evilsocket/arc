@@ -1,7 +1,7 @@
 {
     "name": "arc",
     "description": "Your secrets keeper.", 
-    "version": "1.0.0",
+    "version": "1.0.3",
     "index": "index.html",
     "author": {
         "name": "Simone Margaritelli",
