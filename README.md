@@ -36,16 +36,16 @@ You can find binary releases of Arc [here](https://github.com/evilsocket/arc/rel
 
 Download, install dependencies and compile the `arcd` server component:
 
-    git clone https://github.com/evilsocket/arc
-    cd arc/arcd
+    git clone https://github.com/evilsocket/arc $GOPATH/src/github.com/evilsocket/arc
+    cd $GOPATH/src/github.com/evilsocket/arc/arcd
     make vendor_get
     make
 
 ### Running
     
-Now copy the `sample_config.json` file to a new `config.json` file, customize it and run the `arc` web application:
+Copy the `sample_config.json` file to a new `config.json` file, customize it and run the `arc` web application:
 
-    ./arcd -config config.json -app ../arc
+    ./arcd -config config.json -app arc
 
 The `password` field is the SHA256 checksum of your password, you can generate a new one with:
 
