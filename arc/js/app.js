@@ -898,17 +898,18 @@ app.controller('PMController', ['$scope', function (scope) {
             var inSecretModal = !inStoreSelection && ( scope.isModalOpen('secret_modal') == true );
             var inEditMode = inSecretModal && $('.btn-edit').is(':visible');
             var inNewMode = inSecretModal && !$('.btn-edit').is(':visible');
+            var curTag = document.activeElement.tagName.toLowerCase();
             
             // n -> create new item
             if( e.which == 110 ) {
                 if( inStoreSelection ) {
                     scope.onNewStore(); 
+                    e.preventDefault();
                 }
                 else if( inSecretSelection ) {
                     scope.onNewSecret();
+                    e.preventDefault();
                 }
-
-                e.preventDefault();
             }
 
             // d -> delete store
@@ -917,26 +918,29 @@ app.controller('PMController', ['$scope', function (scope) {
                 e.preventDefault();
             }
 
-            if( inSecretModal ) {
+            if( inSecretModal && curTag != 'input' && curTag != 'textarea' ) {
                 // a -> add element
                 // s -> save
                 // d -> delete
                 // e -> set expiration
                 if( e.which == 97 ) {
                     scope.onAddField();
+                    e.preventDefault();
                 } else if( e.which == 115 ) {
                     if( inEditMode ) {
                         scope.onUpdate();
+                        e.preventDefault();
                     } else {
                         scope.onAdd();
+                        e.preventDefault();
                     }
                 } else if( e.which == 100 && inEditMode ) {
                     scope.onDelete();
+                    e.preventDefault();
                 } else if( e.which == 101 ) {
                     $('#expiration_btn').click();
+                    e.preventDefault();
                 }
-
-                e.preventDefault();
             }
         });
 
