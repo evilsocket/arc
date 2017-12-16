@@ -587,54 +587,64 @@ app.controller('PMController', ['$scope', function (scope) {
         return value;
     };
 
-    scope.onAdd = function() {
-        scope.setStatus("Adding secret ...");
-
-        var title = $('#secret_title').text();
+    scope.buildRecord = function() {
         var names = $('.editable.entry-title');
+        var n_names = names.length;
         var entries = $('*[id^=entry_value_]');
-        var expire_at = $('#secret_expired_at').val();
-        var prune = $('#pruner').val() == '1';
+        var n_entries = entries.length;
         
+        if( n_entries != n_names ) {
+            return alert("WTF?!");
+        }
+
+        var expire_at = $('#secret_expired_at').val();
         if( expire_at != '' ) {
             expire_at = scope.pickerFormatToDate(expire_at);
         } else {
             expire_at = ZERO_DATETIME;
         }
 
-        if( entries.length != names.length ) {
-            return alert("WTF?!");
+        var title = $('#secret_title').text();
+        var prune = $('#pruner').val() == '1';
+        var record = new Record(title);
+
+        console.log( "Building record with " + n_entries + " entries." );
+
+        for( var i = 0; i < n_entries; i++ ) {
+            var name = $(names[i]).text();
+            var input = $(entries[i]);
+            var entry_id = input.attr('id');
+            var type = parseInt( input.attr('data-entry-type') );
+            var value = scope.getInputValue(input);
+
+            if( type == ENTRY_TYPE_FILE ) {
+                var file = FilesGet(entry_id);
+                // free the memory
+                FilesDel(entry_id);
+                value = JSON.stringify(file);
+            }
+
+            console.log( "record.AddEntry( " + type + ", " + name + ", " + value.length + " b )" );
+            record.AddEntry(new Entry( type, name, value));
         }
 
-        $('#secret_modal').modal('hide');
+        return [ expire_at, prune, record ];
+    };
+
+    scope.onAdd = function() {
+        scope.setStatus("Adding secret ...");
 
         scope.showLoader("Encrypting record ...", function(){
             // Execute asynchronously to not block the ui.
             setTimeout( function() {
-                var record = new Record(title);
-                for( var i = 0; i < entries.length; i++ ) {
-                    var input = $(entries[i]);
-                    var entry_id = input.attr('id');
-                    var type = parseInt( input.attr('data-entry-type') );
-                    var name = $(names[i]).text();
-                    var value = scope.getInputValue(input);
-
-                    if( type == ENTRY_TYPE_FILE ) {
-                        var file = FilesGet(entry_id);
-                        // free the memory
-                        FilesDel(entry_id);
-                        value = JSON.stringify(file);
-                    }
-
-                    record.AddEntry(new Entry( type, name, value));
-                }
+                var [ expire_at, prune, record ] = scope.buildRecord();
 
                 record.Encrypt(scope.key).then(function(data){
                     var size = data.length;
                     scope.trackTotal = size;
                     scope.progressAt = new Date();
                     scope.showLoader("Adding record ...", function(){
-                        scope.arc.AddRecord( title, expire_at, prune, data, 'aes', size, function(record) {
+                        scope.arc.AddRecord( record.title, expire_at, prune, data, 'aes', size, function(record) {
                             scope.getStore(function() {});
                         },
                         scope.errorHandler ).uploadProgress(scope.trackProgress);
@@ -708,49 +718,17 @@ app.controller('PMController', ['$scope', function (scope) {
             return;
         }
 
-        var title = $('#secret_title').text();
-        var names = $('.editable.entry-title');
-        var entries = $('*[id^=entry_value_]');
-        var expire_at = $('#secret_expired_at').val();
-        var prune = $('#pruner').val() == '1';
-        
-        if( expire_at != '' ) {
-            expire_at = scope.pickerFormatToDate(expire_at);
-        } else {
-            expire_at = ZERO_DATETIME;
-        }
-
-        if( entries.length != names.length ) {
-            return alert("WTF?!");
-        }
-
         $('#secret_modal').modal('hide');
 
         scope.showLoader("Encrypting record ...", function(){
-            var record = new Record(title);
-            for( var i = 0; i < entries.length; i++ ) {
-                var input = $(entries[i]);
-                var entry_id = input.attr('id');
-                var type = parseInt( input.attr('data-entry-type') );
-                var name = $(names[i]).text();
-                var value = scope.getInputValue(input);
+            var [ expire_at, prune, record ] = scope.buildRecord();
 
-                if( type == ENTRY_TYPE_FILE ) {
-                    var file = FilesGet(entry_id);
-                    // free the memory!
-                    FilesDel(entry_id);
-                    value = JSON.stringify(file);
-                }
-
-                record.AddEntry(new Entry( type, name, value ));
-            }
-            
             record.Encrypt(scope.key).then(function(data){
                 var size = data.length
                 scope.trackTotal = size;
                 scope.progressAt = new Date();
                 scope.showLoader("Updating Record ...", function(){
-                    scope.arc.UpdateRecord( scope.secret.id, title, expire_at, prune, data, 'aes', size, function(record) {
+                    scope.arc.UpdateRecord( scope.secret.id, record.title, expire_at, prune, data, 'aes', size, function(record) {
                         scope.setSecret(null);
                         scope.setError(null);
                         scope.getStore(function(){});
