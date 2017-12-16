@@ -18,11 +18,6 @@ Records are generated, encrypted and decrypted **client side only** (Arc relies 
 
 Elements can be created (with optional expiration dates), arranged and edited using `arc` and are stored on `arcd` safely.
 
-||||
-| ------------- | -- |-------------- |
-| ![ui mix 1](https://i.imgur.com/KCn4RGw.png)  |  | ![ui mix 2](https://i.imgur.com/nxqmRqY.png) |
-| A client side encrypted record set to expire and self delete with a markdown area and a password widget. |  |  Markdown and various attached files. |
-
 #### TL;DR 
 
 The idea is to use *the Arc* as a single manager for your passwords, encrypted notes, files and `-all the secret things here-` while hosting `arcd` yourself on some spare hardware like a Raspberry Pi (a very portable setup with a `Zero W` model, or an USB Armory) or a real dedicated server and accessing `arc` from every device with a modern browser.
@@ -33,6 +28,12 @@ The idea is to use *the Arc* as a single manager for your passwords, encrypted n
 
 ## Usage
 
+### Binary release
+
+You can find binary releases of Arc [here](/evilsocket/arc/releases).
+
+### From source
+
 Download, install dependencies and compile the `arcd` server component:
 
     git clone https://github.com/evilsocket/arc
@@ -40,12 +41,7 @@ Download, install dependencies and compile the `arcd` server component:
     make vendor_get
     make
 
-If you want to build for `arm` from another architecture (ie: you're building for your Raspberry Pi from your laptop), you can refer to the `.goreleaser.yml` file for platform and arch specific flags:
-
-    # on your laptop
-    sudo apt-get install gcc-arm-linux-gnueabi
-    cd arc/arcd
-    env CC=arm-linux-gnueabi-gcc CGO_ENABLED=1 GOOS=linux GOARM=6 GOARCH=arm make
+### Running
     
 Now copy the `sample_config.json` file to a new `config.json` file, customize it and run the `arc` web application:
 

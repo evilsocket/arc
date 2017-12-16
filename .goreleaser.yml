@@ -21,4 +21,6 @@ archive:
   files:
       - LICENSE
       - README.md
+      - Dockerfile
+      - arcd/sample_config.json
       - arc/**/*
