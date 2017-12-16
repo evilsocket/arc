@@ -567,6 +567,26 @@ app.controller('PMController', ['$scope', function (scope) {
         scope.showSecretModal( true, "Put a title ..." );
     };
 
+    scope.getInputValue = function(input) {
+        var value = '';
+        var tagname = input.prop('tagName').toLowerCase();
+
+        if( tagname == 'input' || tagname == 'textarea' || tagname == 'select' ) {
+            switch(input.attr('type')) {
+                case 'checkbox':
+                    value = input.is(':checked') ? '1' : '0'
+                    break;
+                default:
+                    value = input.val();
+            }
+        }
+        else {
+            value = input.html();
+        }
+
+        return value;
+    };
+
     scope.onAdd = function() {
         scope.setStatus("Adding secret ...");
 
@@ -597,20 +617,7 @@ app.controller('PMController', ['$scope', function (scope) {
                     var entry_id = input.attr('id');
                     var type = parseInt( input.attr('data-entry-type') );
                     var name = $(names[i]).text();
-                    var value = '';
-
-                    if( input.prop('tagName').toLowerCase() == 'input' ) {
-                        switch(input.attr('type')) {
-                            case 'checkbox':
-                                value = input.is(':checked') ? '1' : '0'
-                            break;
-                            default:
-                                value = input.val();
-                        }
-                    }
-                    else {
-                        value = input.html();
-                    }
+                    var value = scope.getInputValue(input);
 
                     if( type == ENTRY_TYPE_FILE ) {
                         var file = FilesGet(entry_id);
@@ -726,22 +733,7 @@ app.controller('PMController', ['$scope', function (scope) {
                 var entry_id = input.attr('id');
                 var type = parseInt( input.attr('data-entry-type') );
                 var name = $(names[i]).text();
-                var value = '';
-
-                if( input.prop('tagName').toLowerCase() == 'input' ) {
-                    switch(input.attr('type')) {
-                        case 'checkbox':
-                            value = input.is(':checked') ? '1' : '0'
-                        break;
-                        default:
-                            value = input.val();
-                    }
-                }
-                else {
-                    value = input.html();
-                }
-
-                console.log("value = " + value);
+                var value = scope.getInputValue(input);
 
                 if( type == ENTRY_TYPE_FILE ) {
                     var file = FilesGet(entry_id);
