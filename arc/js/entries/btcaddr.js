@@ -38,12 +38,14 @@ BTCAddressEntry.prototype.Render = function(with_value, id){
 }
 
 BTCAddressEntry.prototype.keepUpdating = function(id) {
+    // console.log("keepUpdating("+id+")");
+
     var $elem = $('#' + id);
     var address = $elem.val();
     var that = this;
     var url = "https://blockchain.info/q/addressbalance/" + address;
 
-    console.log(url);
+    // console.log(url);
 
     $.ajax({
         type: 'GET',

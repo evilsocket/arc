@@ -593,7 +593,20 @@ app.controller('PMController', ['$scope', function (scope) {
                     var entry_id = input.attr('id');
                     var type = parseInt( input.attr('data-entry-type') );
                     var name = $(names[i]).text();
-                    var value = input.attr('type') == 'checkbox' ? input.is(':checked') ? '1' : '0' : input.val();
+                    var value = '';
+
+                    if( input.prop('tagName') == 'input' ) {
+                        switch(input.attr('type')) {
+                            case 'checkbox':
+                                value = input.is(':checked') ? '1' : '0'
+                            break;
+                            default:
+                                value = input.val();
+                        }
+                    }
+                    else {
+                        value = input.html();
+                    }
 
                     if( type == ENTRY_TYPE_FILE ) {
                         var file = FilesGet(entry_id);
@@ -711,7 +724,9 @@ app.controller('PMController', ['$scope', function (scope) {
                 var name = $(names[i]).text();
                 var value = '';
 
-                if( input.prop('tagName') == 'input' ) {
+                console.log( input.prop('tagName') );
+
+                if( input.prop('tagName') == 'INPUT' ) {
                     switch(input.attr('type')) {
                         case 'checkbox':
                             value = input.is(':checked') ? '1' : '0'
@@ -723,6 +738,8 @@ app.controller('PMController', ['$scope', function (scope) {
                 else {
                     value = input.html();
                 }
+
+                console.log("value = " + value);
 
                 if( type == ENTRY_TYPE_FILE ) {
                     var file = FilesGet(entry_id);
