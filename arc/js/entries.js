@@ -13,7 +13,7 @@ var REGISTERED_TYPES = [
     new TextEntry( "Text", "" ),
     new MarkdownEntry( "Markdown", "" ),
     new HTMLEntry( "HTML", "" ),
-    new FileEntry( "File", "" ),
+    new FileEntry( "File(s)", "" ),
 ];
 
 var REGISTERED_TEMPLATES = [

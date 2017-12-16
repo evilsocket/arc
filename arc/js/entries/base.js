@@ -9,7 +9,7 @@ function Entry(type, name, value) {
     this.type = type;
     this.name = name;
     this.value = value;
-    this.identifier = Date.now(); 
+    this.identifier = Date.now() + '_' + Math.floor(Math.random() * (999999999 + 1)); 
     this.is_new = true;
 }
 
@@ -56,7 +56,9 @@ Entry.prototype.input = function(type, with_value, id) {
              'type="' + type + '" ' + 
              'name="' + this.name + '" ' + 
              'id="' + this.id(id) + '" ' +
-             'value="' + ( with_value ? this.value : '' ) + '"/>';
+             'value="' + ( with_value ? this.value : '' ) + '"' +
+             ( type == 'file' ? 'multiple' : '' ) +
+             '/>';
 }
 
 Entry.prototype.textarea = function(with_md, with_value, id) {

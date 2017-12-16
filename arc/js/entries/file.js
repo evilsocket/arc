@@ -87,7 +87,7 @@ FileEntry.prototype.Render = function(idx, mime){
      return this.formGroup( this.input('file', false, idx), idx, mime); 
 }
 
-FileEntry.prototype.RenderToList = function(list, idx) {
+FileEntry.prototype.RenderToList = function(list, idx, dontclick) {
     var entry_id = this.id(idx);
     var rendered = '<div class="entry-edit">';
     
@@ -115,30 +115,54 @@ FileEntry.prototype.RenderToList = function(list, idx) {
 
     list.append( '<li class="secret-entry-item" id="secret_entry_' + idx + '">' + rendered + '</li>' );
 
-    this.OnRendered(idx);
+    this.OnRendered(idx, dontclick);
 }
 
-FileEntry.prototype.OnRendered = function(id) {
+FileEntry.prototype.OnRendered = function(id, dontclick) {
     Entry.prototype.OnRendered.call( this, id );
 
+    var file_entry = this;
     var elem_id = this.id(id);
-    var editable = $('#editable_' + elem_id );
     var fileInput = document.getElementById(elem_id);
+    var list = $('#secret_entry_list'); 
 
     var readFile = function () {
-        var file = fileInput.files[0];
-        var reader = new FileReader();
+        // create new elements for multiple files.
+        if( fileInput.files.length > 1 ) {
+            for( var i = 1; i < fileInput.files.length; i++ ) {
+                // snapshot scope
+                var cb = function() {
+                    var new_idx = list.find('li').length;
+                    var new_file = fileInput.files[i];
+                    var new_entry = new FileEntry( new_file.name, new_file );
+                    new_entry.RenderToList( list, new_idx, true );
 
-        reader.onload = function (e) {
-            FilesAdd(elem_id, reader, file);
+                    var new_reader = new FileReader();
+                    new_reader.onload = function (e) {
+                        FilesAdd( new_entry.id(new_idx), new_reader, new_file);
+                    };
+
+                    new_reader.readAsBinaryString(new_file);
+                };
+                cb();
+            }
+        } 
+        
+        var cb = function() {
+            var first_file = fileInput.files[0];
+            var first_reader = new FileReader();
+            first_reader.onload = function (e) {
+                FilesAdd(elem_id, first_reader, first_file);
+            };
+            $('#editable_' + elem_id ).text( first_file.name );
+            first_reader.readAsBinaryString(first_file);
         };
-
-        editable.text( file.name );
-        reader.readAsBinaryString(file);
+        cb();
     };
+
     fileInput.addEventListener('change', readFile);
 
-    if( this.is_new ) {
+    if( this.is_new && !dontclick ) {
         fileInput.click();
     }
 }
