@@ -451,3 +451,10 @@ div.notifications {
 .dropdown-toggle::after {
     display:none
 }
+
+.btc {
+    font-size: 1.2rem;
+    float: right;
+    border-top: 5px solid #eee;
+    margin-top: 10px;
+}

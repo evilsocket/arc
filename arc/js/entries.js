@@ -14,6 +14,7 @@ var REGISTERED_TYPES = [
     new MarkdownEntry( "Markdown", "" ),
     new HTMLEntry( "HTML", "" ),
     new FileEntry( "File(s)", "" ),
+    new BTCAddressEntry( "Bitcoin Address", "" ),
 ];
 
 var REGISTERED_TEMPLATES = [
