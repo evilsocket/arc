@@ -34,7 +34,7 @@ You can find binary releases of Arc [here](https://github.com/evilsocket/arc/rel
 
 ### From source
 
-Download, install dependencies and compile the `arcd` server component:
+Make sure you have Go >= 1.8 installed and configured, then download Arc sources, install dependencies and compile the `arcd` server component:
 
     git clone https://github.com/evilsocket/arc $GOPATH/src/github.com/evilsocket/arc
     cd $GOPATH/src/github.com/evilsocket/arc/arcd
