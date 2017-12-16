@@ -29,6 +29,7 @@ BTCAddressEntry.prototype.formGroup = function(input, id, mime) {
              '<span class="editable label label-default entry-title label-' + this.type + '" id="editable_' + id + '">' + this.name + '</span>' +
              input +
              '<span id="balance_' + id + '" class="btc">? ฿</span>' +
+             '<br/>' +
             '</div>';
 }
 
