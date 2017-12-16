@@ -10,9 +10,11 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net/http"
 	"os"
 	"os/signal"
 	"path"
+	"regexp"
 	"syscall"
 	"time"
 
@@ -28,23 +30,25 @@ import (
 )
 
 var (
-	signals   = make(chan os.Signal, 1)
-	apppath   = ""
-	conf_file = ""
-	debug     = false
-	logfile   = ""
-	no_colors = false
-	no_auth   = false
-	export    = false
-	import_fn = ""
-	output    = "arc.json"
-	db_is_new = false
+	signals    = make(chan os.Signal, 1)
+	apppath    = ""
+	conf_file  = ""
+	debug      = false
+	logfile    = ""
+	no_colors  = false
+	no_auth    = false
+	no_updates = false
+	export     = false
+	import_fn  = ""
+	output     = "arc.json"
+	db_is_new  = false
 )
 
 func init() {
 	flag.StringVar(&apppath, "app", ".", "Path of the web application to serve.")
 	flag.StringVar(&conf_file, "config", "", "JSON configuration file.")
 	flag.BoolVar(&no_auth, "no-auth", no_auth, "Disable authenticaion.")
+	flag.BoolVar(&no_updates, "no-updates", no_updates, "Disable updates check.")
 
 	flag.BoolVar(&debug, "log-debug", debug, "Enable debug logs.")
 	flag.StringVar(&logfile, "log-file", logfile, "Log messages to this file instead of standard error.")
@@ -111,6 +115,47 @@ func arcScheduler() {
 		}
 
 		db.Unlock()
+	}
+}
+
+func arcUpdater() {
+	for {
+		log.Infof("Checking for newer versions ...")
+
+		client := &http.Client{
+			CheckRedirect: func(req *http.Request, via []*http.Request) error {
+				return http.ErrUseLastResponse
+			},
+		}
+
+		req, _ := http.NewRequest("GET", "https://github.com/evilsocket/arc/releases/latest", nil)
+		resp, err := client.Do(req)
+		if err != nil {
+			log.Errorf("Error while checking latest version: %s.", err)
+			return
+		}
+		defer resp.Body.Close()
+
+		location := resp.Header.Get("Location")
+
+		log.Debugf("Location header = '%s'", location)
+
+		var verParser = regexp.MustCompile("^https://github\\.com/evilsocket/arc/releases/tag/v([\\d\\.a-z]+)$")
+		m := verParser.FindStringSubmatch(location)
+		if len(m) == 2 {
+			latest := m[1]
+			log.Debugf("Latest version is '%s'", latest)
+			if config.APP_VERSION != latest {
+				log.Warningf("Update to %s available at %s.", latest, location)
+				events.Add(events.UpdateAvailable(config.APP_VERSION, latest, location))
+			} else {
+				log.Infof("No updates available.")
+			}
+		} else {
+			log.Warningf("Unexpected location header: '%s'.", location)
+		}
+
+		time.Sleep(time.Duration(60) * time.Minute)
 	}
 }
 
@@ -182,6 +227,10 @@ func main() {
 		go arcBackupper()
 	} else {
 		log.Warningf("Backups are disabled.")
+	}
+
+	if no_updates == false {
+		go arcUpdater()
 	}
 
 	gin.SetMode(gin.ReleaseMode)

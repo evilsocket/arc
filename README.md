@@ -71,7 +71,7 @@ You will find a `sample_config.json` file inside the `arcd` folder of the projec
         "period": 10,
         "reports": {
             "enabled": false,
-            "filter": [ "login_ok", "login_ko", "token_ko", "record_expired" ],
+            "filter": [ "login_ok", "login_ko", "token_ko", "update", "record_expired" ],
             "to": "youremail@gmail.com",
             "smtp":{
                 "address": "smtp.gmail.com",

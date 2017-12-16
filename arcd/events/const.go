@@ -67,3 +67,12 @@ func RecordExpired(r *db.Record) Event {
 
 	return New("record_expired", title, desc)
 }
+
+func UpdateAvailable(curr_ver, new_ver, url string) Event {
+	title := fmt.Sprintf("Arc v%s is available.", new_ver)
+	desc := fmt.Sprintf("You are running Arc v%s but v%s is available <a href=\"%s\">for download</a>.",
+		curr_ver,
+		new_ver,
+		url)
+	return New("update", title, desc)
+}
