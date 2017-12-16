@@ -10,10 +10,12 @@ package middlewares
 import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/evilsocket/arc/arcd/config"
+	"github.com/evilsocket/arc/arcd/events"
 	"github.com/evilsocket/arc/arcd/log"
 	"github.com/evilsocket/arc/arcd/utils"
 	"github.com/gin-gonic/gin"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -49,6 +51,10 @@ func AuthHandler() gin.HandlerFunc {
 			authorization := c.Request.Header.Get("Authorization")
 			m := authTokenParser.FindStringSubmatch(authorization)
 			if len(m) != 2 {
+				events.Add(events.InvalidToken(strings.Split(c.Request.RemoteAddr, ":")[0],
+					authorization,
+					nil))
+
 				utils.Forbidden(c)
 				return
 			}
@@ -57,6 +63,9 @@ func AuthHandler() gin.HandlerFunc {
 			valid, err := ValidateToken(token, config.Conf.Secret)
 			if err != nil {
 				log.Api(log.WARNING, c, "Error while validating bearer token: %s", err)
+				events.Add(events.InvalidToken(strings.Split(c.Request.RemoteAddr, ":")[0],
+					token,
+					err))
 				utils.Forbidden(c)
 				return
 			}

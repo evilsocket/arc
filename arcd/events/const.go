@@ -26,6 +26,21 @@ func Login(successful bool, address string, username string, password string) Ev
 	}
 }
 
+func InvalidToken(address, auth string, err error) Event {
+	title := "Invalid token authentication."
+	reason := ""
+	if err != nil {
+		reason = fmt.Sprintf(" (reason: %s)", err.Error())
+	}
+
+	desc := fmt.Sprintf("Address <b>%s</b> tried to authenticate with an invalid token '%s'%s.",
+		html.EscapeString(address),
+		html.EscapeString(auth),
+		reason)
+
+	return New("token_ko", title, desc)
+}
+
 func RecordExpired(r *db.Record) Event {
 	meta := r.Meta()
 
