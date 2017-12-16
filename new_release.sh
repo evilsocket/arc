@@ -21,6 +21,7 @@ git push
 git tag -a v$NEW_VERSION -m "Release v$NEW_VERSION"
 git push origin v$NEW_VERSION
 
+cp arcd/sample_config.json .
 rm -rf dist
 
 echo "All done, just run goreleaser now ^_^"
