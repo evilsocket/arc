@@ -23,4 +23,4 @@ _testmain.go
 *.test
 dist
 cryptojs_decrypt.js
-*.json
+./*.json
