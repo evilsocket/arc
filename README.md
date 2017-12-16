@@ -30,7 +30,7 @@ The idea is to use *the Arc* as a single manager for your passwords, encrypted n
 
 ### Binary release
 
-You can find binary releases of Arc [here](/evilsocket/arc/releases).
+You can find binary releases of Arc [here](https://github.com/evilsocket/arc/releases).
 
 ### From source
 
