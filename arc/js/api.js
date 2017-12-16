@@ -95,7 +95,7 @@ Arc.prototype.Logout = function() {
 }
 
 Arc.prototype.Login = function(username, password, persist, success, error) {
-    console.log( "Logging in with username="+username+" and password="+password+" persist="+persist );
+    console.log( "Logging in ..." );
     
     var v = this;
     var login = { username: username, password: password };
