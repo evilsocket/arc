@@ -13,6 +13,21 @@ builds:
       - arm
       - arm64
 
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - balls
+      - docs
+      - Merge pull request
+      - Merge branch
+
+dockers:
+  - image: evilsocket/arc
+    latest: true
+    tag_template: '{{ .Tag }}' 
+
+tag_template: '{{ .Tag }}'
 archive:
   format: tar.gz
   format_overrides:
