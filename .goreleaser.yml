@@ -22,11 +22,6 @@ changelog:
       - Merge pull request
       - Merge branch
 
-dockers:
-  - image: evilsocket/arc
-    latest: true
-    tag_template: '{{ .Tag }}' 
-
 archive:
   format: tar.gz
   format_overrides:
