@@ -195,10 +195,14 @@ app.controller('PMController', ['$scope', function (scope) {
         return true;
     };
 
-    scope.isLoading = function() {
+    scope.isModalOpen = function(id) {
         // bootstrap < 4: isShown
         // bootstra >= 4: _isShown
-        return !!( $('#loader_modal').data('bs.modal') || {} )._isShown;
+        return !!( $('#' + id).data('bs.modal') || {} )._isShown;
+    };
+
+    scope.isLoading = function() {
+        return scope.isModalOpen('loader_modal');
     };
 
     scope.trackProgress = function(e){
@@ -887,6 +891,54 @@ app.controller('PMController', ['$scope', function (scope) {
 
     scope.route = function() {
         setInterval( function(){ scope.updateServerStatus(); }, 1000 );
+
+        $(document).keypress(function(e){
+            var inStoreSelection = ( scope.store_id == null );
+            var inSecretSelection = !inStoreSelection && ( scope.isModalOpen('secret_modal') == false );
+            var inSecretModal = !inStoreSelection && ( scope.isModalOpen('secret_modal') == true );
+            var inEditMode = inSecretModal && $('.btn-edit').is(':visible');
+            var inNewMode = inSecretModal && !$('.btn-edit').is(':visible');
+            
+            // n -> create new item
+            if( e.which == 110 ) {
+                if( inStoreSelection ) {
+                    scope.onNewStore(); 
+                }
+                else if( inSecretSelection ) {
+                    scope.onNewSecret();
+                }
+
+                e.preventDefault();
+            }
+
+            // d -> delete store
+            if( inSecretSelection && e.which == 100 ) {
+                scope.onDeleteStore();
+                e.preventDefault();
+            }
+
+            if( inSecretModal ) {
+                // a -> add element
+                // s -> save
+                // d -> delete
+                // e -> set expiration
+                if( e.which == 97 ) {
+                    scope.onAddField();
+                } else if( e.which == 115 ) {
+                    if( inEditMode ) {
+                        scope.onUpdate();
+                    } else {
+                        scope.onAdd();
+                    }
+                } else if( e.which == 100 && inEditMode ) {
+                    scope.onDelete();
+                } else if( e.which == 101 ) {
+                    $('#expiration_btn').click();
+                }
+
+                e.preventDefault();
+            }
+        });
 
         var route = this.getRoute();
         var [ store_id, record_id ] = this.parseRoute(route);
