@@ -115,7 +115,7 @@ func arcScheduler() {
 }
 
 func arcSignalHandler() {
-	log.Infof("Signal handler started.")
+	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
 	s := <-signals
 	log.Warningf("RECEIVED SIGNAL: %s", s)
 	db.Flush()
@@ -168,7 +168,6 @@ func main() {
 		return
 	}
 
-	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
 	go arcSignalHandler()
 
 	if config.Conf.Scheduler.Enabled {
