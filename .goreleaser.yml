@@ -25,7 +25,6 @@ changelog:
 dockers:
   - image: evilsocket/arc
     latest: true
-    tag_template: '{{ .Tag }}' 
 
 tag_template: '{{ .Tag }}'
 archive:
