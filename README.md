@@ -72,7 +72,18 @@ You will find a `sample_config.json` file inside the `arcd` folder of the projec
     "compression": true,
     "scheduler": {
         "enabled": true,
-        "period": 10
+        "period": 10,
+        "reports": {
+            "enabled": false,
+            "filter": [ "login_ok", "login_ko", "record_expired" ],
+            "to": "youremail@gmail.com",
+            "smtp":{
+                "address": "smtp.gmail.com",
+                "port": 587,
+                "username": "youremail@gmail.com",
+                "password": "your smtp password"
+            }
+        }
     },
     "backups": {
         "enabled": false,
@@ -98,6 +109,12 @@ It is necessary to change only the `username` and `password` access parameters o
 | database | Database root directory. |
 | token\_duration | Validity in minutes of a JWT API token after it's being generated. |
 | compression | Enable or disable records compression. |
+| scheduler.enabled | Enable or disable the server events scheduler. |
+| scheduler.period | Time in seconds between every scheduler loop. |
+| scheduler.reports.enabled | If true, events will be reported by email. |
+| scheduler.reports.filter | Which type of events to report by email. |
+| scheduler.reports.to | Destination email address. |
+| scheduler.reports.smtp | SMTP server information. |
 | backups.enabled | Enable automatic backups. |
 | backups.period | Number of seconds between one backup and the next one. |
 | backups.folder | Destination folder for the backup file. |
