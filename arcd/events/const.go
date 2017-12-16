@@ -43,8 +43,8 @@ func RecordExpired(r *db.Record) Event {
 
 	desc := fmt.Sprintf("The record <b>%s</b> which was created on %s and updated on %s just expired, it was made of %d bytes of %s encrypted %sdata.%s",
 		html.EscapeString(meta.Title),
-		meta.CreatedAt,
-		meta.UpdatedAt,
+		meta.CreatedAt.Format("Mon Jan 2 15:04:05 2006"),
+		meta.UpdatedAt.Format("Mon Jan 2 15:04:05 2006"),
 		meta.Size,
 		meta.Encryption,
 		compressed,
