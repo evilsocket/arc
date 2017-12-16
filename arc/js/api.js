@@ -19,8 +19,7 @@ Arc.prototype.IsLogged = function() {
 }
 
 Arc.prototype.HasStore = function() {
-    var hasStore = this.IsLogged() && ( this.store != null );
-    return hasStore;
+    return this.IsLogged() && ( this.store != null );
 }
 
 Arc.prototype.Api = function( method, path, data, success, error, raw ) {

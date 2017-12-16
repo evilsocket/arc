@@ -379,7 +379,7 @@ app.controller('PMController', ['$scope', function (scope) {
 
     scope.doSelectStore = function() {
         scope.arc.Stores(function(stores){
-            document.title = "Select store"
+            document.title = "Arc";
             scope.setRoute(null);
             scope.delTimeout();
                    
@@ -554,6 +554,7 @@ app.controller('PMController', ['$scope', function (scope) {
         $('#secret_title').text(title);
         $('#secret_entry_list').html('').sortable({handle: 'i.fa-arrows'});
         $('#secret_modal').modal().on('hidden.bs.modal', function(){
+            document.title = scope.arc.store.title;
             scope.setRoute("/" + scope.store_id);  
         });
     };
@@ -648,6 +649,7 @@ app.controller('PMController', ['$scope', function (scope) {
                         function(){
                             scope.setRoute("/" + scope.store_id + "/" + id);
                             scope.setSecret(secret)
+                            document.title = scope.arc.store.title + " > " + secret.title;
 
                             $('#record_lock_' + secret.id ).removeClass("fa-lock").addClass("fa-unlock");
                             $('#record_status_' + secret.id ).removeClass("status-locked").addClass("status-unlocked");
