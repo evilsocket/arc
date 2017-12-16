@@ -44,6 +44,12 @@ HTMLEntry.prototype.OnRendered = function(id) {
     var elem_id = this.id(id);
     var elem = $('#' + elem_id);
 
-    elem.summernote();
+    elem.summernote({
+        popover: {
+         image: [],
+         link: [],
+         air: []
+       }
+    });
 }
 
