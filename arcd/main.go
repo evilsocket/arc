@@ -45,9 +45,10 @@ func init() {
 	flag.StringVar(&apppath, "app", ".", "Path of the web application to serve.")
 	flag.StringVar(&conf_file, "config", "", "JSON configuration file.")
 	flag.BoolVar(&no_auth, "no-auth", no_auth, "Disable authenticaion.")
-	flag.BoolVar(&debug, "debug", debug, "Enable debug logs.")
-	flag.StringVar(&logfile, "logfile", logfile, "Log messages to this file instead of standard error.")
-	flag.BoolVar(&no_colors, "no-colors", no_colors, "DIsable colored output.")
+
+	flag.BoolVar(&debug, "log-debug", debug, "Enable debug logs.")
+	flag.StringVar(&logfile, "log-file", logfile, "Log messages to this file instead of standard error.")
+	flag.BoolVar(&no_colors, "log-colors-off", no_colors, "Disable colored output.")
 
 	flag.StringVar(&import_fn, "import", import_fn, "Import stores from this JSON export file.")
 	flag.BoolVar(&export, "export", export, "Export store to JSON file, requires --output parameter.")
