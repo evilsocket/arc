@@ -595,7 +595,7 @@ app.controller('PMController', ['$scope', function (scope) {
                     var name = $(names[i]).text();
                     var value = '';
 
-                    if( input.prop('tagName') == 'input' ) {
+                    if( input.prop('tagName').toLowerCase() == 'input' ) {
                         switch(input.attr('type')) {
                             case 'checkbox':
                                 value = input.is(':checked') ? '1' : '0'
@@ -724,9 +724,7 @@ app.controller('PMController', ['$scope', function (scope) {
                 var name = $(names[i]).text();
                 var value = '';
 
-                console.log( input.prop('tagName') );
-
-                if( input.prop('tagName') == 'INPUT' ) {
+                if( input.prop('tagName').toLowerCase() == 'input' ) {
                     switch(input.attr('type')) {
                         case 'checkbox':
                             value = input.is(':checked') ? '1' : '0'
