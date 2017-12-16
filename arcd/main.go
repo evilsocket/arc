@@ -38,7 +38,7 @@ var (
 	export    = false
 	import_fn = ""
 	output    = "arc.json"
-	dbIsNew   = false
+	db_is_new = false
 )
 
 func init() {
@@ -152,7 +152,7 @@ func main() {
 		}
 	}
 
-	if dbIsNew, err = db.Setup(); err != nil {
+	if db_is_new, err = db.Setup(); err != nil {
 		log.Fatal(err)
 	}
 
