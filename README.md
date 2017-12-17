@@ -135,7 +135,7 @@ Different type of events can happen during Arc lifecycle:
 
 If configured to do so, the server will create brief reports of such events and it will send to the user and client using three different channels:
 
-- A notification icon counter inside the Arc web ui.
+- A notification inside the Arc web UI itself.
 - A desktop notification.
 - An email report to the configured address.
 
