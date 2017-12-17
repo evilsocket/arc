@@ -632,6 +632,8 @@ app.controller('PMController', ['$scope', function (scope) {
     scope.onAdd = function() {
         scope.setStatus("Adding secret ...");
 
+        $('#secret_modal').modal('hide');
+
         scope.showLoader("Encrypting record ...", function(){
             // Execute asynchronously to not block the ui.
             setTimeout( function() {
@@ -720,7 +722,6 @@ app.controller('PMController', ['$scope', function (scope) {
 
         scope.showLoader("Encrypting record ...", function(){
             var [ expire_at, prune, record ] = scope.buildRecord();
-
             record.Encrypt(scope.key).then(function(data){
                 var size = data.length
                 scope.trackTotal = size;
