@@ -623,8 +623,6 @@ app.controller('PMController', ['$scope', function (scope) {
                 FilesDel(entry_id);
                 value = JSON.stringify(file);
             }
-
-            console.log( "record.AddEntry( " + type + ", " + name + ", " + value.length + " b )" );
             record.AddEntry(new Entry( type, name, value));
         }
 
