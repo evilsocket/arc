@@ -123,17 +123,26 @@ It is necessary to change only the `username` and `password` access parameters o
 | tls.certificate | HTTPS certificate. |
 | tls.key | HTTPS private key. |
 
-## Export and import stores.
+## Realtime Notifications
 
-You can export stores and their encrypted records to a JSON file:
+Different type of events can happen during Arc lifecycle:
 
-    ./arcd -config config.json -output ~/backup.json -export
+- `login_ko` someone tried to authenticate to the system with the wrong credentials.
+- `token_ko` an invalid JWT token has been used to access Arc API.
+- `update` a new version of Arc is available.
+- `record_expired` a record reached its expiration date.
 
-Exported files can be later imported with:
+If configured to do so, the server will create brief reports of such events and it will send to the user and client using three different channels:
 
-    ./arcd -config config.json -import ~/backup.json
+- A notification icon counter inside the Arc web ui.
+- A desktop notification.
+- An email report to the configured address.
 
-## Keyboard Shortcuts.
+### PGP Encryption
+
+Email reports can be optionally encrypted by the server using PGP, in this case the user have to provide his PGP public key. A private key can also be provided, otherwise the server will generate a new one (4096 bits RSA) during its first boot. **Since email reports might include parts of valid credentials (ie. you mistyped one character of the valid password) it is highly suggested to enable this option.**
+
+## Keyboard Shortcuts
 
 - `n` Create a new item ( store or record ).
 - `d` Delete the current item ( store or record ).
@@ -142,6 +151,16 @@ Exported files can be later imported with:
 - `s` Save the current record.
 - `e` Set the expiration date for the current record.
 - `ESC` Close the current window.
+
+## Import / Export
+
+You can export stores and their encrypted records to a JSON file:
+
+    ./arcd -config config.json -output ~/backup.json -export
+
+Exported files can be later imported with:
+
+    ./arcd -config config.json -import ~/backup.json
 
 ## Useful Commands
 
