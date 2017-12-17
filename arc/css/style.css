@@ -478,7 +478,7 @@ li.expiring:before {
     position: absolute;
     font-size: 120px;
     margin-top: -65px;
-    color: #ddd;
+    color: #eee;
     z-index: -1;
 }
 
