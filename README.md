@@ -1,12 +1,6 @@
 # Arc
 
-Arc is a manager for your secrets made of `arcd`, a RESTful API server written in Go which exposes read and write primitives for **encrypted records** on disk
-
-![arcd](https://i.imgur.com/swC00gX.png)
-
-And `arc`, the client application implemented in html5 and javascript, which runs in every html5 enabled browser and  it is served by `arcd` itself.
-
-![multikey](https://pbs.twimg.com/media/DQN8W1KWsAEP6bd.jpg:large)
+Arc is a manager for your secrets made of `arcd`, a RESTful API server written in Go which exposes read and write primitives for **encrypted records** on disk and `arc`, the client application implemented in HTML5 and javascript, which runs in every modern browser and  it is served by `arcd` itself.
 
 Records are generated, encrypted and decrypted **client side only** (with AES256, using 10000 iterations for the PBKDF2 key derivation function, everything [WebCrypto](https://www.w3.org/TR/WebCryptoAPI/) based ) by `arc`, which offers an intuitive management system equipped with UI widgets including:
 
@@ -21,7 +15,7 @@ Records are generated, encrypted and decrypted **client side only** (with AES256
 
 Elements can be created (with optional expiration dates), arranged and edited using `arc` and are stored on `arcd` safely.
 
-## Where to Run Arc 
+## Hardware? 
 
 Ideally `arcd` should run on a dedicated portable hardware like a Raspberry Pi Zero, for instance it is possible to simply access it via Bluetooth and a modern browser once configured [btnap](https://github.com/bablokb/pi-btnap), but precompiled versions are available for [several operating systems and architectures](https://github.com/evilsocket/arc/releases) (including ARM, ARM64 and MIPS) therefore Arc can run on pretty much everything with a CPU, from your smartphone, your router, your Mac or your Windows computer. As a rule of thumb, the more [isolated](https://en.wikipedia.org/wiki/Compartmentalization_(information_security)) the hardware is, the better. 
 
