@@ -26,9 +26,9 @@ func Setup(pgp *config.PGPConfig) error {
 		cwd, _ := os.Getwd()
 		pgp.Keys.Private = path.Join(cwd, "arcd-pgp-private.key")
 	}
-	public := path.Join(path.Dir(pgp.Keys.Private), "arcd-pgp-public.key")
 
 	pgp.Keys.Private, _ = utils.ExpandPath(pgp.Keys.Private)
+	public := path.Join(path.Dir(pgp.Keys.Private), "arcd-pgp-public.key")
 	if utils.Exists(pgp.Keys.Private) == false {
 		if err := GenerateKeys(pgp.Keys.Private, public); err != nil {
 			return err
