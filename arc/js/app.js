@@ -873,6 +873,10 @@ app.controller('PMController', ['$scope', function (scope) {
             var inNewMode = inSecretModal && !$('.btn-edit').is(':visible');
             var curTag = document.activeElement.tagName.toLowerCase();
             
+            if( curTag == 'input' || curTag == 'textarea' ) {
+                return;
+            }
+
             // n -> create new item
             if( e.which == 110 ) {
                 if( inStoreSelection ) {
@@ -885,17 +889,25 @@ app.controller('PMController', ['$scope', function (scope) {
                 }
             }
 
-            // d -> delete store
-            if( inSecretSelection && e.which == 100 ) {
-                scope.onDeleteStore();
-                e.preventDefault();
+            if( inSecretSelection ) {
+                // d -> delete store
+                if( e.which == 100 ) {
+                    scope.onDeleteStore();
+                    e.preventDefault();
+                }
+                // r -> rename store
+                else if( e.which == 114 ) {
+                    $('#store_title').click();
+                    e.preventDefault();
+                }
             }
 
-            if( inSecretModal && curTag != 'input' && curTag != 'textarea' ) {
+            if( inSecretModal ){
                 // a -> add element
                 // s -> save
                 // d -> delete
                 // e -> set expiration
+                // r -> rename element
                 if( e.which == 97 ) {
                     scope.onAddField();
                     e.preventDefault();
@@ -912,6 +924,9 @@ app.controller('PMController', ['$scope', function (scope) {
                     e.preventDefault();
                 } else if( e.which == 101 ) {
                     $('#expiration_btn').click();
+                    e.preventDefault();
+                } else if( e.which == 114 ) {
+                    $('#secret_title').click();
                     e.preventDefault();
                 }
             }

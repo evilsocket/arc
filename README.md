@@ -137,10 +137,11 @@ Exported files can be later imported with:
 
 - `n` Create a new item ( store or record ).
 - `d` Delete the current item ( store or record ).
+- `r` Rename the current item ( store or record ).
 - `a` Add a new field to the current record.
 - `s` Save the current record.
-- `e` Set expiration date for the current record.
-- `ESC` Close current window.
+- `e` Set the expiration date for the current record.
+- `ESC` Close the current window.
 
 ## Useful Commands
 
