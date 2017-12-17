@@ -129,6 +129,15 @@ Exported files can be later imported with:
 
     ./arcd -config config.json -import ~/backup.json
 
+## Keyboard Shortcuts.
+
+`n` : Create a new item ( store or record ).
+`d` : Delete the current item ( store or record ).
+`a` : Add a new field to the current record.
+`s` : Save the current record.
+`e` : Set expiration date for the current record.
+`ESC` : Close current window.
+
 ## Useful Commands
 
 Allow the `arcd` binary to bind to privileged ports without having root privileges:
