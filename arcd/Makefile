@@ -1,4 +1,4 @@
-.PHONY: build fmt lint run test vendor_clean vendor_get vet
+.PHONY: build fmt lint run test dependencies_clean dependencies vet
 
 DEPENDENCIES=github.com/gin-gonic/gin \
 	     github.com/theckman/go-flock \
@@ -7,13 +7,12 @@ DEPENDENCIES=github.com/gin-gonic/gin \
 	     github.com/dgrijalva/jwt-go \
 	     golang.org/x/crypto/...
 SRC_PATH=.
-VENDOR_PATH=_vendor
-
+DEPENDENCIES_PATH=_dependencies
 TARGET=arcd
-# Prepend our _vendor directory to the system GOPATH
-# so that import path resolution will prioritize
-# our third party snapshots.
-GOPATH := ${CURDIR}/$(VENDOR_PATH):${GOPATH}
+
+# Prepend our _dependancies directory to the system GOPATH so that import path
+# resolution will prioritize our third party snapshots.
+GOPATH := ${CURDIR}/$(DEPENDENCIES_PATH):${GOPATH}
 export GOPATH
 
 default: build
@@ -45,14 +44,12 @@ test:
 clean:
 	rm -rf $(TARGET)
 
-# We have to set GOPATH to just the _vendor
-# directory to ensure that `go get` doesn't
-# update packages in our primary GOPATH instead.
-# This will happen if you already have the package
-# installed in GOPATH since `go get` will use
+# We have to set GOPATH to just the _dependencies directory to ensure that `go
+# get` doesn't update packages in our primary GOPATH instead.  This will happen
+# if you already have the package installed in GOPATH since `go get` will use
 # that existing location as the destination.
-vendor_get: vendor_clean
-	GOPATH=${CURDIR}/$(VENDOR_PATH) go get -d -u -v $(DEPENDENCIES)
+dependencies:
+	GOPATH=${CURDIR}/$(DEPENDENCIES_PATH) go get -d -u -v $(DEPENDENCIES)
 
-vendor_clean:
-	rm -dRf $(VENDOR_PATH)/src
+dependencies_clean:
+	rm -dRf $(DEPENDENCIES_PATH)/src
