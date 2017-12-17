@@ -14,13 +14,18 @@ Records are generated, encrypted and decrypted **client side only** (Arc relies 
 - Simple text areas.
 - Custom file attachments (**files are encrypted client side** before being uploaded as binary records).
 - A markdown editor area with preview and full screen mode.
+- A HTML editor with preview and full screen mode.
 - A password field with **password strength estimation** and a **random password generator**. 
+- Custom lists.
+- Bitcoin wallet address with auto updating balance.
 
 Elements can be created (with optional expiration dates), arranged and edited using `arc` and are stored on `arcd` safely.
 
-#### TL;DR 
+## Where to Run Arc 
 
-The idea is to use *the Arc* as a single manager for your passwords, encrypted notes, files and `-all the secret things here-` while hosting `arcd` yourself on some spare hardware like a Raspberry Pi (a very portable setup with a `Zero W` model, or an USB Armory) or a real dedicated server and accessing `arc` from every device with a modern browser.
+Ideally `arcd` should run on a dedicated portable hardware like a Raspberry Pi Zero (it is possible to simply access it via Bluetooth and a modern browser once configured [btnap](https://github.com/bablokb/pi-btnap), but since precompiled versions are available for [several operating systems and architectures](https://github.com/evilsocket/arc/releases) (including ARM, ARM64 and MIPS) it can run on pretty much everything with a CPU, from your smartphone, your router, your Mac or your Windows computer. As a rule of thumb, the more [isolated](https://en.wikipedia.org/wiki/Compartmentalization_(information_security)) the hardware is, the better. 
+
+The idea is to use Arc as a single storage and manager for your passwords, encrypted notes, files and `-all the secret things here-`.
 
 <p align="center">
     <img src="https://i.imgur.com/h5cpCeN.png" alt="Encrypt all the things!"/>
@@ -28,34 +33,30 @@ The idea is to use *the Arc* as a single manager for your passwords, encrypted n
 
 ## Usage
 
-### Binary release
-
-You can find binary releases of Arc [here](https://github.com/evilsocket/arc/releases).
-
-### From source
-
-Make sure you have Go >= 1.8 installed and configured, then download Arc sources, install dependencies and compile the `arcd` server component:
+You can find binary releases of Arc [here](https://github.com/evilsocket/arc/releases), if instead you want to build it from source, make sure you have Go >= 1.8 installed and configured correctly, then clone this repository, install the dependencies and compile the `arcd` server component:
 
     git clone https://github.com/evilsocket/arc $GOPATH/src/github.com/evilsocket/arc
     cd $GOPATH/src/github.com/evilsocket/arc/arcd
     make vendor_get
     make
 
-### Running
-    
-Copy the `sample_config.json` file to a new `config.json` file, customize it and run the `arc` web application:
-
-    ./arcd -config config.json -app arc
-
-The `password` field is the SHA256 checksum of your password, you can generate a new one with:
+Once you either extracted the release archive or compiled it yourself, copy `sample_config.json` to a new `config.json` file and customize it. The most important fields to change are the `username` and the `password`, which is the SHA256 checksum of the authentication password you want to use, you can generate a new one with:
 
     echo -n "your-new-password" | sha256sum
 
-Browse `http://localhost:8080/` and login with the credentials you specified in the `config.json` file.
+Once everything is ready, youn can finally start the `arcd` server:
+
+    ./arcd -config config.json -app arc
+
+Now browse `http://localhost:8080/` ( or the address and port you configured ) and login with the configured credentials.
+
+**NOTE**
+
+Other than the username and the password, during login you need to specify an additional encryption key. This second key is not used to login to the system itself but to encrypt and decrypt your records client side. You can specify different keys each time you login, as long as you remember which key you used to encrypt which record :)
 
 ## Configuration
 
-You will find a `sample_config.json` file inside the `arcd` folder of the project, this is the example configuration you need to customize the first time.
+This is the example configuration file you need to customize the first time.
 
 ```json
 {
