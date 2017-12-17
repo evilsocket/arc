@@ -165,13 +165,13 @@ Exported files can be later imported with:
 
 ## Useful Commands
 
-Allow the `arcd` binary to bind to privileged ports without having root privileges:
-
-    sudo setcap 'cap_net_bind_service=+ep' arcd
-
 Generate self signed certificate in order to use Arc on HTTPS:
 
     openssl req -new -x509 -sha256 -key key.pem -out certificate-pem -days 365  
+
+Allow the `arcd` binary to bind to privileged ports without having root privileges (bind to port 443 for HTTPS without root):
+
+    sudo setcap 'cap_net_bind_service=+ep' arcd
 
 Lines to add to `/etc/rc.local` in order to make arcd start at boot (running as `pi` user, configuration, logs and and ui are in the home folder):
 
