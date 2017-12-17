@@ -141,7 +141,7 @@ If configured to do so, the server will create brief reports of such events and 
 
 ### PGP Encryption
 
-Email reports can be optionally encrypted by the server using PGP, in this case the user has to provide his PGP public key. A private key can also be provided, otherwise the server will generate a new one (4096 bits RSA) during its first boot. **Since email reports might include parts of valid credentials (ie. you mistyped one character of the valid password) it is highly suggested to enable this option.**
+Email reports can be optionally encrypted by the server using PGP, in this case the user has to provide his PGP public key. A private key can also be provided, if not the server will generate a new one (4096 bits RSA) during the first boot. **Since email reports might include parts of valid credentials (ie. you mistyped one character of the valid password) it is highly suggested to enable this option.**
 
 ## Keyboard Shortcuts
 
