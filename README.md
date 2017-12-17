@@ -8,7 +8,7 @@ And `arc`, the client application implemented in html5 and javascript, which run
 
 ![multikey](https://pbs.twimg.com/media/DQN8W1KWsAEP6bd.jpg:large)
 
-Records are generated, encrypted and decrypted **client side only** (Arc relies on WebCrypto for its AES256 encryption and the PRNG) by `arc`, which offers an intuitive management system equipped with UI widgets including:
+Records are generated, encrypted and decrypted **client side only** (with AES256, using 10000 iterations for the PBKDF2 key derivation function, everything [WebCrypto](https://www.w3.org/TR/WebCryptoAPI/) based ) by `arc`, which offers an intuitive management system equipped with UI widgets including:
 
 - Simple text inputs.
 - Simple text areas.
@@ -105,8 +105,8 @@ It is necessary to change only the `username` and `password` access parameters o
 | password | API access password `sha256` hash. |
 | database | Database root directory. |
 | token\_duration | Validity in minutes of a JWT API token after it's being generated. |
-| compression | Enable or disable records compression. |
-| scheduler.enabled | Enable or disable the server events scheduler. |
+| compression | If true, records bigger than 1024 bytes will be asynchronously gzipped and served as compressed streams to the client. |
+| scheduler.enabled | Enable or disable the server events scheduler (**if you disable this, bye bye notifications and records expiration**). |
 | scheduler.period | Time in seconds between every scheduler loop. |
 | scheduler.reports.enabled | If true, events will be reported by email. |
 | scheduler.reports.filter | Which type of events to report by email. |
