@@ -1,8 +1,8 @@
 # Arc
 
-Arc is a manager for your secrets made of `arcd`, a RESTful API server written in Go which exposes read and write primitives for **encrypted records** on disk and `arc`, the client application implemented in HTML5 and javascript, which runs in every modern browser and  it is served by `arcd` itself.
+Arc is a manager for your secrets made of `arcd`, a RESTful API server written in Go which exposes read and write primitives for encrypted records, and `arc`, the client application implemented in HTML5 and javascript, which runs in every modern browser and  it is served by `arcd` itself.
 
-Records are generated, encrypted and decrypted **client side only** (with AES256, using 10000 iterations for the PBKDF2 key derivation function, everything [WebCrypto](https://www.w3.org/TR/WebCryptoAPI/) based ) by `arc`, which offers an intuitive management system equipped with UI widgets including:
+Records are generated, encrypted and decrypted **client side only** by `arc` (with AES256, using 10000 iterations for the PBKDF2 key derivation function, everything [WebCrypto](https://www.w3.org/TR/WebCryptoAPI/) based ), which offers an intuitive management system equipped with UI widgets including:
 
 - Simple text inputs.
 - Simple text areas.
@@ -13,7 +13,7 @@ Records are generated, encrypted and decrypted **client side only** (with AES256
 - Custom lists.
 - Bitcoin wallet address with auto updating balance.
 
-Elements can be created (with optional expiration dates), arranged and edited using `arc` and are stored on `arcd` safely.
+Elements can be created (with optional expiration dates), arranged and edited using `arc` and are stored on `arcd` as AES256 encrypted (and compressed) raw data.
 
 ## Hardware? 
 
