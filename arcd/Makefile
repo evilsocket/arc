@@ -13,7 +13,7 @@ TARGET=arcd
 # Prepend our _vendor directory to the system GOPATH
 # so that import path resolution will prioritize
 # our third party snapshots.
-GOPATH := ${PWD}/$(VENDOR_PATH):${GOPATH}
+GOPATH := ${CURDIR}/$(VENDOR_PATH):${GOPATH}
 export GOPATH
 
 default: build
@@ -55,7 +55,7 @@ vendor_update: vendor_get
 # installed in GOPATH since `go get` will use
 # that existing location as the destination.
 vendor_get: vendor_clean
-	GOPATH=${PWD}/$(VENDOR_PATH) go get -d -u -v $(DEPENDENCIES)
+	GOPATH=${CURDIR}/$(VENDOR_PATH) go get -d -u -v $(DEPENDENCIES)
 
 vendor_clean:
 	rm -dRf $(VENDOR_PATH)/src
