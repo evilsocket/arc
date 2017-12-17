@@ -4,7 +4,8 @@ DEPENDENCIES=github.com/gin-gonic/gin \
 			 github.com/theckman/go-flock \
 			 gopkg.in/gomail.v2 \
 		 	 github.com/stretchr/testify/assert \
-			 github.com/dgrijalva/jwt-go 
+			 github.com/dgrijalva/jwt-go \
+			 golang.org/x/crypto/openpgp
 
 SRC_PATH=.
 VENDOR_PATH=_vendor
@@ -18,7 +19,7 @@ export GOPATH
 
 default: build
 
-build: 
+build:
 	@go build $(FLAGS) -o $(TARGET) $(SRC_PATH)
 
 # http://godoc.org/code.google.com/p/go.tools/cmd/vet
