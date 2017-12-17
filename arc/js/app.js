@@ -435,7 +435,11 @@ app.controller('PMController', ['$scope', function (scope) {
 
     scope.isExpired = function(record) {
         return ( scope.doesExpire(record) && Date.parse(record.expired_at) <= Date.now() );
-    }
+    };
+
+    scope.isExpiring = function(record) {
+        return ( scope.doesExpire(record) && Date.parse(record.expired_at) > Date.now() );
+    };
 
     scope.filterSecret = function(record) {
         if( scope.filter != null ) {

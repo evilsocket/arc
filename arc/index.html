@@ -154,7 +154,7 @@
             </small>
           </li>       
 
-          <li class="list-group-item" id="secret_list_item_{{ r.id }}" ng-if="filterSecret(r)" ng-repeat="r in arc.records" ng-click="onShowSecret(r.id)">
+          <li class="list-group-item" id="secret_list_item_{{ r.id }}" ng-if="filterSecret(r)" ng-repeat="r in arc.records" ng-click="onShowSecret(r.id)" ng-class="{'expired': isExpired(r), 'expiring': isExpiring(r)}">
             <span ng-include src="'/views/secret_list_item.html?v=17'"></span>
           </li>
         </ul>

@@ -464,3 +464,35 @@ div.notifications {
     min-height: 50px;
     border: 1px solid #eee;
 }
+
+li.expiring,
+li.expired {
+    position: relative;
+    overflow: hidden;
+    z-index: 2;
+}
+
+li.expired:before,
+li.expiring:before {
+    font-family: FontAwesome;
+    position: absolute;
+    font-size: 120px;
+    margin-top: -65px;
+    color: #ddd;
+    z-index: -1;
+}
+
+li.expiring:before {
+    content: "\f017";
+    -webkit-transform: rotate(25deg);
+    -moz-transform: rotate(25deg);
+    -o-transform: rotate(25deg);
+    -ms-transform: rotate(25deg);
+    transform: rotate(25deg);
+}
+
+
+li.expired:before {
+    content: "\f06a";
+}
+
