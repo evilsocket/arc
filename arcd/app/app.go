@@ -48,7 +48,7 @@ func Open(path string) (err error, app *App) {
 		return
 	}
 
-	log.Infof("Loading web application from %s ...", log.Bold(path))
+	log.Debugf("Loading web application from %s ...", log.Bold(path))
 
 	stat, err := os.Stat(path)
 	if err != nil {

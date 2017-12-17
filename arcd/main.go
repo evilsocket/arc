@@ -74,11 +74,11 @@ func arcBackupper() {
 	period := time.Duration(config.Conf.Backups.Period) * time.Second
 	filename := path.Join(config.Conf.Backups.Folder, "arcd_backup.json")
 
-	log.Infof("Backup task started with a %v period to %s", period, filename)
+	log.Debugf("Backup task started with a %v period to %s", period, filename)
 	for {
 		time.Sleep(period)
 
-		log.Infof("Backup to %s ...", filename)
+		log.Infof("Backupping database to %s ...", filename)
 		if err := db.Export(filename); err != nil {
 			log.Errorf("Error while creating the backup file: %s.", err)
 		}
@@ -88,7 +88,7 @@ func arcBackupper() {
 func arcScheduler() {
 	period := time.Duration(config.Conf.Scheduler.Period) * time.Second
 
-	log.Infof("Scheduler started with a %v period.", period)
+	log.Debugf("Scheduler started with a %v period.", period)
 
 	for {
 		time.Sleep(period)
@@ -120,7 +120,7 @@ func arcScheduler() {
 
 func arcUpdater() {
 	for {
-		log.Infof("Checking for newer versions ...")
+		log.Debugf("Checking for newer versions ...")
 
 		client := &http.Client{
 			CheckRedirect: func(req *http.Request, via []*http.Request) error {
@@ -152,7 +152,7 @@ func arcUpdater() {
 				log.Warningf("Update to %s available at %s.", latest, location)
 				events.Add(events.UpdateAvailable(config.APP_VERSION, latest, location))
 			} else {
-				log.Infof("No updates available.")
+				log.Debugf("No updates available.")
 			}
 		} else {
 			log.Warningf("Unexpected location header: '%s'.", location)
@@ -223,14 +223,14 @@ func main() {
 			log.Fatal(err)
 		}
 
-		log.Infof("Starting scheduler with a period of %ds ...", config.Conf.Scheduler.Period)
+		log.Debugf("Starting scheduler with a period of %ds ...", config.Conf.Scheduler.Period)
 		go arcScheduler()
 	} else {
 		log.Warningf("Scheduler is disabled.")
 	}
 
 	if config.Conf.Backups.Enabled {
-		log.Infof("Starting backup task with a period of %ds ...", config.Conf.Backups.Period)
+		log.Debugf("Starting backup task with a period of %ds ...", config.Conf.Backups.Period)
 		go arcBackupper()
 	} else {
 		log.Warningf("Backups are disabled.")

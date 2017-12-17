@@ -31,7 +31,7 @@ func CreateStore(c *gin.Context) {
 	} else if store, err := db.Create(meta); err != nil {
 		utils.ServerError(c, err)
 	} else {
-		log.Api(log.INFO, c, "Created store %d.", store.Id)
+		log.Api(log.DEBUG, c, "Created store %d.", store.Id)
 		c.JSON(200, store)
 	}
 }
@@ -53,7 +53,7 @@ func DeleteStore(c *gin.Context) {
 	} else if err := db.Delete(store); err != nil {
 		utils.ServerError(c, err)
 	} else {
-		log.Api(log.INFO, c, "Deleted store %s.", c.Params.ByName("id"))
+		log.Api(log.DEBUG, c, "Deleted store %s.", c.Params.ByName("id"))
 		c.JSON(200, gin.H{"msg": "Store deleted."})
 	}
 }
@@ -68,7 +68,7 @@ func UpdateStore(c *gin.Context) {
 	} else if err := store.Update(meta); err != nil {
 		utils.ServerError(c, err)
 	} else {
-		log.Api(log.INFO, c, "Updated store %s.", c.Params.ByName("id"))
+		log.Api(log.DEBUG, c, "Updated store %s.", c.Params.ByName("id"))
 		c.JSON(200, gin.H{"msg": "Store updated."})
 	}
 }

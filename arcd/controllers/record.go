@@ -54,7 +54,7 @@ func CreateRecord(c *gin.Context) {
 		utils.ServerError(c, err)
 	}
 
-	log.Api(log.INFO, c,
+	log.Api(log.DEBUG, c,
 		"Created record %d (store %s) with %s of %s encrypted data.",
 		record.Id(),
 		store_id,
@@ -93,7 +93,7 @@ func GetRecordBuffer(c *gin.Context) {
 			desc = "compressed "
 		}
 
-		log.Infof("Streaming %s (%d b) of %sbuffer.", utils.FormatBytes(meta.Size), meta.Size, desc)
+		log.Debugf("Streaming %s (%d b) of %sbuffer to %s.", utils.FormatBytes(meta.Size), meta.Size, desc, c.Request.RemoteAddr)
 
 		// Let the client handle the decompression :P
 		if meta.Compressed {
@@ -123,7 +123,7 @@ func DeleteRecord(c *gin.Context) {
 	} else if _, err = store.Del(id); err != nil {
 		utils.NotFound(c)
 	} else {
-		log.Api(log.INFO, c, "Deleted record %s of store %s.", record_id, store_id)
+		log.Api(log.DEBUG, c, "Deleted record %s of store %s.", record_id, store_id)
 		c.JSON(200, gin.H{"msg": "Record deleted."})
 	}
 }
@@ -165,6 +165,6 @@ func UpdateRecord(c *gin.Context) {
 		return
 	}
 
-	log.Api(log.INFO, c, "Updated record %s of store %s.", record_id, store_id)
+	log.Api(log.DEBUG, c, "Updated record %s of store %s.", record_id, store_id)
 	c.JSON(200, record.Meta())
 }
