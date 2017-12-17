@@ -131,6 +131,9 @@ func arcUpdater() {
 		req, _ := http.NewRequest("GET", "https://github.com/evilsocket/arc/releases/latest", nil)
 		resp, err := client.Do(req)
 		if err != nil {
+			if err := events.Setup(); err != nil {
+				log.Fatal(err)
+			}
 			log.Errorf("Error while checking latest version: %s.", err)
 			return
 		}
@@ -216,6 +219,10 @@ func main() {
 	go arcSignalHandler()
 
 	if config.Conf.Scheduler.Enabled {
+		if err := events.Setup(); err != nil {
+			log.Fatal(err)
+		}
+
 		log.Infof("Starting scheduler with a period of %ds ...", config.Conf.Scheduler.Period)
 		go arcScheduler()
 	} else {

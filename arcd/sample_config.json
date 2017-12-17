@@ -18,6 +18,13 @@
                 "port": 587,
                 "username": "youremail@gmail.com",
                 "password": "your smtp password"
+            },
+            "pgp": {
+                "enabled": true,
+                "keys":{
+                    "private": "~/server.private.key.asc",
+                    "public": "~/my.public.key.asc"
+                }
             }
         }
     },

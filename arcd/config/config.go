@@ -44,11 +44,23 @@ type SMTPConfig struct {
 	Password string `json:"password"`
 }
 
+type KeyPair struct {
+	Public  string `json:"public"`
+	Private string `json:"private"`
+}
+
+// PGP configuration.
+type PGPConfig struct {
+	Enabled bool    `json:"enabled"`
+	Keys    KeyPair `json:"keys"`
+}
+
 // Reports configuration.
 type rpConfig struct {
 	Enabled bool       `json:"enabled"`
 	Filter  []string   `json:"filter"`
 	To      string     `json:"to"`
+	PGP     PGPConfig  `json:"pgp"`
 	SMTP    SMTPConfig `json:"smtp"`
 }
 

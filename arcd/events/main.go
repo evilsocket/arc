@@ -12,18 +12,35 @@ import (
 	"fmt"
 	"github.com/evilsocket/arc/arcd/config"
 	"github.com/evilsocket/arc/arcd/log"
+	"github.com/evilsocket/arc/arcd/pgp"
 	"github.com/evilsocket/arc/arcd/utils"
 	"gopkg.in/gomail.v2"
 	"sync"
 )
 
 var (
-	lock = &sync.Mutex{}
-	Pool = make([]Event, 0)
+	lock    = &sync.Mutex{}
+	Pool    = make([]Event, 0)
+	pgpConf = &config.Conf.Scheduler.Reports.PGP
 )
 
+func Setup() error {
+	reports := config.Conf.Scheduler.Reports
+	if config.Conf.Scheduler.Enabled && reports.Enabled && pgpConf.Enabled {
+		if err := pgp.Setup(pgpConf); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func Report(event Event) {
-	log.Infof("Reporting event '%s' to %s ...", event.Title, config.Conf.Scheduler.Reports.To)
+	repotype := "plaintext"
+	if pgpConf.Enabled {
+		repotype = "PGP encrypted"
+	}
+
+	log.Infof("Reporting %s event '%s' to %s ...", repotype, event.Title, config.Conf.Scheduler.Reports.To)
 
 	smtp := config.Conf.Scheduler.Reports.SMTP
 	d := gomail.NewDialer(smtp.Address, smtp.Port, smtp.Username, smtp.Password)
@@ -33,7 +50,18 @@ func Report(event Event) {
 	m.SetHeader("From", fmt.Sprintf("Arc Reporting System <%s>", smtp.Username))
 	m.SetHeader("To", config.Conf.Scheduler.Reports.To)
 	m.SetHeader("Subject", event.Title)
-	m.SetBody("text/html", event.Description)
+
+	var err error
+	ctype := "text/html"
+	body := event.Description
+	if pgpConf.Enabled {
+		ctype = "text/plain"
+		if err, body = pgp.Encrypt(body); err != nil {
+			log.Errorf("Could not PGP encrypt the message: %s.", err)
+		}
+	}
+
+	m.SetBody(ctype, body)
 
 	if err := d.DialAndSend(m); err != nil {
 		log.Errorf("Error: %s.", err)
