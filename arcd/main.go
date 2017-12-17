@@ -170,6 +170,46 @@ func arcSignalHandler() {
 	os.Exit(1)
 }
 
+func setupRouter() *gin.Engine {
+	gin.SetMode(gin.ReleaseMode)
+
+	r := gin.New()
+
+	webapp := arcLoadApp(r)
+
+	api := r.Group("/api")
+	r.POST("/auth", controllers.Auth)
+
+	if no_auth == false {
+		api.Use(middlewares.AuthHandler())
+	} else {
+		log.Warningf("API authentication is disabled.")
+	}
+
+	controllers.App = webapp
+
+	api.GET("/status", controllers.GetStatus)
+	api.GET("/manifest", controllers.GetManifest)
+	api.GET("/config", controllers.GetConfig)
+
+	api.GET("/events/clear", controllers.ClearEvents)
+
+	api.GET("/stores", controllers.ListStores)
+	api.POST("/stores", controllers.CreateStore)
+	api.GET("/store/:id", controllers.GetStore)
+	api.PUT("/store/:id", controllers.UpdateStore)
+	api.DELETE("/store/:id", controllers.DeleteStore)
+
+	api.GET("/store/:id/records", controllers.ListRecords)
+	api.POST("/store/:id/records", controllers.CreateRecord)
+	api.GET("/store/:id/record/:r_id", controllers.GetRecord)
+	api.GET("/store/:id/record/:r_id/buffer", controllers.GetRecordBuffer)
+	api.PUT("/store/:id/record/:r_id", controllers.UpdateRecord)
+	api.DELETE("/store/:id/record/:r_id", controllers.DeleteRecord)
+
+	return r
+}
+
 func main() {
 	var err error
 
@@ -240,45 +280,10 @@ func main() {
 		go arcUpdater()
 	}
 
-	gin.SetMode(gin.ReleaseMode)
-
-	r := gin.New()
-
-	webapp := arcLoadApp(r)
-
-	api := r.Group("/api")
-	r.POST("/auth", controllers.Auth)
-
-	if no_auth == false {
-		api.Use(middlewares.AuthHandler())
-	} else {
-		log.Warningf("API authentication is disabled.")
-	}
-
-	controllers.App = webapp
-
-	api.GET("/status", controllers.GetStatus)
-	api.GET("/manifest", controllers.GetManifest)
-	api.GET("/config", controllers.GetConfig)
-
-	api.GET("/events/clear", controllers.ClearEvents)
-
-	api.GET("/stores", controllers.ListStores)
-	api.POST("/stores", controllers.CreateStore)
-	api.GET("/store/:id", controllers.GetStore)
-	api.PUT("/store/:id", controllers.UpdateStore)
-	api.DELETE("/store/:id", controllers.DeleteStore)
-
-	api.GET("/store/:id/records", controllers.ListRecords)
-	api.POST("/store/:id/records", controllers.CreateRecord)
-	api.GET("/store/:id/record/:r_id", controllers.GetRecord)
-	api.GET("/store/:id/record/:r_id/buffer", controllers.GetRecordBuffer)
-	api.PUT("/store/:id/record/:r_id", controllers.UpdateRecord)
-	api.DELETE("/store/:id/record/:r_id", controllers.DeleteRecord)
-
 	address := fmt.Sprintf("%s:%d", config.Conf.Address, config.Conf.Port)
 
-	log.Infof("arcd is serving the app %s on %s ...", log.Bold(webapp.String()), log.Bold(address))
+	r := setupRouter()
+	log.Infof("arcd is serving the app %s on %s ...", log.Bold(apppath), log.Bold(address))
 
 	if config.Conf.TLS.Enabled {
 		if err = r.RunTLS(address, config.Conf.TLS.Certificate, config.Conf.TLS.Key); err != nil {
