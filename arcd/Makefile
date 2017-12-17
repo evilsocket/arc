@@ -1,4 +1,4 @@
-.PHONY: build fmt lint run test vendor_clean vendor_get vendor_update vet
+.PHONY: build fmt lint run test vendor_clean vendor_get vet
 
 DEPENDENCIES=github.com/gin-gonic/gin \
 	     github.com/theckman/go-flock \
@@ -44,9 +44,6 @@ test:
 
 clean:
 	rm -rf $(TARGET)
-
-vendor_update: vendor_get
-	find $(VENDOR_PATH)/src -type d -name '.git' -o -name '.hg' -o -name '.bzr' -o -name '.svn' -exec rm -rf {} \;
 
 # We have to set GOPATH to just the _vendor
 # directory to ensure that `go get` doesn't
