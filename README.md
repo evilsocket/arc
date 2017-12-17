@@ -127,6 +127,7 @@ It is necessary to change only the `username` and `password` access parameters o
 
 Different type of events can happen during Arc lifecycle:
 
+- `login_ok` someone succesfully authenticated to the system.
 - `login_ko` someone tried to authenticate to the system with the wrong credentials.
 - `token_ko` an invalid JWT token has been used to access Arc API.
 - `update` a new version of Arc is available.
