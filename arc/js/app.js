@@ -871,11 +871,14 @@ app.controller('PMController', ['$scope', function (scope) {
             var inSecretModal = !inStoreSelection && ( scope.isModalOpen('secret_modal') == true );
             var inEditMode = inSecretModal && $('.btn-edit').is(':visible');
             var inNewMode = inSecretModal && !$('.btn-edit').is(':visible');
+            var curr = $(document.activeElement);
             var curTag = document.activeElement.tagName.toLowerCase();
             
-            if( e.ctrlKey || curTag == 'input' || curTag == 'textarea' || $(document.activeElement).hasClass('note-editable') ) {
+            if( e.ctrlKey || curTag == 'input' || curTag == 'textarea' || curr.hasClass('note-editable') || curr.attr('contenteditable') == "true" ) {
                 return;
             }
+            // note-editable
+            console.log(document.activeElement);
 
             // n -> create new item
             if( e.which == 110 ) {
