@@ -1,11 +1,11 @@
 .PHONY: build fmt lint run test vendor_clean vendor_get vendor_update vet
 
 DEPENDENCIES=github.com/gin-gonic/gin \
-			 github.com/theckman/go-flock \
-			 gopkg.in/gomail.v2 \
-		 	 github.com/stretchr/testify/assert \
-			 github.com/dgrijalva/jwt-go 
-
+	     github.com/theckman/go-flock \
+	     gopkg.in/gomail.v2 \
+	     github.com/stretchr/testify/assert \
+	     github.com/dgrijalva/jwt-go \
+	     golang.org/x/crypto/...
 SRC_PATH=.
 VENDOR_PATH=_vendor
 
