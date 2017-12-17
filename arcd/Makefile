@@ -1,4 +1,4 @@
-.PHONY: build fmt lint run test dependencies_clean dependencies vet
+.PHONY: build fmt lint run test dependencies_clean dependencies vet install
 
 DEPENDENCIES=github.com/gin-gonic/gin \
 	     github.com/theckman/go-flock \
@@ -9,6 +9,11 @@ DEPENDENCIES=github.com/gin-gonic/gin \
 SRC_PATH=.
 DEPENDENCIES_PATH=_dependencies
 TARGET=arcd
+PREFIX_DIR=/usr/local
+BIN_DIR=$(PREFIX_DIR)/bin
+CONFIG_DIR=$(PREFIX_DIR)/etc
+SERVICE_DIR=/lib/systemd/system
+SERVICE_LN_DIR=/etc/systemd/system
 
 # Prepend our _dependancies directory to the system GOPATH so that import path
 # resolution will prioritize our third party snapshots.
@@ -19,6 +24,27 @@ default: build
 
 build: dependencies
 	@go build $(FLAGS) -o $(TARGET) $(SRC_PATH)
+
+# runs on previlege
+install: build
+	@echo "Installing $(TARGET) in $(PREFIX_DIR)"
+	@install -D -m 744 \
+		$(SRC_PATH)/$(TARGET) \
+		$(BIN_DIR)/$(TARGET)
+	@cp -r \
+		../arc \
+		$(BIN_DIR)/arc
+	@install -D -m 644 \
+		$(SRC_PATH)/sample_config.json \
+		$(CONFIG_DIR)/$(TARGET)/config.json
+	@install -D -m 644 \
+		$(SRC_PATH)/arcd@.service \
+		$(SERVICE_DIR)/arcd@.service
+	@ln -s \
+		$(SERVICE_DIR)/arcd@.service \
+		$(SERVICE_LN_DIR)/arcd@.service || \
+		echo "symlink already exists...skipping"
+	@echo "Done."
 
 # http://godoc.org/code.google.com/p/go.tools/cmd/vet
 # go get code.google.com/p/go.tools/cmd/vet
