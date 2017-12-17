@@ -873,7 +873,7 @@ app.controller('PMController', ['$scope', function (scope) {
             var inNewMode = inSecretModal && !$('.btn-edit').is(':visible');
             var curTag = document.activeElement.tagName.toLowerCase();
             
-            if( e.ctrlKey || curTag == 'input' || curTag == 'textarea' ) {
+            if( e.ctrlKey || curTag == 'input' || curTag == 'textarea' || $(document.activeElement).hasClass('note-editable') ) {
                 return;
             }
 
