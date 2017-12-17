@@ -23,7 +23,7 @@ Elements can be created (with optional expiration dates), arranged and edited us
 
 ## Where to Run Arc 
 
-Ideally `arcd` should run on a dedicated portable hardware like a Raspberry Pi Zero (it is possible to simply access it via Bluetooth and a modern browser once configured [btnap](https://github.com/bablokb/pi-btnap), but since precompiled versions are available for [several operating systems and architectures](https://github.com/evilsocket/arc/releases) (including ARM, ARM64 and MIPS) it can run on pretty much everything with a CPU, from your smartphone, your router, your Mac or your Windows computer. As a rule of thumb, the more [isolated](https://en.wikipedia.org/wiki/Compartmentalization_(information_security)) the hardware is, the better. 
+Ideally `arcd` should run on a dedicated portable hardware like a Raspberry Pi Zero, for instance it is possible to simply access it via Bluetooth and a modern browser once configured [btnap](https://github.com/bablokb/pi-btnap), but precompiled versions are available for [several operating systems and architectures](https://github.com/evilsocket/arc/releases) (including ARM, ARM64 and MIPS) therefore Arc can run on pretty much everything with a CPU, from your smartphone, your router, your Mac or your Windows computer. As a rule of thumb, the more [isolated](https://en.wikipedia.org/wiki/Compartmentalization_(information_security)) the hardware is, the better. 
 
 The idea is to use Arc as a single storage and manager for your passwords, encrypted notes, files and `-all the secret things here-`.
 
