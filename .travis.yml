@@ -4,7 +4,7 @@ go:
   - 1.9.x
 
 cache:
-  - arcd/_vendor
+  - arcd/_dependencies
 
 git:
   depth: 3
