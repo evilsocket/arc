@@ -73,7 +73,7 @@ FileEntry.prototype.formGroup = function(input, id, mime) {
     }
     else {
         html = '<div class="form-group">' + 
-                 '<span class="editable label entry-title label-default label-' + this.type + '" id="editable_' + id + '">' + this.name + ' </span>' + 
+                 '<span class="editable label entry-title label-default label-' + this.type + '" id="editable_' + id + '">' + this.name + '</span>' + 
                     '<label class="upload btn btn-default" for="' + id + '"><i class="fa fa-upload" aria-hidden="true"></i>' +
                     input +
                  '</label>' +

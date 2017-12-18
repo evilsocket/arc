@@ -26,11 +26,12 @@ HTMLEntry.prototype.Icon = function() {
 }
 
 HTMLEntry.prototype.textarea = function(with_value, id) {
+    id = this.id(id);
     return '<textarea ' + 
              'class="form-control" ' +
              'data-entry-type="' + this.type + '" ' +
-             'name="' + this.name + '" ' + 
-             'id="' + this.id(id) + '" ' +
+             'name="' + id + '" ' + 
+             'id="' + id + '" ' +
              '>' + ( with_value ? this.value : '' ) + '</textarea>';
 }
 

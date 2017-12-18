@@ -108,13 +108,14 @@ PasswordEntry.prototype.btn = function(id, name, icon) {
 }
 
 PasswordEntry.prototype.input = function(with_value, id) {
+    var iid = this.id(id);
     return '<div class="input-group mif">' +
             '<input ' + 
                 'type="password" ' + 
                 'class="form-control" ' +
                 'data-entry-type="' + this.type + '" ' +
-                'name="' + this.name + '" ' + 
-                'id="' + this.id(id) + '" ' +
+                'name="' + iid + '" ' + 
+                'id="' + iid + '" ' +
                 'value="' + ( with_value ? this.value : '' ) + '"/>' +
                 '<span class="input-group-btn">' +
                     this.btn( id, 'copy', 'clipboard' ) +

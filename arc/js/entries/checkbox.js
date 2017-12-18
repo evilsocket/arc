@@ -23,12 +23,13 @@ CheckboxEntry.prototype.Icon = function() {
 }
 
 CheckboxEntry.prototype.input = function(type, with_value, id) {
+    id = this.id(id)
     return '<input ' + 
              'class="ui-checkbox" ' +
              'data-entry-type="' + this.type + '" ' +
              'type="' + type + '" ' + 
-             'name="' + this.name + '" ' + 
-             'id="' + this.id(id) + '" ' +
+             'name="' + id + '" ' + 
+             'id="' + id + '" ' +
              ( this.value == '1' ? 'checked' : '' )  +
              '/>';
 }

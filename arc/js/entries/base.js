@@ -50,24 +50,26 @@ Entry.prototype.formGroup = function(input, id) {
 }
 
 Entry.prototype.input = function(type, with_value, id) {
+    id = this.id(id);
     return '<input ' + 
              'class="form-control" ' +
              'data-entry-type="' + this.type + '" ' +
              'type="' + type + '" ' + 
-             'name="' + this.name + '" ' + 
-             'id="' + this.id(id) + '" ' +
+             'name="' + id + '" ' + 
+             'id="' + id + '" ' +
              'value="' + ( with_value ? this.value : '' ) + '"' +
              ( type == 'file' ? 'multiple' : '' ) +
              '/>';
 }
 
 Entry.prototype.textarea = function(with_md, with_value, id) {
+    id = this.id(id);
     return '<textarea ' + 
              'class="form-control" ' +
              ( with_md ? 'data-provide="markdown" ' : '' ) +
              'data-entry-type="' + this.type + '" ' +
              'name="' + this.name + '" ' + 
-             'id="' + this.id(id) + '" ' +
+             'id="' + id + '" ' +
              '>' + ( with_value ? this.value : '' ) + '</textarea>';
 }
 
