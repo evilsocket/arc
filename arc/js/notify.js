@@ -9,7 +9,21 @@
     };
     notify_methods = {
       create_notification: function(options) {
-        return new Notification(options.title, options);
+          var supported = true;
+
+          try {
+              new Notification('');
+          } catch (e) {
+              if (e.name == 'TypeError') {
+                  supported = false;
+              }
+          }
+          
+          if( supported ) {
+              return new Notification(options.title, options);
+          } else {
+              return null;
+          }
       },
       close_notification: function(notification, options) {
         return setTimeout(notification.close.bind(notification), options.closeTime);
@@ -44,6 +58,9 @@
         if (notify_methods.isSupported()) {
           notify_methods.permission_request();
           notification = notify_methods.create_notification(options);
+          if(!notification)
+                return;
+
           notify_methods.close_notification(notification, options);
           return {
             click: function(callback) {
