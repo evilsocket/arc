@@ -21,10 +21,10 @@ type Index struct {
 	records map[uint64]*Record
 }
 
-func LoadIndex(path string) (i Index, err error) {
+func LoadIndex(path string) (i *Index, err error) {
 	log.Debugf("Loading index from '%s' ...", path)
 
-	i = Index{
+	i = &Index{
 		path:    path,
 		lock:    flock.NewFlock(filepath.Join(path, ".lock")),
 		records: make(map[uint64]*Record),

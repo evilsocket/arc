@@ -22,7 +22,7 @@ import (
 type Record struct {
 	path     string
 	meta     *Meta
-	children Index
+	children *Index
 }
 
 func CreateRecord(root_path string, meta Meta, reader *io.Reader) (record *Record, err error) {

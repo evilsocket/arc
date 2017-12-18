@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	dbIndex  Index
+	dbIndex  = (*Index)(nil)
 	dbNextId = uint64(0)
 
 	Size = uint64(0)
