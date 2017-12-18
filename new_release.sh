@@ -2,19 +2,23 @@
 # nothing to see here, just a utility i use to create new releases ^_^
 
 CURRENT_VERSION=$(cat arcd/config/version.go | grep APP_VERSION | cut -d '"' -f 2)
+TO_UPDATE=(
+    arcd/config/version.go
+    arc/manifest.json
+    arc/js/version.js
+)
 
 echo -n "Current version is $CURRENT_VERSION, select new version: "
 read NEW_VERSION
-echo "Creating version $NEW_VERSION ..."
+echo "Creating version $NEW_VERSION ...\n"
 
-echo "Updating arcd/config/version.go"
-sed -i "s/$CURRENT_VERSION/$NEW_VERSION/g" arcd/config/version.go
+for file in "${TO_UPDATE[@]}"
+do
+    echo "Patching $file ..."
+    sed -i "s/$CURRENT_VERSION/$NEW_VERSION/g" $file
+    git add $file
+done
 
-echo "Updating arc/manifest.json"
-sed -i "s/$CURRENT_VERSION/$NEW_VERSION/g" arc/manifest.json
-
-git add arcd/config/version.go
-git add arc/manifest.json
 git commit -m "Releasing v$NEW_VERSION"
 git push
 
@@ -24,4 +28,4 @@ git push origin v$NEW_VERSION
 cp arcd/sample_config.json .
 rm -rf dist
 
-echo "All done, just run goreleaser now ^_^"
+echo "\nAll done, just run goreleaser now ^_^"
