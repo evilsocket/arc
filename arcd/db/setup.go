@@ -42,7 +42,7 @@ func Setup() (created bool, err error) {
 		return false, err
 	}
 
-	for id, _ := range dbIndex.Records() {
+	for id := range dbIndex.Records() {
 		if id > dbNextId {
 			dbNextId = id + 1
 		}
