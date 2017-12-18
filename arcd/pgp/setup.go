@@ -35,9 +35,5 @@ func Setup(pgp *config.PGPConfig) error {
 		}
 	}
 
-	if err := LoadKey(pgp.Keys.Private, true); err != nil {
-		return err
-	}
-
-	return nil
+	return LoadKey(pgp.Keys.Private, true)
 }
