@@ -75,6 +75,7 @@ This is the example configuration file you need to customize the first time.
         "period": 10,
         "reports": {
             "enabled": false,
+            "rate_limit": 60,
             "filter": [ "login_ok", "login_ko", "token_ko", "update", "record_expired" ],
             "to": "youremail@gmail.com",
             "smtp":{
@@ -116,6 +117,7 @@ It is necessary to change only the `username` and `password` access parameters o
 | scheduler.enabled | Enable or disable the server events scheduler (**if you disable this, bye bye notifications and records expiration**). |
 | scheduler.period | Time in seconds between every scheduler loop. |
 | scheduler.reports.enabled | If true, events will be reported by email. |
+| scheduler.reports.rate\_limit | If two events of the same type are triggered in less than this number of seconds between one each other, the newest will not be notified by email. |
 | scheduler.reports.filter | Which type of events to report by email. |
 | scheduler.reports.to | Destination email address. |
 | scheduler.reports.smtp | SMTP server information. |

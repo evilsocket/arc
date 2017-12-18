@@ -27,6 +27,7 @@ const (
 	defSchedulerPeriod = 15
 	defBackupsEnabled  = false
 	defCompression     = true
+	defRateLimit       = 60
 )
 
 // SMTP configuration.
@@ -50,11 +51,12 @@ type PGPConfig struct {
 
 // Reports configuration.
 type rpConfig struct {
-	Enabled bool       `json:"enabled"`
-	Filter  []string   `json:"filter"`
-	To      string     `json:"to"`
-	PGP     PGPConfig  `json:"pgp"`
-	SMTP    SMTPConfig `json:"smtp"`
+	Enabled   bool       `json:"enabled"`
+	RateLimit int        `json:"rate_limit"`
+	Filter    []string   `json:"filter"`
+	To        string     `json:"to"`
+	PGP       PGPConfig  `json:"pgp"`
+	SMTP      SMTPConfig `json:"smtp"`
 }
 
 // Scheduler configuration.
@@ -104,6 +106,10 @@ var Conf = Configuration{
 	Scheduler: schConfig{
 		Enabled: true,
 		Period:  defSchedulerPeriod,
+		Reports: rpConfig{
+			Enabled:   false,
+			RateLimit: defRateLimit,
+		},
 	},
 }
 

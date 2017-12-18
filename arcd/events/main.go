@@ -16,12 +16,15 @@ import (
 	"github.com/evilsocket/arc/arcd/utils"
 	"gopkg.in/gomail.v2"
 	"sync"
+	"time"
 )
 
 var (
-	lock    = &sync.Mutex{}
-	Pool    = make([]Event, 0)
-	pgpConf = &config.Conf.Scheduler.Reports.PGP
+	lock      = &sync.Mutex{}
+	Pool      = make([]Event, 0)
+	pgpConf   = &config.Conf.Scheduler.Reports.PGP
+	repStats  = make(map[string]time.Time, 0)
+	statsLock = &sync.Mutex{}
 )
 
 func Setup() error {
@@ -34,7 +37,31 @@ func Setup() error {
 	return nil
 }
 
+func rateLimit(event Event) bool {
+	statsLock.Lock()
+	defer statsLock.Unlock()
+
+	dropEvent := false
+	lastSeen := time.Now()
+
+	if last, found := repStats[event.Name]; found == true {
+		elapsed := time.Since(last)
+		if elapsed.Seconds() < float64(config.Conf.Scheduler.Reports.RateLimit) {
+			dropEvent = true
+		}
+	}
+
+	repStats[event.Name] = lastSeen
+
+	return dropEvent
+}
+
 func Report(event Event) {
+	if rateLimit(event) == true {
+		log.Importantf("Dropping event '%s' because of rate limiting.", event.Title)
+		return
+	}
+
 	repotype := "plaintext"
 	if pgpConf.Enabled {
 		repotype = "PGP encrypted"
@@ -65,8 +92,6 @@ func Report(event Event) {
 
 	if err := d.DialAndSend(m); err != nil {
 		log.Errorf("Error: %s.", err)
-	} else {
-		log.Infof("Reported.")
 	}
 }
 
