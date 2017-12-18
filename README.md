@@ -15,7 +15,11 @@ Records are generated, encrypted and decrypted **client side only** by `arc` (wi
 
 Elements can be created (with optional expiration dates), arranged and edited using `arc` and are stored on `arcd` as AES256 encrypted (and compressed) raw data.
 
-[![random demo](https://img.youtube.com/vi/8iG7rHXZtiA/0.jpg)](https://www.youtube.com/watch?v=8iG7rHXZtiA)
+<p align="center">
+    <a href="https://www.youtube.com/watch?v=8iG7rHXZtiA">
+        <img src="https://img.youtube.com/vi/8iG7rHXZtiA/hqdefault.jpg" alt="random demo"/>
+    </a>
+</p>
 
 ## Hardware? 
 
