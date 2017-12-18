@@ -75,9 +75,5 @@ func Generate(conf *config.Configuration) error {
 	}
 
 	log.Debugf("Saving certificate to %s ...", conf.Certificate)
-	if err := pem.Encode(certfile, &pem.Block{Type: "CERTIFICATE", Bytes: cert_raw}); err != nil {
-		return err
-	}
-
-	return nil
+	return pem.Encode(certfile, &pem.Block{Type: "CERTIFICATE", Bytes: cert_raw})
 }
