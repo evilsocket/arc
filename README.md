@@ -1,11 +1,6 @@
 # Arc
 
-<<<<<<< HEAD
 [![Build Status](https://travis-ci.org/evilsocket/arc.svg?branch=master)](https://travis-ci.org/evilsocket/arc) [![Go Report Card](https://goreportcard.com/badge/github.com/evilsocket/arc)](https://goreportcard.com/report/github.com/evilsocket/arc)
-=======
-
-[![Build Status](https://travis-ci.org/evilsocket/arc.svg?branch=master)](https://travis-ci.org/evilsocket/arc)
->>>>>>> 53b28685608694a83192255e66c1ed1432daefc3
 
 Arc is a manager for your secrets made of `arcd`, a RESTful API server written in Go which exposes read and write primitives for encrypted records, and `arc`, the client application implemented in HTML5 and javascript, which runs in every modern browser and  it is served by `arcd` itself.
 
