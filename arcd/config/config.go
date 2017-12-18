@@ -17,12 +17,13 @@ import (
 )
 
 const (
-	defAddress         = "127.0.0.1"
-	defPort            = 8080
-	defDatabaseName    = "arc.db"
-	defHMacSecret      = ":°F_WQEùwqeflpùwa.pelfùkepwfùw,koefopwkepfwv"
-	defUsername        = "arc"
-	defPassword        = "arc"
+	defAddress      = "127.0.0.1"
+	defPort         = 8080
+	defDatabaseName = "arc.db"
+	defHMacSecret   = ":°F_WQEùwqeflpùwa.pelfùkepwfùw,koefopwkepfwv"
+	defUsername     = "arc"
+	// echo -n "arc" | sha256sum
+	defPassword        = "404fcfb394d23199f6d95f1f36bd2beb6df8564f993f44517f6015fcd16101a9"
 	defTokenDuration   = 60
 	defSchedulerPeriod = 15
 	defBackupsEnabled  = false
