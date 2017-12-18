@@ -85,6 +85,8 @@
                 </center>
               </div>
             </div>
+            <!-- will show session expire time when approaching 5 minutes left -->
+            <div id="session_time_left" class="alert alert-warning" style="display:none"></div>
           </li>
 
           <li class="list-group-item" ng-if="!stores.length">
@@ -101,9 +103,6 @@
 
       <!-- store selected, load records from it -->
       <div ng-switch-when="true">
-        <!-- will show session expire time when approaching 5 minutes left -->
-        <div id="session_time_left" class="alert alert-warning" style="display:none"></div>
-
         <br/>
         <ul id="secrets_list" class="list-group secrets-list">
 
@@ -130,6 +129,8 @@
                    placeholder="Search ..."/>
               </div>
             </div>
+            <!-- will show session expire time when approaching 5 minutes left -->
+            <div id="session_time_left" class="alert alert-warning" style="display:none"></div>
           </li>
 
           <li class="list-group-item nohover">

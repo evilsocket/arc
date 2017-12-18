@@ -120,7 +120,7 @@ img.preview-image {
 #session_time_left {
     display:none;
     margin-top: 10px;
-    margin-bottom: -10px;
+    margin-bottom: 0px;
 }
 
 .search-form {

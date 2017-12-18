@@ -813,7 +813,7 @@ app.controller('PMController', ['$scope', function (scope) {
             var token_life_left = token_duration_minutes - token_life_date.getMinutes();
             
             if( token_life_left <= 5 ) {
-                $('#session_time_left').html( "The session will expire in " + token_life_left + " minutes." );
+                $('#session_time_left').html( "The session will expire in " + token_life_left + " minute" + (token_life_left > 1 ? 's' : '') +"." );
                 $('#session_time_left').show();
             }
 
@@ -821,9 +821,6 @@ app.controller('PMController', ['$scope', function (scope) {
                 console.log( "Sesssion token expired." );
                 location.reload();
             }
-        }
-        else {
-            $('#session_time').html( "Session started " + $.timeago(scope.arc.token_time) );
         }
     };
 
