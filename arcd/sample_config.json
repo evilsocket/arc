@@ -1,6 +1,8 @@
 {
     "address": "0.0.0.0",
-    "port": 8080,
+    "port": 8443,
+    "certificate": "~/arcd-certificate.pem",
+    "key": "~/arcd-key.pem",
     "username": "arc",
     "password": "404fcfb394d23199f6d95f1f36bd2beb6df8564f993f44517f6015fcd16101a9",
     "database": "~/db",
@@ -32,10 +34,5 @@
         "enabled": false,
         "period": 1800,
         "folder": "/some/backup/path/"
-    },
-    "tls": {
-        "enabled": false,
-        "certificate": "/some/certificate.pem",
-        "key": "/some/key.pem"
     }
 }

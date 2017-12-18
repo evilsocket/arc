@@ -47,7 +47,7 @@ Once everything is ready, youn can finally start the `arcd` server:
 
     ./arcd -config config.json -app arc
 
-Now browse `http://localhost:8080/` ( or the address and port you configured ) and login with the configured credentials.
+Now browse `https://localhost:8443/` ( or the address and port you configured ) and login with the configured credentials (make sure to add the generated HTTPS certificate as an exception in your browser).
 
 **NOTE**
 
@@ -60,7 +60,9 @@ This is the example configuration file you need to customize the first time.
 ```json
 {
     "address": "127.0.0.1",
-    "port": 8080,
+    "port": 8443,
+    "certificate": "/some/certificate.pem",
+    "key": "/some/key.pem"
     "username": "arc",
     "password": "404fcfb394d23199f6d95f1f36bd2beb6df8564f993f44517f6015fcd16101a9",
     "database": "~/arcdb",
@@ -92,11 +94,6 @@ This is the example configuration file you need to customize the first time.
         "enabled": false,
         "period": 1800,
         "folder": "/some/backup/path/"
-    },
-    "tls": {
-        "enabled": false,
-        "certificate": "/some/certificate.pem",
-        "key": "/some/key.pem"
     }
 }
 ```
@@ -107,6 +104,8 @@ It is necessary to change only the `username` and `password` access parameters o
 | ------------- | ------------- |
 | address | IP address to bind the `arcd` server to. |
 | port | TCP to bind the `arcd` server to. |
+| certificate | HTTPS certificate PEM file (if it does not exist, it will be automatically generated). |
+| key | HTTPS private key PEM file (if it does not exist, it will be automatically generated). |
 | username | API access username. |
 | password | API access password `sha256` hash. |
 | database | Database root directory. |
@@ -124,9 +123,6 @@ It is necessary to change only the `username` and `password` access parameters o
 | backups.enabled | Enable automatic backups. |
 | backups.period | Number of seconds between one backup and the next one. |
 | backups.folder | Destination folder for the backup file. |
-| tls.enabled | Run `arcd` on HTTPS. |
-| tls.certificate | HTTPS certificate. |
-| tls.key | HTTPS private key. |
 
 ## Realtime Notifications
 

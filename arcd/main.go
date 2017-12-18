@@ -25,6 +25,8 @@ import (
 	"github.com/evilsocket/arc/arcd/events"
 	"github.com/evilsocket/arc/arcd/log"
 	"github.com/evilsocket/arc/arcd/middlewares"
+	"github.com/evilsocket/arc/arcd/tls"
+	"github.com/evilsocket/arc/arcd/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -283,15 +285,26 @@ func main() {
 	address := fmt.Sprintf("%s:%d", config.Conf.Address, config.Conf.Port)
 
 	r := setupRouter()
-	log.Infof("arcd is serving the app %s on %s ...", log.Bold(apppath), log.Bold(address))
 
-	if config.Conf.TLS.Enabled {
-		if err = r.RunTLS(address, config.Conf.TLS.Certificate, config.Conf.TLS.Key); err != nil {
+	if config.Conf.Certificate, err = utils.ExpandPath(config.Conf.Certificate); err != nil {
+		log.Fatal(err)
+	} else if config.Conf.Key, err = utils.ExpandPath(config.Conf.Key); err != nil {
+		log.Fatal(err)
+	}
+
+	if utils.Exists(config.Conf.Certificate) == false || utils.Exists(config.Conf.Key) == false {
+		log.Warningf("TLS certificate files not found, generating new ones ...")
+		if err = tls.Generate(&config.Conf); err != nil {
 			log.Fatal(err)
 		}
-	} else {
-		if err = r.Run(address); err != nil {
-			log.Fatal(err)
-		}
+		log.Infof("New RSA key and certificate have been generated, remember to add them as exceptions to your browser!")
+	}
+
+	if address[0] == ':' {
+		address = "0.0.0.0" + address
+	}
+	log.Infof("Arc is running on %s ...", log.Bold("https://"+address+"/"))
+	if err = r.RunTLS(address, config.Conf.Certificate, config.Conf.Key); err != nil {
+		log.Fatal(err)
 	}
 }

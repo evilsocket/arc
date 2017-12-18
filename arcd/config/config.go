@@ -17,25 +17,17 @@ import (
 )
 
 const (
-	defAddress      = "127.0.0.1"
-	defPort         = 8080
-	defDatabaseName = "arc.db"
-	defHMacSecret   = ":°F_WQEùwqeflpùwa.pelfùkepwfùw,koefopwkepfwv"
-	defUsername     = "arc"
-	// echo -n "arc" | sha256sum
+	defAddress         = "127.0.0.1"
+	defPort            = 8443
+	defDatabaseName    = "arc.db"
+	defHMacSecret      = ":°F_WQEùwqeflpùwa.pelfùkepwfùw,koefopwkepfwv"
+	defUsername        = "arc"
 	defPassword        = "404fcfb394d23199f6d95f1f36bd2beb6df8564f993f44517f6015fcd16101a9"
 	defTokenDuration   = 60
 	defSchedulerPeriod = 15
 	defBackupsEnabled  = false
 	defCompression     = true
 )
-
-// Server TLS configuration.
-type tlsConfig struct {
-	Enabled     bool   `json:"enabled"`
-	Certificate string `json:"certificate"`
-	Key         string `json:"key"`
-}
 
 // SMTP configuration.
 type SMTPConfig struct {
@@ -84,6 +76,8 @@ type bkConfig struct {
 type Configuration struct {
 	Address       string    `json:"address"`
 	Port          int       `json:"port"`
+	Certificate   string    `json:"certificate"`
+	Key           string    `json:"key"`
 	Database      string    `json:"database"`
 	Secret        string    `json:"secret"`
 	Username      string    `json:"username"`
@@ -93,7 +87,6 @@ type Configuration struct {
 	CheckExpired  int       `json:"check_expired"`
 	Scheduler     schConfig `json:"scheduler"`
 	Backups       bkConfig  `json:"backups"`
-	TLS           tlsConfig `json:"tls"`
 }
 
 var Conf = Configuration{
@@ -105,9 +98,6 @@ var Conf = Configuration{
 	Password:      defPassword,
 	TokenDuration: defTokenDuration,
 	Compression:   defCompression,
-	TLS: tlsConfig{
-		Enabled: false,
-	},
 	Backups: bkConfig{
 		Enabled: defBackupsEnabled,
 	},
