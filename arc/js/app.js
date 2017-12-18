@@ -825,7 +825,7 @@ app.controller('PMController', ['$scope', function (scope) {
     };
 
     scope.setRoute = function(route) {
-        route = route ? '#!#' + route : '#';
+        route = route ? '#!' + route : '#';
         if(history.pushState) {
             history.pushState(null, null, route);
         }
@@ -836,8 +836,8 @@ app.controller('PMController', ['$scope', function (scope) {
 
     scope.getRoute = function() {
         var hash = location.hash;
-        if( hash.indexOf("#!#") == 0 ) {
-            return decodeURIComponent(location.hash.substr(3));
+        if( hash.indexOf("#!") == 0 ) {
+            return decodeURIComponent(location.hash.substr(2));
         }
         return "";
     };
