@@ -5,7 +5,9 @@ DEPENDENCIES=github.com/gin-gonic/gin \
 	     gopkg.in/gomail.v2 \
 	     github.com/stretchr/testify/assert \
 	     github.com/dgrijalva/jwt-go \
-	     golang.org/x/crypto/...
+	     golang.org/x/crypto/... \
+		 golang.org/x/crypto/openpgp
+
 SRC_PATH=.
 DEPENDENCIES_PATH=_dependencies
 TARGET=arcd
