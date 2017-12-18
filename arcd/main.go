@@ -15,6 +15,7 @@ import (
 	"os/signal"
 	"path"
 	"regexp"
+	"runtime"
 	"syscall"
 	"time"
 
@@ -235,7 +236,7 @@ func main() {
 		log.MinLevel = log.INFO
 	}
 
-	log.Infof("%s is starting ...", log.Bold(config.APP_NAME+" v"+config.APP_VERSION))
+	log.Infof("%s (%s %s) is starting ...", log.Bold(config.APP_NAME+" v"+config.APP_VERSION), runtime.GOOS, runtime.GOARCH)
 
 	if conf_file != "" {
 		if err = config.Load(conf_file); err != nil {
@@ -304,7 +305,7 @@ func main() {
 	if address[0] == ':' {
 		address = "0.0.0.0" + address
 	}
-	log.Infof("Arc is running on %s ...", log.Bold("https://"+address+"/"))
+	log.Infof("Running on %s ...", log.Bold("https://"+address+"/"))
 	if err = r.RunTLS(address, config.Conf.Certificate, config.Conf.Key); err != nil {
 		log.Fatal(err)
 	}
