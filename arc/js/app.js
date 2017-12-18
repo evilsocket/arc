@@ -871,11 +871,13 @@ app.controller('PMController', ['$scope', function (scope) {
             var curr = $(document.activeElement);
             var curTag = document.activeElement.tagName.toLowerCase();
             
-            if( e.ctrlKey || curTag == 'input' || curTag == 'textarea' || curr.hasClass('note-editable') || curr.attr('contenteditable') == "true" ) {
+            if( e.ctrlKey || e.metaKey || 
+                curTag == 'input' || 
+                curTag == 'textarea' || 
+                curr.hasClass('note-editable') || 
+                curr.attr('contenteditable') == "true" ) {
                 return;
             }
-            // note-editable
-            console.log(document.activeElement);
 
             // n -> create new item
             if( e.which == 110 ) {
