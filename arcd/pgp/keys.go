@@ -100,11 +100,7 @@ func SaveKey(out io.Writer, key *rsa.PrivateKey, private bool) (err error) {
 		return err
 	}
 
-	if err := w.Close(); err != nil {
-		return err
-	}
-
-	return nil
+	return w.Close()
 }
 
 func GenerateKeys(private, public string) error {
