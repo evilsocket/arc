@@ -50,7 +50,7 @@ var (
 func init() {
 	flag.StringVar(&apppath, "app", ".", "Path of the web application to serve.")
 	flag.StringVar(&conf_file, "config", "", "JSON configuration file.")
-	flag.BoolVar(&no_auth, "no-auth", no_auth, "Disable authenticaion.")
+	flag.BoolVar(&no_auth, "no-auth", no_auth, "Disable authentication.")
 	flag.BoolVar(&no_updates, "no-updates", no_updates, "Disable updates check.")
 
 	flag.BoolVar(&debug, "log-debug", debug, "Enable debug logs.")
