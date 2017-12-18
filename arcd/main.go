@@ -151,7 +151,7 @@ func arcUpdater() {
 			latest := m[1]
 			log.Debugf("Latest version is '%s'", latest)
 			if config.APP_VERSION != latest {
-				log.Warningf("Update to %s available at %s.", latest, location)
+				log.Importantf("Update to %s available at %s.", latest, location)
 				events.Add(events.UpdateAvailable(config.APP_VERSION, latest, location))
 			} else {
 				log.Debugf("No updates available.")
@@ -167,7 +167,8 @@ func arcUpdater() {
 func arcSignalHandler() {
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
 	s := <-signals
-	log.Warningf("RECEIVED SIGNAL: %s", s)
+	log.Raw("\n")
+	log.Importantf("RECEIVED SIGNAL: %s", s)
 	db.Flush()
 	os.Exit(1)
 }
@@ -185,7 +186,7 @@ func setupRouter() *gin.Engine {
 	if no_auth == false {
 		api.Use(middlewares.AuthHandler())
 	} else {
-		log.Warningf("API authentication is disabled.")
+		log.Importantf("API authentication is disabled.")
 	}
 
 	controllers.App = webapp
@@ -268,14 +269,14 @@ func main() {
 		log.Debugf("Starting scheduler with a period of %ds ...", config.Conf.Scheduler.Period)
 		go arcScheduler()
 	} else {
-		log.Warningf("Scheduler is disabled.")
+		log.Importantf("Scheduler is disabled.")
 	}
 
 	if config.Conf.Backups.Enabled {
 		log.Debugf("Starting backup task with a period of %ds ...", config.Conf.Backups.Period)
 		go arcBackupper()
 	} else {
-		log.Warningf("Backups are disabled.")
+		log.Importantf("Backups are disabled.")
 	}
 
 	if no_updates == false {
@@ -293,7 +294,7 @@ func main() {
 	}
 
 	if utils.Exists(config.Conf.Certificate) == false || utils.Exists(config.Conf.Key) == false {
-		log.Warningf("TLS certificate files not found, generating new ones ...")
+		log.Importantf("TLS certificate files not found, generating new ones ...")
 		if err = tls.Generate(&config.Conf); err != nil {
 			log.Fatal(err)
 		}

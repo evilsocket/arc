@@ -30,6 +30,7 @@ const (
 	BG_RED    = "\033[41m"
 	BG_GREEN  = "\033[42m"
 	BG_YELLOW = "\033[43m"
+	BG_LBLUE  = "\033[104m"
 
 	RESET = "\033[0m"
 )
@@ -37,6 +38,7 @@ const (
 const (
 	DEBUG = iota
 	INFO
+	IMPORTANT
 	WARNING
 	ERROR
 	FATAL
@@ -50,18 +52,20 @@ var (
 
 	mutex  = &sync.Mutex{}
 	labels = map[int]string{
-		DEBUG:   "DBG",
-		INFO:    "INF",
-		WARNING: "WAR",
-		ERROR:   "ERR",
-		FATAL:   "!!!",
+		DEBUG:     "DBG",
+		INFO:      "INF",
+		IMPORTANT: "IMP",
+		WARNING:   "WAR",
+		ERROR:     "ERR",
+		FATAL:     "!!!",
 	}
 	colors = map[int]string{
-		DEBUG:   DIM + FG_BLACK + BG_DGRAY,
-		INFO:    FG_WHITE + BG_GREEN,
-		WARNING: FG_WHITE + BG_YELLOW,
-		ERROR:   FG_WHITE + BG_RED,
-		FATAL:   FG_WHITE + BG_RED + BOLD,
+		DEBUG:     DIM + FG_BLACK + BG_DGRAY,
+		INFO:      FG_WHITE + BG_GREEN,
+		IMPORTANT: FG_WHITE + BG_LBLUE,
+		WARNING:   FG_WHITE + BG_YELLOW,
+		ERROR:     FG_WHITE + BG_RED,
+		FATAL:     FG_WHITE + BG_RED + BOLD,
 	}
 )
 
@@ -78,6 +82,12 @@ func Dim(s string) string {
 
 func Bold(s string) string {
 	return Wrap(s, BOLD)
+}
+
+func Raw(s string) {
+	mutex.Lock()
+	defer mutex.Unlock()
+	fmt.Fprintf(Output, "%s", s)
 }
 
 func Log(level int, format string, args ...interface{}) {
@@ -107,6 +117,10 @@ func Debugf(format string, args ...interface{}) {
 
 func Infof(format string, args ...interface{}) {
 	Log(INFO, format, args...)
+}
+
+func Importantf(format string, args ...interface{}) {
+	Log(IMPORTANT, format, args...)
 }
 
 func Warningf(format string, args ...interface{}) {
