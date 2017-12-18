@@ -26,21 +26,19 @@ function checkPrerequisites() {
         window.crypto.subtle = window.crypto.webkitSubtle;
     }
 
-    // if someone is thinking "oh, you could just declare a string and eval() it" ... 
-    //
-    // FU*K YOU!
     var checks = [
-        [ 'window.crypto', window.crypto, 'object' ],
-        [ 'window.crypto.subtle', window.crypto.subtle, 'object' ],
-        [ 'TextEncoder', TextEncoder, 'function' ],
-        [ 'TextDecoder', TextDecoder, 'function' ],
-        [ 'Uint8Array', Uint8Array, 'function' ]
+        [ 'window.crypto', 'object' ],
+        [ 'window.crypto.subtle', 'object' ],
+        [ 'TextEncoder', 'function' ],
+        [ 'TextDecoder', 'function' ],
+        [ 'Uint8Array', 'function' ]
     ];
 
     var errors = [];
     for( var i = 0; i < checks.length; i++ ) {
-        var [ name, what, expected ] = checks[i];
-        var type = typeof(what)
+        var [ name, expected ] = checks[i];
+        var what = eval(name);
+        var type = typeof(what);
         if( type != expected ) {
            errors.push([name, expected, type]); 
         }
