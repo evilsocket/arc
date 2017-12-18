@@ -4,11 +4,9 @@ After=network.target
 
 [Service]
 Type=simple
-User=%I
-WorkingDirectory=~
-Environment="ARCD_APP=go/src/github.com/evilsocket/arc/arc"
-Environment="ARCD_CONFIG=config.json"
-ExecStart=/usr/local/bin/arcd -config ${ARCD_CONFIG} -app ${ARCD_APP}
+User=%i
+ExecStart=/usr/local/bin/arcd -config /usr/local/etc/arcd/config.json -app /usr/local/bin/arc
+StandardOutput=syslog
 Restart=on-failure
 
 [Install]

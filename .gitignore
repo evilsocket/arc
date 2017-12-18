@@ -6,6 +6,7 @@
 # Folders
 _obj
 _test
+arcd/_dependencies
 
 # Architecture specific extensions/prefixes
 *.[568vq]

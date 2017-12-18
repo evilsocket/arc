@@ -1,25 +1,50 @@
-.PHONY: build fmt lint run test vendor_clean vendor_get vendor_update vet
+.PHONY: build fmt lint run test dependencies_clean dependencies vet install
 
 DEPENDENCIES=github.com/gin-gonic/gin \
-			 github.com/theckman/go-flock \
-			 gopkg.in/gomail.v2 \
-		 	 github.com/stretchr/testify/assert \
-			 github.com/dgrijalva/jwt-go 
-
+	     github.com/theckman/go-flock \
+	     gopkg.in/gomail.v2 \
+	     github.com/stretchr/testify/assert \
+	     github.com/dgrijalva/jwt-go \
+	     golang.org/x/crypto/...
 SRC_PATH=.
-VENDOR_PATH=_vendor
-
+DEPENDENCIES_PATH=_dependencies
 TARGET=arcd
-# Prepend our _vendor directory to the system GOPATH
-# so that import path resolution will prioritize
-# our third party snapshots.
-GOPATH := ${CURDIR}/$(VENDOR_PATH):${GOPATH}
+PREFIX_DIR=/usr/local
+BIN_DIR=$(PREFIX_DIR)/bin
+CONFIG_DIR=$(PREFIX_DIR)/etc
+SERVICE_DIR=/lib/systemd/system
+SERVICE_LN_DIR=/etc/systemd/system
+
+# Prepend our _dependancies directory to the system GOPATH so that import path
+# resolution will prioritize our third party snapshots.
+GOPATH := ${CURDIR}/$(DEPENDENCIES_PATH):${GOPATH}
 export GOPATH
 
 default: build
 
-build: 
+build: dependencies
 	@go build $(FLAGS) -o $(TARGET) $(SRC_PATH)
+
+# runs on previlege
+install: build
+	@echo "Installing $(TARGET) in $(PREFIX_DIR)"
+	@install -D -m 744 \
+		$(SRC_PATH)/$(TARGET) \
+		$(BIN_DIR)/$(TARGET)
+	@cp -r \
+		../arc \
+		$(BIN_DIR)/arc
+	@install -D -m 644 \
+		$(SRC_PATH)/sample_config.json \
+		$(CONFIG_DIR)/$(TARGET)/config.json
+	@install -D -m 644 \
+		$(SRC_PATH)/arcd@.service \
+		$(SERVICE_DIR)/arcd@.service
+	@ln -s \
+		$(SERVICE_DIR)/arcd@.service \
+		$(SERVICE_LN_DIR)/arcd@.service || \
+		echo "symlink already exists...skipping"
+	@echo "Done."
 
 # http://godoc.org/code.google.com/p/go.tools/cmd/vet
 # go get code.google.com/p/go.tools/cmd/vet
@@ -45,17 +70,12 @@ test:
 clean:
 	rm -rf $(TARGET)
 
-vendor_update: vendor_get
-	find $(VENDOR_PATH)/src -type d -name '.git' -o -name '.hg' -o -name '.bzr' -o -name '.svn' -exec rm -rf {} \;
-
-# We have to set GOPATH to just the _vendor
-# directory to ensure that `go get` doesn't
-# update packages in our primary GOPATH instead.
-# This will happen if you already have the package
-# installed in GOPATH since `go get` will use
+# We have to set GOPATH to just the _dependencies directory to ensure that `go
+# get` doesn't update packages in our primary GOPATH instead.  This will happen
+# if you already have the package installed in GOPATH since `go get` will use
 # that existing location as the destination.
-vendor_get: vendor_clean
-	GOPATH=${CURDIR}/$(VENDOR_PATH) go get -d -u -v $(DEPENDENCIES)
+dependencies:
+	GOPATH=${CURDIR}/$(DEPENDENCIES_PATH) go get -d -u -v $(DEPENDENCIES)
 
-vendor_clean:
-	rm -dRf $(VENDOR_PATH)/src
+dependencies_clean:
+	rm -dRf $(DEPENDENCIES_PATH)/src
