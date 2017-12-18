@@ -64,7 +64,7 @@ func (m *Meta) Flush() error {
 	return m.FlushNoLock()
 }
 
-func (m *Meta) Update(values Meta) (err error) {
+func (m *Meta) Update(values *Meta) (err error) {
 	m.Lock()
 	defer m.Unlock()
 
@@ -91,7 +91,7 @@ func (m *Meta) SetPath(path string) error {
 	return nil
 }
 
-func CreateMeta(path string, values Meta) (meta *Meta, err error) {
+func CreateMeta(path string, values *Meta) (meta *Meta, err error) {
 	meta = &Meta{
 		Id:         values.Id,
 		Title:      values.Title,

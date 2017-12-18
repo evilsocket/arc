@@ -25,7 +25,7 @@ type Record struct {
 	children *Index
 }
 
-func CreateRecord(root_path string, meta Meta, reader *io.Reader) (record *Record, err error) {
+func CreateRecord(root_path string, meta *Meta, reader *io.Reader) (record *Record, err error) {
 	log.Debugf("Creating record %d:'%s' on '%s' with reader %v...", meta.Id, meta.Title, root_path, reader)
 
 	if root_path, err = utils.ExpandPath(root_path); err != nil {
@@ -160,7 +160,7 @@ func (r *Record) Unlock() error {
 	return r.meta.Unlock()
 }
 
-func (r *Record) Update(meta Meta) (err error) {
+func (r *Record) Update(meta *Meta) (err error) {
 	log.Debugf("Updating record '%s' meta.", r.path)
 	return r.meta.Update(meta)
 }
@@ -268,7 +268,7 @@ func (r *Record) UpdateBuffer(reader io.Reader) (err error) {
 	return nil
 }
 
-func (r *Record) New(meta Meta, reader io.Reader) (child *Record, err error) {
+func (r *Record) New(meta *Meta, reader io.Reader) (child *Record, err error) {
 	r.Lock()
 	defer r.Unlock()
 

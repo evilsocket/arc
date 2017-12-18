@@ -49,7 +49,7 @@ func CreateRecord(c *gin.Context) {
 		return
 	}
 
-	record, err := store.New(meta, reader)
+	record, err := store.New(&meta, reader)
 	if err != nil {
 		utils.ServerError(c, err)
 	}
@@ -153,7 +153,7 @@ func UpdateRecord(c *gin.Context) {
 		return
 	}
 
-	err = record.Update(meta)
+	err = record.Update(&meta)
 	if err != nil {
 		utils.ServerError(c, err)
 		return

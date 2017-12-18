@@ -44,7 +44,7 @@ func Import(filename string) error {
 			UpdatedAt: store.UpdatedAt,
 		}
 		log.Infof("Creating store %d:'%s' ...", store.ID, store.Title)
-		new_store, err := Create(ms)
+		new_store, err := Create(&ms)
 		if err != nil {
 			return err
 		}
@@ -73,7 +73,7 @@ func Import(filename string) error {
 
 			log.Infof("Creating record %d:'%s' of %s ...", meta.Id, meta.Title, utils.FormatBytes(uint64(len(data))))
 			reader := bytes.NewReader(data)
-			_, err := nstore.New(meta, reader)
+			_, err := nstore.New(&meta, reader)
 			if err != nil {
 				return err
 			}

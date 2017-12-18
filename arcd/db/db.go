@@ -35,7 +35,7 @@ func Stores() (stores []*Meta, err error) {
 	return stores, nil
 }
 
-func Create(meta Meta) (*Meta, error) {
+func Create(meta *Meta) (*Meta, error) {
 	dbIndex.Lock()
 	defer dbIndex.Unlock()
 
