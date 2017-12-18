@@ -6,11 +6,47 @@
  * See LICENSE.
  */
 
-if( !window.crypto ) {
-    alert("This browser does not support WebCrypto, please use a modern browser for Arc.");
+var errors = checkPrerequisites();
+if( errors && errors.length > 0 ) {
+    var msg = "Arc version: " + VERSION + "\n" + 
+              "Browser: " + navigator.userAgent + "\n" +
+              "\nThis browser does not support WebCrypto, at least not completely, " + 
+              "please use a modern browser for Arc.\n\nMissing components:\n\n";
+
+    for( var i = 0; i < errors.length; i++ ) {
+        var [ name, expected, found ] = errors[i];
+        msg += "Component '" + name + "' was expected to be '" + expected + "' but is '" + found + "'.\n";
+    }
+
+    alert(msg);
 } 
-else if( !window.crypto.subtle && window.crypto.webkitSubtle ) {
-    window.crypto.subtle = window.crypto.webkitSubtle;
+
+function checkPrerequisites() {
+    if( window.crypto && !window.crypto.subtle && window.crypto.webkitSubtle ) {
+        window.crypto.subtle = window.crypto.webkitSubtle;
+    }
+
+    // if someone is thinking "oh, you could just declare a string and eval() it" ... 
+    //
+    // FU*K YOU!
+    var checks = [
+        [ 'window.crypto', window.crypto, 'object' ],
+        [ 'window.crypto.subtle', window.crypto.subtle, 'object' ],
+        [ 'TextEncoder', TextEncoder, 'function' ],
+        [ 'TextDecoder', TextDecoder, 'function' ],
+        [ 'Uint8Array', Uint8Array, 'function' ]
+    ];
+
+    var errors = [];
+    for( var i = 0; i < checks.length; i++ ) {
+        var [ name, what, expected ] = checks[i];
+        var type = typeof(what)
+        if( type != expected ) {
+           errors.push([name, expected, type]); 
+        }
+    }
+
+    return errors;
 }
 
 const AES_SALT_SIZE  = 16;
