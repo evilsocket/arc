@@ -1,5 +1,7 @@
 # Arc
 
+[![Build Status](https://travis-ci.org/evilsocket/arc.svg?branch=master)](https://travis-ci.org/evilsocket/arc)
+
 Arc is a manager for your secrets made of `arcd`, a RESTful API server written in Go which exposes read and write primitives for encrypted records, and `arc`, the client application implemented in HTML5 and javascript, which runs in every modern browser and  it is served by `arcd` itself.
 
 Records are generated, encrypted and decrypted **client side only** by `arc` (with AES256, using 10000 iterations for the PBKDF2 key derivation function, everything [WebCrypto](https://www.w3.org/TR/WebCryptoAPI/) based ), which offers an intuitive management system equipped with UI widgets including:
