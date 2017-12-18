@@ -41,6 +41,10 @@ footer a:hover {
     background-color: transparent;
 }
 
+.progress-bar {
+    background-color: #bbb;
+}
+
 img.preview-image {
     max-width: 128px;
 }
@@ -49,6 +53,7 @@ img.preview-image {
     font-size: 0.8rem;
     margin-bottom: 4px;
     margin-left: 2px;
+    color: #999;
 }
 
 .modal-full {
@@ -407,6 +412,10 @@ ul li.placeholder:before {
 #template {
     width: 100%;
     font-size: 0.8rem;
+}
+
+#loader_message {
+    margin-bottom: -5px;
 }
 
 #loader_modal {
