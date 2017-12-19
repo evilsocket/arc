@@ -45,10 +45,6 @@ footer a:hover {
     background-color: #bbb;
 }
 
-img.preview-image {
-    max-width: 128px;
-}
-
 #ptext {
     font-size: 0.8rem;
     margin-bottom: 4px;
@@ -326,23 +322,63 @@ button.btn-password {
 }
 
 .entry-title {
-    font-size: 1.2rem;
-    font-weight:500;
+    font-size: 1.0rem;
     font-family: inherit;
+    font-weight: 600;
 }
 
 span.label-4 {
     /* font-weight: bold; */
 }
 
+div.preview-container {
+    width: 100px;
+    height: 100px;
+    margin-right: 10px;
+    text-align: center;
+    background-color: #eee;
+    line-height:100px;
+}
+
+img.preview-image {
+    max-width: 100px;
+    max-height: 100px;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
 .upload {
     float: left;
     display: inline-block;
-    padding: 5px 9px;
     margin-right: 10px;
-    font-size: 10px;
+    font-size: 3.4rem;
     background: #eee;
-    border: 1px solid #ccc;
+    width: 100px;
+    height: 100px;
+    color: #ddd;
+    cursor: pointer;
+}
+
+.upload:hover {
+    color: #aaa;
+}
+
+span.file-desc {
+    display: block;
+    font-size: 0.8rem;
+    line-height: 0.8rem;
+    margin-top: 20px;
+}
+
+span.file-desc label {
+    display: block;
+    margin: 0;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+}
+
+span.file-desc small {
+    color: #777;
 }
 
 input[type=file] {

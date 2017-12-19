@@ -24,7 +24,7 @@ function FilesAdd(id, reader, file) {
     var $preview = $('#preview_' + id);
     if( file.type.indexOf("image/") == 0 ) {
         if( $preview ) {
-            $preview.attr( 'src', "data:text/plain;base64," + btoa(g_FilesMap[id].data) ).show();
+            $preview.attr( 'src', "data:" + file.type + ";base64," + btoa(g_FilesMap[id].data) ).show();
         }
     } else {
         $preview.hide();
@@ -58,25 +58,49 @@ FileEntry.prototype.Icon = function() {
 
 FileEntry.prototype.formGroup = function(input, id, mime) {
     var id = this.id(id);
+    var file = FilesGet(id);
+
+    var desc = '<span class="file-desc">' +
+                    '<label>Type</label>' +
+                    '<small>' + ( mime == '' ? '?' : mime ) + '</small>' +
+                    '<br/>' +
+                    '<label>Size</label>' +
+                    '<small>' + ( file ? bytesFormat( file.size ) : '' ) + '</small>' +
+               '</span>';
 
     if( mime && mime.indexOf("image/") == 0 ) {
-        var file = FilesGet(id);
-
         html = '<div class="media">' +
-                  '<img id="preview_' + id + '" onclick="javascript:downloadFor(\'' + id + '\')" class="preview-image mr-3" src="data:text/plain;base64,' + btoa(file.data) + '"/>' +
-                  '<div class="media-body">' +
-                    '<h5 class="editable entry-title mt-0" id="editable_' + id + '">' + this.name + '</h5>' +
-                    input + 
-                    '<label class="upload btn btn-default" for="' + id + '"><i class="fa fa-upload" aria-hidden="true"></i></label>' +
-                  '</div>' +
+                  '<div class="preview-container">' +
+                    '<img id="preview_' + id + '" onclick="javascript:downloadFor(\'' + id + '\')" class="preview-image mr-3" src="data:' + mime + ';base64,' + btoa(file.data) + '"/>' + 
+                '</div>' +
+                '<div class="media-body">' +
+                  '<h5 class="editable entry-title mt-0" id="editable_' + id + '">' + this.name + '</h5>' +
+                  input + 
+                   desc +
+                '</div>' +
                '</div>';
     }
     else {
+        var icon = 'download';
+
+        if( mime != null ) {
+            if( mime == '' ) {
+                icon = 'question';
+            }
+            else if( mime.indexOf('pdf') != -1 ) {
+                icon = 'file-pdf-o';
+            } 
+            else if( mime.indexOf('text/') == 0 ) {
+                icon = 'file-text-o';
+            }
+        }
+
         html = '<div class="form-group">' + 
                  '<span class="editable label entry-title label-default label-' + this.type + '" id="editable_' + id + '">' + this.name + '</span>' + 
-                    '<label class="upload btn btn-default" for="' + id + '"><i class="fa fa-upload" aria-hidden="true"></i>' +
-                    input +
+                    '<label class="upload btn btn-default" onclick="javascript:downloadFor(\''+id+'\')"><i class="fa fa-' + icon + '" aria-hidden="true"></i>' +
                  '</label>' +
+                input +
+                 ( file ? desc : '' ) +
                 '</div>';
     }
 
@@ -93,25 +117,15 @@ FileEntry.prototype.RenderToList = function(list, idx, dontclick) {
     
     if( this.is_new == false ) {
         var file = JSON.parse(this.value)
-
         g_FilesMap[entry_id] = file;
-
-        if( file.type.indexOf("image/") != 0 ) {
-            var type = "";
-            if( file.type ) {
-                type = file.type + ' / ';
-            }
-            rendered += '<small class="text-muted">' + type + bytesFormat( file.size ) + '</small> '; 
-            rendered += '<a href="javascript:downloadFor(\''+entry_id+'\')"><i class="fa fa-download" aria-hidden="true"></i></a> '; 
-        } else {
-            rendered += '<small class="text-muted">' + bytesFormat( file.size ) + '</small> '; 
-        }
     }
  
-    rendered +=   '<a href="javascript:removeEntry('+idx+')"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
+    rendered +=   '<a href="javascript:void($(\'#' + entry_id + '\').click())"><i class="fa fa-edit" aria-hidden="true"></i></a>' +
+                  '<a href="javascript:removeEntry('+idx+')"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
                   '<a href="#" onclick="return false"><i class="fa fa-arrows" aria-hidden="true"></i></a>' +
                 '</div>' +
-                this.Render(idx, this.is_new ? null : g_FilesMap[entry_id].type);
+                this.Render(idx, this.is_new ? null : g_FilesMap[entry_id].type) + 
+                "<div style='clear:both;'></div>";
 
     list.append( '<li class="secret-entry-item" id="secret_entry_' + idx + '">' + rendered + '</li>' );
 
