@@ -213,8 +213,9 @@ func (r *Record) compress() (err error) {
 	r.meta.Compressed = true
 	r.meta.FlushNoLock()
 	Size += r.meta.Size
+	bps := uint64(float64(Size) / elapsed.Seconds())
 
-	log.Infof("Compressed %s (%d b) in %s.", utils.FormatBytes(r.meta.Size), r.meta.Size, elapsed)
+	log.Infof("Compressed %s in %s (%s/s).", utils.FormatBytes(r.meta.Size), elapsed, utils.FormatBytes(bps))
 	return nil
 }
 
