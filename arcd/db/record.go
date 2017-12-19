@@ -185,7 +185,11 @@ func (r *Record) compress() (err error) {
 	}
 	defer writer.Close()
 
-	gzipper := gzip.NewWriter(writer)
+	gzipper, err := gzip.NewWriterLevel(writer, gzip.BestCompression)
+	if err != nil {
+		log.Errorf("Error while creating gzipper: %s.", err)
+		return err
+	}
 
 	_, err = io.Copy(gzipper, reader)
 	if err != nil {
