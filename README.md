@@ -14,6 +14,7 @@ Records are generated, encrypted and decrypted **client side only** by `arc` (wi
 - A password field with **password strength estimation** and a **random password generator**. 
 - Custom lists.
 - Bitcoin wallet address with auto updating balance.
+- Manager for [Time-based One-time Password Algorithm (TOTP) codes](http://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm) as per the [TOTP RFC Draft](http://tools.ietf.org/id/draft-mraihi-totp-timebased-06.html). This component produces the same codes as the Google Authenticator app and can be used for 2FA.
 
 Elements can be created (with optional expiration dates), arranged and edited using `arc` and are stored on `arcd` as AES256 encrypted (and compressed) raw data.
 
