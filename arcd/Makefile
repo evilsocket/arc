@@ -11,7 +11,7 @@ SERVICE_LN_DIR=/etc/systemd/system
 
 default: build
 
-build: deps
+build: deps fmt vet lint 
 	@go build $(FLAGS) -o $(TARGET) $(SRC_PATH)
 
 vet:
