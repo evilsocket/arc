@@ -34,6 +34,7 @@ install: build
 	@install -D -m 744 \
 		$(SRC_PATH)/$(TARGET) \
 		$(BIN_DIR)/$(TARGET)
+	@setcap 'cap_net_bind_service=+ep' $(BIN_DIR)/$(TARGET)
 	@cp -r \
 		../arc \
 		$(WEBAPP_DIR)/arc
