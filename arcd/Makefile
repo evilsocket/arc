@@ -14,6 +14,7 @@ TARGET=arcd
 PREFIX_DIR=/usr/local
 BIN_DIR=$(PREFIX_DIR)/bin
 CONFIG_DIR=$(PREFIX_DIR)/etc
+WEBAPP_DIR=$(PREFIX_DIR)/share
 SERVICE_DIR=/lib/systemd/system
 SERVICE_LN_DIR=/etc/systemd/system
 
@@ -35,7 +36,7 @@ install: build
 		$(BIN_DIR)/$(TARGET)
 	@cp -r \
 		../arc \
-		$(BIN_DIR)/arc
+		$(WEBAPP_DIR)/arc
 	@install -D -m 644 \
 		$(SRC_PATH)/sample_config.json \
 		$(CONFIG_DIR)/$(TARGET)/config.json

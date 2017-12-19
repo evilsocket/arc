@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 User=%i
-ExecStart=/usr/local/bin/arcd -config /usr/local/etc/arcd/config.json -app /usr/local/bin/arc
+ExecStart=/usr/local/bin/arcd -config /usr/local/etc/arcd/config.json -app /usr/local/share/arc
 StandardOutput=syslog
 Restart=on-failure
 
