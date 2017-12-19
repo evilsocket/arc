@@ -62,8 +62,8 @@ FileEntry.prototype.formGroup = function(input, id, mime) {
 
     var box  = "";
     if( mime && mime.indexOf("image/") == 0 ) {
-        box = '<div class="preview-container">' +
-                '<img id="preview_' + id + '" onclick="javascript:downloadFor(\'' + id + '\')" class="preview-image mr-3" src="data:' + mime + ';base64,' + btoa(file.data) + '"/>' + 
+        box = '<div class="preview-container" onclick="javascript:downloadFor(\'' + id + '\')">' +
+                '<img id="preview_' + id + '" class="preview-image mr-3" src="data:' + mime + ';base64,' + btoa(file.data) + '"/>' + 
                 '</div>';
     } 
     else {

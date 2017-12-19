@@ -339,6 +339,7 @@ div.preview-container {
     background-color: #eee;
     line-height:6.2rem;
     float: left;
+    cursor: pointer;
     display: inline-block;
 }
 
@@ -346,7 +347,6 @@ img.preview-image {
     max-width: 6.2rem;
     max-height: 6.2rem;
     margin-right: 10px;
-    cursor: pointer;
     vertical-align: middle;
 }
 
