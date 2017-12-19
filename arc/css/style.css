@@ -533,6 +533,27 @@ div.notifications {
     margin-top: 10px;
 }
 
+div.otp-group {
+    margin-bottom: 50px;
+}
+
+#otp {
+    font-size: 1.2rem;
+    float: right;
+    border-top: 5px solid #eee;
+    margin-top: 10px;
+}
+
+#otp .clock {
+    margin-right: 5px;
+    margin-left: 50px;
+}
+
+#otp a.copy {
+    color: #bbb;
+    margin-right: 5px;
+}
+
 .div-editable {
     width: 100%;
     min-height: 50px;

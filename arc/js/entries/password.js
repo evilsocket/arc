@@ -168,10 +168,14 @@ PasswordEntry.prototype.OnRendered = function(id) {
 
     var btn_pass_copy_id = '#btn_pass_copy_' + elem_id;
     $(btn_pass_copy_id).click(function() {
+        var prev = $(btn_pass_copy_id).html();
         var pass = elem.val();
         copyTextToClipboard(pass);
-        console.log( "Copied " + pass.length + " characters to clipboard." );
-        alert( "Password copied." );
+
+        $(btn_pass_copy_id).html("<small>Copied!</small>");
+        setTimeout(function(){
+            $(btn_pass_copy_id).html(prev);
+        }, 1000);
     });
 
     var btn_pass_make_id = '#btn_pass_make_' + elem_id;

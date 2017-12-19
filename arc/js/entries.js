@@ -10,6 +10,7 @@ var REGISTERED_TYPES = [
     new InputEntry( "Text Input", "" ),
     new CheckboxEntry( "Checkbox", "" ),
     new PasswordEntry( "Password", "" ),
+    new TOTPEntry( "2FA", "" ),
     new TextEntry( "Text", "" ),
     new MarkdownEntry( "Markdown", "" ),
     new HTMLEntry( "HTML", "" ),
