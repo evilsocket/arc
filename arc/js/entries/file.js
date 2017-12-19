@@ -60,29 +60,14 @@ FileEntry.prototype.formGroup = function(input, id, mime) {
     var id = this.id(id);
     var file = FilesGet(id);
 
-    var desc = '<span class="file-desc">' +
-                    '<label>Type</label>' +
-                    '<small>' + ( mime == '' ? '?' : mime ) + '</small>' +
-                    '<br/>' +
-                    '<label>Size</label>' +
-                    '<small>' + ( file ? bytesFormat( file.size ) : '' ) + '</small>' +
-               '</span>';
-
+    var box  = "";
     if( mime && mime.indexOf("image/") == 0 ) {
-        html = '<div class="media">' +
-                  '<div class="preview-container">' +
-                    '<img id="preview_' + id + '" onclick="javascript:downloadFor(\'' + id + '\')" class="preview-image mr-3" src="data:' + mime + ';base64,' + btoa(file.data) + '"/>' + 
-                '</div>' +
-                '<div class="media-body">' +
-                  '<h5 class="editable entry-title mt-0" id="editable_' + id + '">' + this.name + '</h5>' +
-                  input + 
-                   desc +
-                '</div>' +
-               '</div>';
-    }
+        box = '<div class="preview-container">' +
+                '<img id="preview_' + id + '" onclick="javascript:downloadFor(\'' + id + '\')" class="preview-image mr-3" src="data:' + mime + ';base64,' + btoa(file.data) + '"/>' + 
+                '</div>';
+    } 
     else {
         var icon = 'download';
-
         if( mime != null ) {
             if( mime == '' ) {
                 icon = 'question';
@@ -95,16 +80,28 @@ FileEntry.prototype.formGroup = function(input, id, mime) {
             }
         }
 
-        html = '<div class="form-group">' + 
-                 '<span class="editable label entry-title label-default label-' + this.type + '" id="editable_' + id + '">' + this.name + '</span>' + 
-                    '<label class="upload btn btn-default" onclick="javascript:downloadFor(\''+id+'\')"><i class="fa fa-' + icon + '" aria-hidden="true"></i>' +
-                 '</label>' +
-                input +
-                 ( file ? desc : '' ) +
-                '</div>';
+        box = '<label class="upload btn btn-default" onclick="javascript:downloadFor(\''+id+'\')">' + 
+                '<i class="fa fa-' + icon + '" aria-hidden="true"></i>' +
+              '</label>';
+
     }
 
-    return html;
+
+    var desc = '<span class="file-desc">' +
+                    '<label>Type</label>' +
+                    '<small>' + ( mime == '' ? '?' : mime ) + '</small>' +
+                    '<br/>' +
+                    '<label>Size</label>' +
+                    '<small>' + ( file ? bytesFormat( file.size ) : '' ) + '</small>' +
+               '</span>';
+
+    return '<div class="form-group">' +
+                box +
+                '<h5 class="editable entry-title mt-0" id="editable_' + id + '">' + this.name + '</h5>' +
+                '<br/>'+
+                input + 
+                desc +
+           '</div>';
 }
 
 FileEntry.prototype.Render = function(idx, mime){

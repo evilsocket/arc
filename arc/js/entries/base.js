@@ -44,7 +44,8 @@ Entry.prototype.id = function(id) {
 Entry.prototype.formGroup = function(input, id) {
     var id = this.id(id);
     return '<div class="form-group">' + 
-             '<span class="editable label label-default entry-title label-' + this.type + '" id="editable_' + id + '">' + this.name + '</span>' +
+             '<h5 class="editable label label-default entry-title label-' + this.type + '" id="editable_' + id + '">' + this.name + '</h5>' +
+            '<div style="clear:both"></div>' +
              input +
             '</div>';
 }

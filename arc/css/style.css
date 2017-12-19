@@ -230,7 +230,6 @@ div.entry-edit > a:hover {
     line-height: 35px;
     font-size: 35px;
     padding: 5px;
-    width: 100%;
 }
 
 .add-secret {
@@ -325,6 +324,7 @@ button.btn-password {
     font-size: 1.0rem;
     font-family: inherit;
     font-weight: 600;
+    word-break: break-all;
 }
 
 span.label-4 {
@@ -338,11 +338,14 @@ div.preview-container {
     text-align: center;
     background-color: #eee;
     line-height:100px;
+    float: left;
+    display: inline-block;
 }
 
 img.preview-image {
     max-width: 100px;
     max-height: 100px;
+    margin-right: 10px;
     cursor: pointer;
     vertical-align: middle;
 }

@@ -11,7 +11,7 @@
 }
 
 .editable {
-    display: inline;
+    float: left;
 }
 
 .editable:hover {
@@ -19,6 +19,7 @@
 }
 
 .editable-icon {
+    float: left;
     color: #ccc;
     cursor: pointer;
     margin-left: 5px;

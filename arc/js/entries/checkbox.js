@@ -26,6 +26,7 @@ CheckboxEntry.prototype.input = function(type, with_value, id) {
     id = this.id(id)
     return '<input ' + 
              'class="ui-checkbox" ' +
+             'style="float: left" ' + 
              'data-entry-type="' + this.type + '" ' +
              'type="' + type + '" ' + 
              'name="' + id + '" ' + 
@@ -38,8 +39,9 @@ CheckboxEntry.prototype.formGroup = function(input, id) {
     var id = this.id(id);
     return '<div class="form-group" style="margin:0">' + 
              input +
-             '<span class="editable label label-default entry-title label-' + this.type + '" id="editable_' + id + '">' + this.name + '</span>' +
-            '</div>';
+             '<h5 class="editable label label-default entry-title label-' + this.type + '" style="float:left;" id="editable_' + id + '">' + this.name + '</h5>' +
+            '</div>' + 
+            '<div style="clear:both"></div>';
 }
 
 CheckboxEntry.prototype.Render = function(with_value, id){
