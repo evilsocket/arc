@@ -86,9 +86,8 @@ FileEntry.prototype.formGroup = function(input, id, mime) {
 
     }
 
-
     var desc = '<span class="file-desc">' +
-                '<small>' + ( mime == '' ? '?' : mime ) + '</small>' +
+                '<small>' + ( mime ? ( mime == '' ? '?' : mime ) : '' ) + '</small>' +
                 '<br/>' +
                 '<small>' + ( file ? bytesFormat( file.size ) + ' (' + file.size + ' B)' : '' ) + '</small>' +
                 '<br/>' +
