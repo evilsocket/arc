@@ -81,6 +81,7 @@ func GetRecordBuffer(c *gin.Context) {
 	record, err := db.GetRecord(store_id, record_id)
 	if err != nil {
 		utils.NotFound(c)
+		return
 	}
 
 	datapath := record.DataPath()
