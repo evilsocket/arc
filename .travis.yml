@@ -3,16 +3,13 @@ sudo: false
 go:
   - 1.9.x
 
-cache:
-  - arcd/_dependencies
-
 git:
   depth: 3
 
 before_install:
   - cd arcd
 install:
-  - make dependencies
+  - make deps
 
 go_import_path: github.com/evilsocket/arc
 
