@@ -99,7 +99,7 @@ func Add(event Event) {
 	lock.Lock()
 	defer lock.Unlock()
 	Pool = append([]Event{event}, Pool...)
-	log.Debugf("New event added (Pool size is %d): %s.", len(Pool), event)
+	log.Infof("New event (Pool size is %d): %s.", len(Pool), event)
 
 	if config.Conf.Scheduler.Reports.Enabled && utils.InSlice(event.Name, config.Conf.Scheduler.Reports.Filter) == true {
 		go Report(event)
