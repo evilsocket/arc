@@ -88,14 +88,11 @@ FileEntry.prototype.formGroup = function(input, id, mime) {
 
 
     var desc = '<span class="file-desc">' +
-                '<div class="row">' +
-                    '<div style="padding:0" class="col-1"><label>Type</label></div>' +
-                    '<div style="padding:0" class="col-11"><small>' + ( mime == '' ? '?' : mime ) + '</small></div>' +
-                    '<div style="padding:0" class="col-1"><label>Size</label></div>' +
-                    '<div style="padding:0" class="col-11"><small>' + ( file ? bytesFormat( file.size ) + ' (' + file.size + ' B)' : '' ) + '</small></div>' +
-                    '<div style="padding:0" class="col-1"><label>Modified</label></div>' +
-                    '<div style="padding:0" class="col-11"><small>' + ( file ? new Date(file.updated_at) : '' ) + '</small></div>' +
-                '</div>' +
+                '<small>' + ( mime == '' ? '?' : mime ) + '</small>' +
+                '<br/>' +
+                '<small>' + ( file ? bytesFormat( file.size ) + ' (' + file.size + ' B)' : '' ) + '</small>' +
+                '<br/>' +
+                '<small>' + ( file ? new Date(file.updated_at) : '' ) + '</small>' +
                '</span>';
 
     return '<div class="form-group">' +
