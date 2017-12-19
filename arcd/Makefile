@@ -79,7 +79,7 @@ clean:
 # if you already have the package installed in GOPATH since `go get` will use
 # that existing location as the destination.
 dependencies:
-	GOPATH=${CURDIR}/$(DEPENDENCIES_PATH) go get -d -u -v $(DEPENDENCIES)
+	GOPATH=${CURDIR}/$(DEPENDENCIES_PATH) go get -u -v $(DEPENDENCIES)
 
 dependencies_clean:
 	rm -dRf $(DEPENDENCIES_PATH)/src
