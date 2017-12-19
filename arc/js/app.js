@@ -942,8 +942,8 @@ app.controller('PMController', ['$scope', function (scope) {
                     e.preventDefault();
                 }
                 else if( e.which == 97 ) {
-                    scope.onaddfield();
-                    e.preventdefault();
+                    scope.onAddField();
+                    e.preventDefault();
                 } else if( e.which == 115 ) {
                     if( inEditMode ) {
                         scope.onUpdate();
