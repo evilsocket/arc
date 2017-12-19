@@ -159,8 +159,6 @@ app.controller('PMController', ['$scope', function (scope) {
         scope.errorMessage = message;
 
         if( message ) {
-            console.log(message);
-
             if( typeof(message) == 'object' && message.responseJSON ) {
                 message = message.responseJSON.message;
             }
@@ -242,7 +240,6 @@ app.controller('PMController', ['$scope', function (scope) {
     };
 
     scope.showLoader = function(message, callback) {
-        console.log("LOADER> " + message);
         $('#loader_message').text(message);
         if( !scope.isLoading() ) {
             // console.log("LOADER SHOWING");
