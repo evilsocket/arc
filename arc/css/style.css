@@ -37,6 +37,15 @@ footer a:hover {
     color: #ccc;
 }
 
+#login {
+    width: 60%;
+    margin-top: 15%;
+}
+
+#login .card-body {
+
+}
+
 .progress {
     background-color: transparent;
 }
