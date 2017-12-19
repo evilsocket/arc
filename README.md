@@ -154,6 +154,7 @@ Email reports can be optionally encrypted by the server using PGP, in this case 
 - `d` Delete the current item ( store or record ).
 - `r` Rename the current item ( store or record ).
 - `a` Add a new field to the current record.
+- `p` Pin / unpin the curret record.
 - `s` Save the current record.
 - `e` Set the expiration date for the current record.
 - `ESC` Close the current window.

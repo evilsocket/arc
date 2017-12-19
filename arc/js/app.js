@@ -931,14 +931,19 @@ app.controller('PMController', ['$scope', function (scope) {
             }
 
             if( inSecretModal ){
+                // p -> toggle pinning
                 // a -> add element
                 // s -> save
                 // d -> delete
                 // e -> set expiration
                 // r -> rename element
-                if( e.which == 97 ) {
-                    scope.onAddField();
+                if( e.which == 112 ) {
+                    $('#pinned').click();
                     e.preventDefault();
+                }
+                else if( e.which == 97 ) {
+                    scope.onaddfield();
+                    e.preventdefault();
                 } else if( e.which == 115 ) {
                     if( inEditMode ) {
                         scope.onUpdate();
