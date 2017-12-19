@@ -26,6 +26,7 @@ type Meta struct {
 	Prune      bool      `json:"prune"`
 	Notified   bool      `json:"notified"`
 	Compressed bool      `json:"compressed"`
+	Pinned     bool      `json:"pinned"`
 	Size       uint64    `json:"size"`
 	NextId     uint64    `json:"next_id"`
 
@@ -74,6 +75,7 @@ func (m *Meta) Update(values *Meta) (err error) {
 	m.ExpiredAt = values.ExpiredAt
 	m.Prune = values.Prune
 	m.Compressed = values.Compressed
+	m.Pinned = values.Pinned
 	m.Size = values.Size
 
 	return m.FlushNoLock()
@@ -102,6 +104,7 @@ func CreateMeta(path string, values *Meta) (meta *Meta, err error) {
 		Prune:      values.Prune,
 		Compressed: values.Compressed,
 		Size:       values.Size,
+		Pinned:     false,
 		Notified:   false,
 		NextId:     1,
 	}

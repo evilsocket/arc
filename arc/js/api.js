@@ -183,35 +183,20 @@ Arc.prototype.GetRecordBuffer = function( record_id, success, error ) {
     return this.Api( 'GET', path, null, success, error, true );
 };
 
-Arc.prototype.AddRecord = function( title, expire_at, prune, data, encryption, size, success, error ) {
+Arc.prototype.AddRecord = function( record, data, success, error ) {
     if( this.HasStore() == false ) {
         return error("No store has been selected.");
     }
-
-    var record = {
-        'title': title,
-        'expired_at': expire_at,
-        'prune': prune,
-        'encryption': encryption,
-        'size': size
-    };
 
     return this.ApiStream( 'POST', '/api/store/' + this.store.id + '/records', record, data, success, error );
 }
 
-Arc.prototype.UpdateRecord = function( id, title, expire_at, prune, data, encryption, size, success, error) {
+Arc.prototype.UpdateRecord = function( record, data, success, error) {
     if( this.HasStore() == false ) {
         return error("No store has been selected.");
     }
-    var record = {
-        'title': title,
-        'expired_at': expire_at,
-        'prune': prune,
-        'encryption': encryption,
-        'size': size
-    };
 
-    return this.ApiStream( 'PUT', '/api/store/' + this.store.id + '/record/' + id, record, data, success, error );
+    return this.ApiStream( 'PUT', '/api/store/' + this.store.id + '/record/' + record.id, record, data, success, error );
 }
 
 Arc.prototype.DeleteRecord = function( record, success, error ) {

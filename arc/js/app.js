@@ -442,6 +442,10 @@ app.controller('PMController', ['$scope', function (scope) {
         return ( scope.doesExpire(record) && Date.parse(record.expired_at) > Date.now() );
     };
 
+    scope.isPinned = function(record) {
+        return record.pinned;
+    };
+
     scope.filterSecret = function(record) {
         if( scope.filter != null ) {
             return ( record.title.toLowerCase().indexOf(scope.filter.toLowerCase()) != -1 );
@@ -532,7 +536,7 @@ app.controller('PMController', ['$scope', function (scope) {
                parts[1] + '.000000000' + tz + ":00";
     };
 
-    scope.showSecretModal = function(is_new, title, date, expired_at, prune, size) {
+    scope.showSecretModal = function(is_new, secret) {
         if( is_new == true ) {
             $('#secret_meta').text('');
             $('#cleartext-warning').show();
@@ -541,26 +545,28 @@ app.controller('PMController', ['$scope', function (scope) {
             $('#secret_date_container').hide();
             $('#secret_expired_at').val('');
             $('#pruner').val('0');
+            $('#pinned').prop('checked', false);
         } else {
-            if( expired_at == ZERO_DATETIME ){
+            if( secret.expired_at == ZERO_DATETIME ){
                 $('#secret_expired_at').val('');
             }
             else {
-                var to_picker = scope.dateToPickerFormat(expired_at);
+                var to_picker = scope.dateToPickerFormat(secret.expired_at);
                 $('#secret_expired_at').val(to_picker);
             }
 
-            $('#secret_meta').text("This record is " + bytesFormat(size) + " and has been updated " + $.timeago(date) + ".");
+            $('#pinned').prop('checked', secret.pinned);
+            $('#secret_meta').text("This record is " + bytesFormat(secret.size) + " and has been updated " + $.timeago(secret.updated_at) + ".");
             $('#cleartext-warning').hide();
             $('.btn-new').hide();
             $('.btn-edit').show();
-            $('#secret_date').text(date);
+            $('#secret_date').text(secret.updated_at);
             $('#secret_date_container').show();
-            $('#pruner').val( prune ? '1' : '0' );
+            $('#pruner').val( secret.prune ? '1' : '0' );
         }
 
         $('#secret_expired_at').trigger('change');
-        $('#secret_title').text(title);
+        $('#secret_title').text(secret.title);
         $('#secret_entry_list').html('').sortable({handle: 'i.fa-arrows'});
         $('#secret_modal').modal().on('hidden.bs.modal', function(){
             document.title = scope.arc.store.title;
@@ -569,7 +575,7 @@ app.controller('PMController', ['$scope', function (scope) {
     };
 
     scope.onNewSecret = function() {null
-        scope.showSecretModal( true, "Put a title ..." );
+        scope.showSecretModal( true, {title: "Put a title ..."});
     };
 
     scope.getInputValue = function(input) {
@@ -611,6 +617,7 @@ app.controller('PMController', ['$scope', function (scope) {
 
         var title = $('#secret_title').text();
         var prune = $('#pruner').val() == '1';
+        var pinned = $('#pinned').is(':checked');
         var record = new Record(title);
 
         console.log( "Building record with " + n_entries + " entries." );
@@ -631,7 +638,7 @@ app.controller('PMController', ['$scope', function (scope) {
             record.AddEntry(new Entry( type, name, value));
         }
 
-        return [ expire_at, prune, record ];
+        return [ expire_at, prune, pinned, record ];
     };
 
     scope.onAdd = function() {
@@ -642,14 +649,23 @@ app.controller('PMController', ['$scope', function (scope) {
         scope.showLoader("Encrypting record ...", function(){
             // Execute asynchronously to not block the ui.
             setTimeout( function() {
-                var [ expire_at, prune, record ] = scope.buildRecord();
+                var [ expire_at, prune, pinned, record ] = scope.buildRecord();
 
                 record.Encrypt(scope.key).then(function(data){
                     var size = data.length;
                     scope.trackTotal = size;
                     scope.progressAt = new Date();
                     scope.showLoader("Adding record ...", function(){
-                        scope.arc.AddRecord( record.title, expire_at, prune, data, 'aes', size, function(record) {
+                        var r = {
+                            'title': record.title,
+                            'expired_at': expire_at,
+                            'prune': prune,
+                            'pinned': pinned,
+                            'encryption': 'aes',
+                            'size': size
+                        };
+
+                        scope.arc.AddRecord( r, data, function(record) {
                             scope.getStore(function() {});
                         },
                         scope.errorHandler ).uploadProgress(scope.trackProgress);
@@ -693,7 +709,7 @@ app.controller('PMController', ['$scope', function (scope) {
                             $('#record_lock_' + secret.id ).removeClass("fa-lock").addClass("fa-unlock");
                             $('#record_status_' + secret.id ).removeClass("status-locked").addClass("status-unlocked");
 
-                            scope.showSecretModal(false, record.title, secret.updated_at, secret.expired_at, secret.prune, secret.size);
+                            scope.showSecretModal(false, secret);
 
                             var list = $('#secret_entry_list'); 
                             for( var i = 0; i < record.entries.length; i++ ){
@@ -726,13 +742,22 @@ app.controller('PMController', ['$scope', function (scope) {
         $('#secret_modal').modal('hide');
 
         scope.showLoader("Encrypting record ...", function(){
-            var [ expire_at, prune, record ] = scope.buildRecord();
+            var [ expire_at, prune, pinned, record ] = scope.buildRecord();
             record.Encrypt(scope.key).then(function(data){
                 var size = data.length
                 scope.trackTotal = size;
                 scope.progressAt = new Date();
                 scope.showLoader("Updating Record ...", function(){
-                    scope.arc.UpdateRecord( scope.secret.id, record.title, expire_at, prune, data, 'aes', size, function(record) {
+                    var r = {
+                        'id': scope.secret.id,
+                        'title': record.title,
+                        'expired_at': expire_at,
+                        'prune': prune,
+                        'pinned': pinned,
+                        'encryption': 'aes',
+                        'size': size
+                    };
+                    scope.arc.UpdateRecord( r, data, function() {
                         scope.setSecret(null);
                         scope.setError(null);
                         scope.getStore(function(){});

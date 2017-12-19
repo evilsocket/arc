@@ -168,7 +168,7 @@ func (r *Record) Update(meta *Meta) (err error) {
 func (r *Record) compress() (err error) {
 	datapath := r.DataPath()
 
-	log.Infof("Compressing buffer %s ...", datapath)
+	log.Debugf("Compressing buffer %s ...", datapath)
 
 	start := time.Now()
 	reader, err := os.Open(datapath)
@@ -257,7 +257,6 @@ func (r *Record) UpdateBuffer(reader io.Reader) (err error) {
 
 	if config.Conf.Compression && r.meta.Size > 1024 {
 		go func() {
-			log.Infof("Starting asynchronous compression.")
 			err := r.compress()
 			if err != nil {
 				log.Errorf("Error while compressing %s: %s.", datapath, err)

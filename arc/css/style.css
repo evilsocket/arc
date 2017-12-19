@@ -6,11 +6,11 @@
  * See LICENSE.
  */
 body {
-  background-color: #343a40;
+    background-color: #343a40;
 }
 
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 a:hover {
@@ -62,29 +62,29 @@ footer a:hover {
 }
 
 .modal-full {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  bottom: initial !important;
-  overflow-y: auto;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    bottom: initial !important;
+    overflow-y: auto;
 }
 
 .modal-dialog-full {
-  margin: 0;
-  width: 100%;
-  max-width: 100%;
-  height: 100%;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
 }
 
 .modal-content-full {
-  min-height: 100%;
+    min-height: 100%;
 }
 
 .modal-header-full {
 }
 
 .modal-body-full {
-  width: 100%;
+    width: 100%;
 }
 
 .modal-footer-full {
@@ -95,36 +95,36 @@ footer a:hover {
 }
 
 .form-signin {
-  max-width: 330px;
-  padding: 15px;
-  margin: 0 auto;
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
 }
 .form-signin .form-signin-heading,
 .form-signin .checkbox {
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 .form-signin .checkbox {
-  font-weight: 400;
+    font-weight: 400;
 }
 .form-signin .form-control {
-  position: relative;
-  box-sizing: border-box;
-  height: auto;
-  padding: 10px;
-  font-size: 16px;
+    position: relative;
+    box-sizing: border-box;
+    height: auto;
+    padding: 10px;
+    font-size: 16px;
 }
 .form-signin .form-control:focus {
-  z-index: 2;
+    z-index: 2;
 }
 .form-signin input[type="email"] {
-  margin-bottom: -1px;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
 }
 .form-signin input[type="password"] {
-  margin-bottom: 10px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }
 
 #session_time_left {
@@ -180,6 +180,22 @@ div.tb-container {
     padding-left: 15px;
 }
 
+#pinned + label {
+    width: 39px;
+    margin: 0;
+    cursor: pointer;
+}
+
+#pinned + label:before {
+    font-family: FontAwesome;
+    display: inline-block;
+}
+
+#pinned + label:before { content: "\f08d"; }
+#pinned + label:before { letter-spacing: 10px; }
+#pinned:checked + label:before { content: "\f276"; color: orange;}
+#pinned:checked + label:before { letter-spacing: 10px; }
+
 #secret_expired_at {
     border: 0;
     font-size: 0.9rem;
@@ -232,7 +248,7 @@ div.entry-edit > a:hover {
 }
 
 .store-list-item b {
-    
+
 }
 
 #secret_title {
@@ -316,7 +332,7 @@ button.btn-password {
 }
 
 #pass_length .slider-selection {
-	background: #BABABA;this.id(idx)
+    background: #BABABA;this.id(idx)
 }
 
 .slider {
@@ -436,8 +452,8 @@ ul li.placeholder:before {
 }
 
 .field-name {
-   display: block; 
-   font-size: 0.7em;
+    display: block; 
+    font-size: 0.7em;
 }
 
 .field-button {
@@ -524,7 +540,8 @@ div.notifications {
 }
 
 li.expiring,
-li.expired {
+li.expired,
+li.pinned {
     position: relative;
     overflow: hidden;
     z-index: 2;
@@ -552,6 +569,22 @@ li.expiring:before {
 
 li.expired:before {
     content: "\f06a";
+}
+
+li.pinned:before {
+    font-family: FontAwesome;
+    content: "\f08d";
+    position: absolute;
+    font-size: 50px;
+    margin-top: -20px;
+    color: orange;
+    opacity: 0.2;
+    z-index: -1;
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    transform: rotate(-45deg);
 }
 
 .fa-animate {

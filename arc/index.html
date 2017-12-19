@@ -159,12 +159,18 @@
             </small>
           </li>       
 
-          <li class="list-group-item" id="secret_list_item_{{ r.id }}" ng-if="filterSecret(r)" ng-repeat="r in arc.records" ng-click="onShowSecret(r.id)" ng-class="{'expired': isExpired(r), 'expiring': isExpiring(r)}">
+          <li 
+             ng-repeat="r in arc.records | orderBy:['pinned','updated_at']:true" 
+             class="list-group-item" 
+             id="secret_list_item_{{ r.id }}" 
+             ng-if="filterSecret(r)" 
+             ng-click="onShowSecret(r.id)" 
+             ng-class="{'expired': isExpired(r), 'expiring': isExpiring(r), 'pinned': isPinned(r) }">
             <span ng-include src="'/views/secret_list_item.html?v=17'"></span>
           </li>
         </ul>
 
-        <div ng-include src="'/views/modals/secret.html?v=24'"></div>
+        <div ng-include src="'/views/modals/secret.html?v=25'"></div>
       </div>
     </span>
 
