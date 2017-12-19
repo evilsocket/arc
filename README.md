@@ -64,7 +64,7 @@ This is the example configuration file you need to customize the first time.
     "address": "127.0.0.1",
     "port": 8443,
     "certificate": "/some/certificate.pem",
-    "key": "/some/key.pem"
+    "key": "/some/key.pem",
     "username": "arc",
     "password": "404fcfb394d23199f6d95f1f36bd2beb6df8564f993f44517f6015fcd16101a9",
     "database": "~/arcdb",
