@@ -62,7 +62,12 @@ Record.prototype.Decrypt = function( algo, key, data, success, error ) {
     }
     else {
         console.log( "Decrypting " + data.length + " bytes of data." );
-        decrypt( data, key ).then(on_data).catch(error);
+        decrypt( data, key ).then(on_data).catch(function(e){
+            console.log(e);
+            console.log( "GCM failed, trying CBC for legacy data ...");
+            // let's see if it's legacy data in CBC mode
+            decrypt_cbc( data, key ).then(on_data).catch(error);
+        });
     }
 }
 

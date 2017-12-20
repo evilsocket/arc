@@ -21,6 +21,13 @@ if( errors && errors.length > 0 ) {
     alert(msg);
 } 
 
+const AES_SALT_SIZE  = 16;
+const AES_IV_SIZE    = 16;
+const AES_KEY_SIZE   = 256;
+const AES_ITERATIONS = 10000;
+const AES_MODE       = 'AES-GCM';
+const GCM_AD         = padAuthenticationMessage('Thanks to JP Aumasson > https://twitter.com/veorq/status/943506635317825536');
+
 function checkPrerequisites() {
     if( window.crypto && !window.crypto.subtle && window.crypto.webkitSubtle ) {
         window.crypto.subtle = window.crypto.webkitSubtle;
@@ -46,12 +53,6 @@ function checkPrerequisites() {
 
     return errors;
 }
-
-const AES_SALT_SIZE  = 16;
-const AES_IV_SIZE    = 16;
-const AES_KEY_SIZE   = 256;
-const AES_ITERATIONS = 10000;
-const AES_MODE       = 'AES-CBC';
 
 function merge(salt, iv, ciphertext) {
     var buff = new Uint8Array( AES_SALT_SIZE + AES_IV_SIZE + ciphertext.length );
@@ -98,6 +99,19 @@ function PBKDF2(passphrase, salt) {
     );
 }
 
+function padAuthenticationMessage(base) {
+    var size = base.length;
+
+    if( size > 128 ) {
+        alert("GCM supports up to 128 bytes of authentication data!");
+    }
+    var pad = 128 - size;
+    for( var i = 0; i < pad; ++i ) {
+        base += '/';
+    }
+    return utf2buf(base);
+}
+
 function encrypt(message, passphrase) {
     const salt      = crypto.getRandomValues(new Uint8Array( AES_SALT_SIZE ));
     const iv        = crypto.getRandomValues(new Uint8Array( AES_IV_SIZE ));
@@ -106,7 +120,7 @@ function encrypt(message, passphrase) {
     var doDeriveKey = PBKDF2( passphrase, salt );
 
     return doDeriveKey.then( derivedKey => 
-        crypto.subtle.encrypt({ name: AES_MODE, iv }, derivedKey, plaintext)
+        crypto.subtle.encrypt({ name: AES_MODE, iv, tagLength: GCM_AD.length, additionalData:GCM_AD }, derivedKey, plaintext)
             .then( ciphertext => merge( salt, iv, new Uint8Array(ciphertext) ) ),
     );
 }
@@ -117,7 +131,7 @@ function decrypt(data, passphrase) {
     var doDeriveKey = PBKDF2( passphrase, salt );
 
     return doDeriveKey.then( derivedKey  => 
-        crypto.subtle.decrypt({ name: AES_MODE, iv }, derivedKey, ciphertext)
+        crypto.subtle.decrypt({ name: AES_MODE, iv, tagLength: GCM_AD.length, additionalData: GCM_AD }, derivedKey, ciphertext)
     )
     .then(v => buf2utf(v));
 }
