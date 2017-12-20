@@ -4,14 +4,14 @@
 
 Arc is a manager for your secrets made of `arcd`, a RESTful API server written in Go which exposes read and write primitives for encrypted records, and `arc`, the client application implemented in HTML5 and javascript, which runs in every modern browser and  it is served by `arcd` itself.
 
-Records are generated, encrypted and decrypted **client side only** by `arc` (with AES256, using 10000 iterations for the PBKDF2 key derivation function, everything [WebCrypto](https://www.w3.org/TR/WebCryptoAPI/) based ), which offers an intuitive management system equipped with UI widgets including:
+Records are generated, encrypted and decrypted **client side** by `arc` (with AES256, using 10000 iterations for the PBKDF2 key derivation function, everything [WebCrypto](https://www.w3.org/TR/WebCryptoAPI/) based ), which offers an intuitive management system equipped with UI widgets including:
 
 - Simple text inputs.
 - Simple text areas.
-- Custom file attachments (**files are encrypted client side** before being uploaded as binary records).
+- Custom file attachments.
 - A markdown editor area with preview and full screen mode.
 - A HTML editor with preview and full screen mode.
-- A password field with **password strength estimation** and a **random password generator**. 
+- A password field with password strength estimation and a random password generator. 
 - Custom lists.
 - Bitcoin wallet address with auto updating balance.
 - Manager for [Time-based One-time Password Algorithm (TOTP) codes](http://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm) as per the [TOTP RFC Draft](http://tools.ietf.org/id/draft-mraihi-totp-timebased-06.html). This component produces the same codes as the Google Authenticator app and can be used for 2FA.
