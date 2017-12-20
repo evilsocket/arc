@@ -22,41 +22,26 @@ CheckboxEntry.prototype.Icon = function() {
     return 'check-square-o';
 }
 
-CheckboxEntry.prototype.input = function(type, with_value, id) {
-    id = this.id(id)
+CheckboxEntry.prototype.input = function(type, with_value) {
     return '<input ' + 
              'class="ui-checkbox" ' +
              'style="float: left" ' + 
              'data-entry-type="' + this.type + '" ' +
              'type="' + type + '" ' + 
-             'name="' + id + '" ' + 
-             'id="' + id + '" ' +
+             'name="' + this.id + '" ' + 
+             'id="' + this.id + '" ' +
              ( this.value == '1' ? 'checked' : '' )  +
              '/>';
 }
 
-CheckboxEntry.prototype.formGroup = function(input, id) {
-    var id = this.id(id);
+CheckboxEntry.prototype.formGroup = function(input) {
     return '<div class="form-group" style="margin:0">' + 
              input +
-             '<h5 class="editable label label-default entry-title label-' + this.type + '" style="float:left;" id="editable_' + id + '">' + this.name + '</h5>' +
+             '<h5 class="editable label label-default entry-title label-' + this.type + '" style="float:left;" id="editable_' + this.id + '">' + this.name + '</h5>' +
             '</div>' + 
             '<div style="clear:both"></div>';
 }
 
-CheckboxEntry.prototype.Render = function(with_value, id){
-    return this.formGroup( this.input('checkbox', with_value, id), id ); 
-}
-
-CheckboxEntry.prototype.RenderToList = function(list, idx) {
-    var entry_id = this.id(idx);
-    var rendered = '<div class="entry-edit">' +
-                     '<a href="javascript:removeEntry('+idx+')"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
-                     '<a href="#" onclick="return false"><i class="fa fa-arrows" aria-hidden="true"></i></a>' +
-                    '</div>' +
-                    this.Render(true, idx);
-
-    list.append( '<li class="secret-entry-item" id="secret_entry_' + idx + '">' + rendered + '</li>' );
-
-    this.OnRendered(idx);
+CheckboxEntry.prototype.Render = function(with_value){
+    return this.formGroup( this.input('checkbox', with_value) ); 
 }

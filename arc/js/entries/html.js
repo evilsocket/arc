@@ -17,35 +17,27 @@ function HTMLEntry(name, value) {
 HTMLEntry.prototype = Object.create(Entry.prototype);
 HTMLEntry.prototype.constructor = HTMLEntry;
 
-HTMLEntry.prototype.TypeName = function() {
-    return "HTMLEntry";
-}
-
 HTMLEntry.prototype.Icon = function() {
     return 'code';
 }
 
-HTMLEntry.prototype.textarea = function(with_value, id) {
-    id = this.id(id);
+HTMLEntry.prototype.textarea = function(with_value) {
     return '<textarea ' + 
              'class="form-control" ' +
              'data-entry-type="' + this.type + '" ' +
-             'name="' + id + '" ' + 
-             'id="' + id + '" ' +
+             'name="' + this.id + '" ' + 
+             'id="' + this.id + '" ' +
              '>' + ( with_value ? this.value : '' ) + '</textarea>';
 }
 
-HTMLEntry.prototype.Render = function(with_value, id){
-    return this.formGroup( this.textarea(with_value, id), id );
+HTMLEntry.prototype.Render = function(with_value){
+    return this.formGroup( this.textarea(with_value) );
 }
 
 HTMLEntry.prototype.OnRendered = function(id) {
-    Entry.prototype.OnRendered.call( this, id );
+    Entry.prototype.OnRendered.call( this );
 
-    var elem_id = this.id(id);
-    var elem = $('#' + elem_id);
-
-    elem.summernote({
+    $('#' + this.id).summernote({
         popover: {
          image: [],
          link: [],

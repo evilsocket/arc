@@ -93,61 +93,40 @@ function PasswordEntry(name, value) {
 PasswordEntry.prototype = Object.create(Entry.prototype);
 PasswordEntry.prototype.constructor = PasswordEntry;
 
-PasswordEntry.prototype.TypeName = function() {
-    return "PasswordEntry";
-}
-
 PasswordEntry.prototype.Icon = function() {
     return 'key';
 }
 
-PasswordEntry.prototype.btn = function(id, name, icon) {
-    return '<button id="btn_pass_' + name + '_' + this.id(id) + '" type="button" class="btn btn-default btn-password">' +
+PasswordEntry.prototype.btn = function(name, icon) {
+    return '<button id="btn_pass_' + name + '_' + this.id + '" type="button" class="btn btn-default btn-password">' +
              '<span class="fa fa-' + icon + '"></span>' + 
            '</button>';
 }
 
-PasswordEntry.prototype.input = function(with_value, id) {
-    var iid = this.id(id);
+PasswordEntry.prototype.input = function(with_value) {
     return '<div class="input-group mif">' +
             '<input ' + 
                 'type="password" ' + 
                 'class="form-control" ' +
                 'data-entry-type="' + this.type + '" ' +
-                'name="' + iid + '" ' + 
-                'id="' + iid + '" ' +
+                'name="' + this.id + '" ' + 
+                'id="' + this.id + '" ' +
                 'value="' + ( with_value ? this.value : '' ) + '"/>' +
                 '<span class="input-group-btn">' +
-                    this.btn( id, 'copy', 'clipboard' ) +
-                    this.btn( id, 'make', 'refresh' ) +
+                    this.btn( 'copy', 'clipboard' ) +
+                    this.btn( 'make', 'refresh' ) +
                 '</span>' +
             '</div>';
 }
 
-PasswordEntry.prototype.Render = function(with_value, id){
-    return this.formGroup( this.input(with_value, id), id ); 
+PasswordEntry.prototype.Render = function(with_value){
+    return this.formGroup( this.input(with_value) ); 
 }
 
-PasswordEntry.prototype.RenderToList = function(list, idx) {
-    var entry_id = this.id(idx);
-    var rendered = '<div class="entry-edit">' +
-                      '<a href="javascript:removeEntry('+idx+')"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
-                      '<a href="#" onclick="return false"><i class="fa fa-arrows" aria-hidden="true"></i></a>' +
-                   '</div>' +
-                   this.Render(true, idx) +
-                   '<div class="pwstrength_viewport_progress"></div>';
+PasswordEntry.prototype.OnRendered = function() {
+    Entry.prototype.OnRendered.call( this );
 
-    list.append( '<li class="secret-entry-item" id="secret_entry_' + idx + '">' + rendered + '</li>' );
-
-    this.OnRendered(idx);
-}
-
-PasswordEntry.prototype.OnRendered = function(id) {
-    Entry.prototype.OnRendered.call( this, id );
-
-    var elem_id = this.id(id);
-    var elem = $('#' + elem_id);
-
+    var elem_id = this.id;
     var options = {
         rules: {
             activated: {
@@ -157,29 +136,29 @@ PasswordEntry.prototype.OnRendered = function(id) {
         },
         ui: {
             bootstrap4: true,
-            container: "#secret_entry_" + id,
+            container: "#wrap_" + elem_id,
             viewports: {
                 progress: ".pwstrength_viewport_progress"
             },
             showVerdictsInsideProgressBar: true
         }
     };
-    elem.pwstrength(options);
+    $('#' + elem_id).pwstrength(options);
 
-    var btn_pass_copy_id = '#btn_pass_copy_' + elem_id;
-    $(btn_pass_copy_id).click(function() {
-        var prev = $(btn_pass_copy_id).html();
-        var pass = elem.val();
+    var $btn_pass_copy = $('#btn_pass_copy_' + elem_id);
+    $btn_pass_copy.click(function() {
+        var prev = $btn_pass_copy.html();
+        var pass = $('#' + elem_id).val();
+
         copyTextToClipboard(pass);
 
-        $(btn_pass_copy_id).html("<small>Copied!</small>");
+        $btn_pass_copy.html("<small>Copied!</small>");
         setTimeout(function(){
-            $(btn_pass_copy_id).html(prev);
+            $btn_pass_copy.html(prev);
         }, 1000);
     });
 
-    var btn_pass_make_id = '#btn_pass_make_' + elem_id;
-    $(btn_pass_make_id).click(function(e){
+    $('#btn_pass_make_' + elem_id).click(function(e){
         g_SelectedEntryId = elem_id;
         $('#pass_n').html( PASSW_SIZE_DEFAULT );
         $('#pass_length').slider({

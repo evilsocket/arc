@@ -12,14 +12,10 @@ function URLEntry(name, value) {
 URLEntry.prototype = Object.create(Entry.prototype);
 URLEntry.prototype.constructor = URLEntry;
 
-URLEntry.prototype.TypeName = function() {
-    return "URLEntry";
-}
-
 URLEntry.prototype.Icon = function() {
     return 'globe';
 }
 
-URLEntry.prototype.Render = function(with_value, id){
-    return this.formGroup( this.input('text', with_value, id), id ); 
+URLEntry.prototype.Render = function(with_value){
+    return this.formGroup( this.input('text', with_value) ); 
 }

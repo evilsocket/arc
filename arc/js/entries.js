@@ -57,13 +57,12 @@ function TypeFactory(o) {
     for( var i = 0; i < REGISTERED_TYPES.length; i++ ) {
         var registered = REGISTERED_TYPES[i];
         if( registered.type == o.type ) {
-            // console.log( "Creating new instance of " + registered.TypeName() );
             var entry = $.extend( true, {}, registered );
-            // console.log( "  new instance => " + entry.TypeName() );
+
             entry.is_new = false;
             entry.name = o.name;
             entry.value = o.value;
-            entry.identifier = o.identifier;
+            entry.id = o.id;
 
             return entry;
         }

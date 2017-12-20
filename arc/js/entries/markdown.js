@@ -19,20 +19,16 @@ function MarkdownEntry(name, value) {
 MarkdownEntry.prototype = Object.create(Entry.prototype);
 MarkdownEntry.prototype.constructor = MarkdownEntry;
 
-MarkdownEntry.prototype.TypeName = function() {
-    return "MarkdownEntry";
-}
-
 MarkdownEntry.prototype.Icon = function() {
     return 'text-width';
 }
 
-MarkdownEntry.prototype.Render = function(with_value, id){
-    return this.formGroup( this.textarea(true, with_value, id), id );
+MarkdownEntry.prototype.Render = function(with_value){
+    return this.formGroup( this.textarea(true, with_value) );
 }
 
-MarkdownEntry.prototype.OnRendered = function(id) {
-    Entry.prototype.OnRendered.call( this, id );
+MarkdownEntry.prototype.OnRendered = function() {
+    Entry.prototype.OnRendered.call( this );
 
     var on_show = undefined;
     // enable preview
@@ -46,9 +42,7 @@ MarkdownEntry.prototype.OnRendered = function(id) {
         };
     }
 
-    var elem_id = this.id(id);
-    var elem = $('#' + elem_id);
-    elem.markdown({
+    $('#' + this.id).markdown({
         autofocus:true,
         onShow: on_show,
         iconlibrary:'fa',

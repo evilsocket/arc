@@ -48,22 +48,16 @@ function FileEntry(name, value) {
 FileEntry.prototype = Object.create(Entry.prototype);
 FileEntry.prototype.constructor = FileEntry;
 
-FileEntry.prototype.TypeName = function() {
-    return "FileEntry";
-}
-
 FileEntry.prototype.Icon = function() {
     return 'cloud-upload';
 }
 
-FileEntry.prototype.formGroup = function(input, id, mime) {
-    var id = this.id(id);
-    var file = FilesGet(id);
-
+FileEntry.prototype.formGroup = function(input, mime) {
+    var file = FilesGet(this.id);
     var box  = "";
     if( mime && mime.indexOf("image/") == 0 ) {
-        box = '<div class="preview-container" onclick="javascript:downloadFor(\'' + id + '\')">' +
-                '<img id="preview_' + id + '" class="preview-image mr-3" src="' + FileEncoded(file) + '"/>' + 
+        box = '<div class="preview-container" onclick="javascript:downloadFor(\'' + this.id + '\')">' +
+                '<img id="preview_' + this.id + '" class="preview-image mr-3" src="' + FileEncoded(file) + '"/>' + 
                 '</div>';
     } 
     else {
@@ -80,7 +74,7 @@ FileEntry.prototype.formGroup = function(input, id, mime) {
             }
         }
 
-        box = '<label class="upload btn btn-default" onclick="javascript:downloadFor(\''+id+'\')">' + 
+        box = '<label class="upload btn btn-default" onclick="javascript:downloadFor(\''+ this.id +'\')">' + 
                 '<i class="fa fa-' + icon + '" aria-hidden="true"></i>' +
               '</label>';
 
@@ -96,45 +90,46 @@ FileEntry.prototype.formGroup = function(input, id, mime) {
 
     return '<div class="form-group">' +
                 box +
-                '<h5 class="editable entry-title mt-0" id="editable_' + id + '">' + this.name + '</h5>' +
+                '<h5 class="editable entry-title mt-0" id="editable_' + this.id + '">' + this.name + '</h5>' +
                 '<br/>'+
                 input + 
                 desc +
            '</div>';
 }
 
-FileEntry.prototype.Render = function(idx, mime){
-     return this.formGroup( this.input('file', false, idx), idx, mime); 
+FileEntry.prototype.Render = function(mime){
+     return this.formGroup( this.input('file', false), mime); 
 }
 
-FileEntry.prototype.RenderToList = function(list, idx, dontclick) {
-    var entry_id = this.id(idx);
+FileEntry.prototype.RenderToList = function(list, dontclick) {
     var rendered = '<div class="entry-edit">';
     
     if( this.is_new == false ) {
+        console.log(this.id);
         var file = JSON.parse(this.value)
         // make sure the file is b64 encoded
         file.data = FileEncoded(file);
-        g_FilesMap[entry_id] = file;
+        g_FilesMap[this.id] = file;
     }
  
-    rendered +=   '<a href="javascript:void($(\'#' + entry_id + '\').click())"><i class="fa fa-edit" aria-hidden="true"></i></a>' +
-                  '<a href="javascript:removeEntry('+idx+')"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
+    rendered +=   '<a href="javascript:void($(\'#' + this.id + '\').click())"><i class="fa fa-edit" aria-hidden="true"></i></a>' +
+                  '<a href="javascript:removeEntry(\'' + this.id + '\')"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
                   '<a href="#" onclick="return false"><i class="fa fa-arrows" aria-hidden="true"></i></a>' +
                 '</div>' +
-                this.Render(idx, this.is_new ? null : g_FilesMap[entry_id].type) + 
+                this.Render(this.is_new ? null : g_FilesMap[this.id].type) + 
                 "<div style='clear:both;'></div>";
 
-    list.append( '<li class="secret-entry-item" id="secret_entry_' + idx + '">' + rendered + '</li>' );
 
-    this.OnRendered(idx, dontclick);
+    list.append( this.li( rendered ) );
+
+    this.OnRendered(dontclick);
 }
 
-FileEntry.prototype.OnRendered = function(id, dontclick) {
-    Entry.prototype.OnRendered.call( this, id );
+FileEntry.prototype.OnRendered = function(dontclick) {
+    Entry.prototype.OnRendered.call( this );
 
     var file_entry = this;
-    var elem_id = this.id(id);
+    var elem_id = this.id;
     var fileInput = document.getElementById(elem_id);
     var list = $('#secret_entry_list'); 
 
@@ -144,14 +139,14 @@ FileEntry.prototype.OnRendered = function(id, dontclick) {
             for( var i = 1; i < fileInput.files.length; i++ ) {
                 // snapshot scope
                 var cb = function() {
-                    var new_idx = list.find('li').length;
                     var new_file = fileInput.files[i];
                     var new_entry = new FileEntry( new_file.name, new_file );
-                    new_entry.RenderToList( list, new_idx, true );
+
+                    new_entry.RenderToList( list, true );
 
                     var new_reader = new FileReader();
                     new_reader.onload = function (e) {
-                        FilesAdd( new_entry.id(new_idx), new_reader, new_file);
+                        FilesAdd( new_entry.id, new_reader, new_file);
                     };
 
                     new_reader.readAsDataURL(new_file);

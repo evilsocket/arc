@@ -14,10 +14,10 @@ var ZERO_DATETIME = "0001-01-01T00:00:00Z";
  */ 
 $.fn.modal.Constructor.prototype._enforceFocus = function() {};
 
-function removeEntry(idx) {
+function removeEntry(id) {
     if( confirm("Remove this field?") ) {
-        console.log("Removing entry at position " + idx );
-        $('#secret_entry_' + idx).remove();
+        var $e = $('#wrap_' + id);
+        $e.remove();
     }
 }
 
@@ -464,10 +464,8 @@ app.controller('PMController', ['$scope', function (scope) {
 
     scope.doAddField = function(idx) {
         var list = $('#secret_entry_list'); 
-        var nidx = list.find('li').length;
         var entry = $.extend( true, {}, scope.registeredTypes[idx] );
-
-        entry.RenderToList( list, nidx );
+        entry.RenderToList( list );
     };
 
     scope.onAddField = function() {
@@ -482,8 +480,7 @@ app.controller('PMController', ['$scope', function (scope) {
 
         for( var i = 0; i < fields.length; ++i ) {
             var entry = $.extend( true, {}, fields[i] );
-            var eidx = list.find('li').length;
-            entry.RenderToList( list, eidx );
+            entry.RenderToList( list );
         }
 
         $('#field_selector_modal').modal('hide');
@@ -711,7 +708,7 @@ app.controller('PMController', ['$scope', function (scope) {
 
                             var list = $('#secret_entry_list'); 
                             for( var i = 0; i < record.entries.length; i++ ){
-                                record.entries[i].RenderToList( list, i );
+                                record.entries[i].RenderToList( list );
                             }
 
                             scope.hideLoader();

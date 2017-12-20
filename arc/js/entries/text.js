@@ -14,26 +14,22 @@ function TextEntry(name, value) {
 TextEntry.prototype = Object.create(Entry.prototype);
 TextEntry.prototype.constructor = TextEntry;
 
-TextEntry.prototype.TypeName = function() {
-    return "TextEntry";
-}
-
 TextEntry.prototype.Icon = function() {
     return 'font';
 }
 
-TextEntry.prototype.Render = function(with_value, id){
+TextEntry.prototype.Render = function(with_value){
     return this.formGroup(
         '<div ' +
             'data-entry-type="' + this.type + '" ' +
             'class="div-editable" ' + 
-            'id="' + this.id(id) + '" ' +
+            'id="' + this.id + '" ' +
             'contenteditable="true">'+this.value+"</div>"
     );
 }
 
-TextEntry.prototype.OnRendered = function(id) {
-    Entry.prototype.OnRendered.call( this, id );
+TextEntry.prototype.OnRendered = function() {
+    Entry.prototype.OnRendered.call( this );
 }
 
 
