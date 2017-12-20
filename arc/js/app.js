@@ -142,6 +142,7 @@ app.controller('PMController', ['$scope', function (scope) {
     scope.templates = REGISTERED_TEMPLATES;
     scope.latency = 0;
     scope.prevEvents = [];
+    scope.uploading = false;
     scope.status = {
         online: true,
         started: new Date(),
@@ -223,7 +224,7 @@ app.controller('PMController', ['$scope', function (scope) {
         }
 
         if( percentage >= 100.0 ) {
-            $('#loader_message').text("Decrypting data ...");
+            $('#loader_message').text( scope.uploading ? '' : "Decrypting data ..." );
         }
 
         var seconds_elapsed =   ( new Date().getTime() - scope.progressAt.getTime() ) / 1000;
@@ -650,6 +651,7 @@ app.controller('PMController', ['$scope', function (scope) {
                     var size = data.length;
                     scope.trackTotal = size;
                     scope.progressAt = new Date();
+                    scope.uploading = true;
                     scope.showLoader("Adding record ...", function(){
                         var r = {
                             'title': record.title,
@@ -691,6 +693,7 @@ app.controller('PMController', ['$scope', function (scope) {
         scope.showLoader( "Buffering data ...", function() {
             // start reading data when loader is shown
             scope.progressAt = new Date();
+            scope.uploading = false;
             scope.arc.GetRecordBuffer( secret.id, function(data){
                 // start decrypting data when message is updated
                 scope.showLoader( "Decrypting data ...", function() {
@@ -742,6 +745,7 @@ app.controller('PMController', ['$scope', function (scope) {
                 var size = data.length
                 scope.trackTotal = size;
                 scope.progressAt = new Date();
+                scope.uploading = true;
                 scope.showLoader("Updating Record ...", function(){
                     var r = {
                         'id': scope.secret.id,
