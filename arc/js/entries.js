@@ -62,7 +62,9 @@ function TypeFactory(o) {
             entry.is_new = false;
             entry.name = o.name;
             entry.value = o.value;
-            entry.id = o.id;
+            if( o.id ) {
+                entry.id = o.id;
+            }
 
             return entry;
         }

@@ -18,7 +18,7 @@ function PBKDF2_cbc(passphrase, salt) {
       crypto.subtle.deriveKey({ 
           name: "PBKDF2", 
           salt, 
-          iterations: AES_ITERATIONS, 
+          iterations: PBKDF_ITERATIONS, 
           hash: "SHA-256" 
         },
         key,
