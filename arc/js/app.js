@@ -31,6 +31,8 @@ function downloadFor(id) {
 
     console.log( "Dowloading " + file.size + " bytes of data as " + name + " (" + file.type + ")" );
 
+    file.data = FileMakeBinary(file);
+    
     // https://stackoverflow.com/questions/23795034/creating-a-blob-or-a-file-from-javascript-binary-string-changes-the-number-of-by
     var bytes = new Uint8Array(file.size);
     for( var i = 0; i < file.size; i++ ) {
@@ -226,6 +228,10 @@ app.controller('PMController', ['$scope', function (scope) {
             var percentage = Math.round((loaded * 100) / clen);
             var remaining_bytes =  clen - loaded;
             var seconds_remaining = seconds_elapsed ? remaining_bytes / bytes_per_second : 'calculating' ;
+        }
+
+        if( percentage >= 100.0 ) {
+            $('#loader_message').text("Decrypting data ...");
         }
 
         var seconds_elapsed =   ( new Date().getTime() - scope.progressAt.getTime() ) / 1000;

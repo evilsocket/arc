@@ -45,6 +45,40 @@ function FileEntry(name, value) {
     Entry.call( this, ENTRY_TYPE_FILE, name, value );
 }
 
+function FileEncoded(file) {
+    var b64 = '';
+    // new record, already encoded
+    if( typeof(file.data) == 'string' && file.data.indexOf('data:') == 0 ) {
+        b64 = file.data;
+    }
+    // convert old records which were binary
+    else {
+        console.log( "Found legacy file, encoding to base64" );
+        b64 = 'data:' +  file.type + ';base64,' + btoa(file.data);
+    }
+    return b64;
+}
+
+function FileConvertLegacy(file) {
+    // handle old records
+    if( typeof(file.data) == 'string' && file.data.indexOf('data:') != 0 ) {
+        console.log( "Found legacy file, encoding to base64" );
+        file.data = 'data:' + file.type + ';base64,' + btoa(file.data);
+    }
+
+    return file.data;
+}
+
+function FileMakeBinary(file) {
+    // new records need to be decoded
+    if( typeof(file.data) == 'string' && file.data.indexOf('data:') == 0 ) {
+        var idx = file.data.indexOf(";base64,");
+        if( idx != -1 )
+            file.data = atob( file.data.substr( idx + ";base64,".length ) );
+    }
+    return file.data;
+}
+
 FileEntry.prototype = Object.create(Entry.prototype);
 FileEntry.prototype.constructor = FileEntry;
 
@@ -63,7 +97,7 @@ FileEntry.prototype.formGroup = function(input, id, mime) {
     var box  = "";
     if( mime && mime.indexOf("image/") == 0 ) {
         box = '<div class="preview-container" onclick="javascript:downloadFor(\'' + id + '\')">' +
-                '<img id="preview_' + id + '" class="preview-image mr-3" src="data:' + mime + ';base64,' + btoa(file.data) + '"/>' + 
+                '<img id="preview_' + id + '" class="preview-image mr-3" src="' + FileEncoded(file) + '"/>' + 
                 '</div>';
     } 
     else {
@@ -113,6 +147,9 @@ FileEntry.prototype.RenderToList = function(list, idx, dontclick) {
     
     if( this.is_new == false ) {
         var file = JSON.parse(this.value)
+        
+        file.data = FileConvertLegacy(file);
+
         g_FilesMap[entry_id] = file;
     }
  
@@ -152,7 +189,7 @@ FileEntry.prototype.OnRendered = function(id, dontclick) {
                         FilesAdd( new_entry.id(new_idx), new_reader, new_file);
                     };
 
-                    new_reader.readAsBinaryString(new_file);
+                    new_reader.readAsDataURL(new_file);
                 };
                 cb();
             }
@@ -165,7 +202,7 @@ FileEntry.prototype.OnRendered = function(id, dontclick) {
                 FilesAdd(elem_id, first_reader, first_file);
             };
             $('#editable_' + elem_id ).text( first_file.name );
-            first_reader.readAsBinaryString(first_file);
+            first_reader.readAsDataURL(first_file);
         };
         cb();
     };
