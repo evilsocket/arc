@@ -34,7 +34,7 @@ import (
 
 var (
 	signals    = make(chan os.Signal, 1)
-	apppath    = ""
+	appPath    = ""
 	confFile   = ""
 	debug      = false
 	logfile    = ""
@@ -48,7 +48,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&apppath, "app", ".", "Path of the web application to serve.")
+	flag.StringVar(&appPath, "app", ".", "Path of the web application to serve.")
 	flag.StringVar(&confFile, "config", "", "JSON configuration file.")
 	flag.BoolVar(&noAuth, "no-auth", noAuth, "Disable authentication.")
 	flag.BoolVar(&noUpdates, "no-updates", noUpdates, "Disable updates check.")
@@ -63,7 +63,7 @@ func init() {
 }
 
 func arcLoadApp(r *gin.Engine) *app.App {
-	err, webapp := app.Open(apppath)
+	err, webapp := app.Open(appPath)
 	if err != nil {
 		log.Fatal(err)
 	}

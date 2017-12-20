@@ -9,8 +9,8 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	conf_file = "sample_config.json"
-	apppath = "../arc"
+	confFile = "sample_config.json"
+	appPath = "../arc"
 }
 
 func TestHomeRoute(t *testing.T) {
