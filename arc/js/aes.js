@@ -21,12 +21,12 @@ if( errors && errors.length > 0 ) {
     alert(msg);
 } 
 
-const AES_SALT_SIZE  = 16;
-const AES_IV_SIZE    = 16;
-const AES_KEY_SIZE   = 256;
-const AES_ITERATIONS = 10000;
-const AES_MODE       = 'AES-GCM';
-const GCM_AD         = padAuthenticationMessage('Thanks to JP Aumasson > https://twitter.com/veorq/status/943506635317825536');
+const PBKDF_SALT_SIZE  = 16;
+const PBKDF_ITERATIONS = 10000;
+const AES_IV_SIZE      = 16;
+const AES_KEY_SIZE     = 256;
+const AES_MODE         = 'AES-GCM';
+const GCM_AD           = padAuthenticationMessage('Thanks to JP Aumasson > https://twitter.com/veorq/status/943506635317825536');
 
 function checkPrerequisites() {
     if( window.crypto && !window.crypto.subtle && window.crypto.webkitSubtle ) {
@@ -55,21 +55,21 @@ function checkPrerequisites() {
 }
 
 function merge(salt, iv, ciphertext) {
-    var buff = new Uint8Array( AES_SALT_SIZE + AES_IV_SIZE + ciphertext.length );
+    var buff = new Uint8Array( PBKDF_SALT_SIZE + AES_IV_SIZE + ciphertext.length );
 
     buff.set( salt );
-    buff.set( iv, AES_SALT_SIZE );
-    buff.set( ciphertext, AES_SALT_SIZE + AES_IV_SIZE );
+    buff.set( iv, PBKDF_SALT_SIZE );
+    buff.set( ciphertext, PBKDF_SALT_SIZE + AES_IV_SIZE );
 
     return buf2a(buff);
 }
 
 function unmerge(data) {
     const salt_idx = 0;
-    const iv_idx   = AES_SALT_SIZE;
+    const iv_idx   = PBKDF_SALT_SIZE;
     const data_idx = iv_idx + AES_IV_SIZE;
 
-    const salt       = a2buf( data.substr( salt_idx, AES_SALT_SIZE ) );
+    const salt       = a2buf( data.substr( salt_idx, PBKDF_SALT_SIZE ) );
     const iv         = a2buf( data.substr( iv_idx, AES_IV_SIZE ) );
     const ciphertext = a2buf( data.substr( data_idx ) );
 
@@ -85,7 +85,7 @@ function PBKDF2(passphrase, salt) {
       crypto.subtle.deriveKey({ 
           name: "PBKDF2", 
           salt, 
-          iterations: AES_ITERATIONS, 
+          iterations: PBKDF_ITERATIONS, 
           hash: "SHA-256" 
         },
         key,
@@ -113,14 +113,14 @@ function padAuthenticationMessage(base) {
 }
 
 function encrypt(message, passphrase) {
-    const salt      = crypto.getRandomValues(new Uint8Array( AES_SALT_SIZE ));
+    const salt      = crypto.getRandomValues(new Uint8Array( PBKDF_SALT_SIZE ));
     const iv        = crypto.getRandomValues(new Uint8Array( AES_IV_SIZE ));
     const plaintext = utf2buf(message); 
 
     var doDeriveKey = PBKDF2( passphrase, salt );
 
     return doDeriveKey.then( derivedKey => 
-        crypto.subtle.encrypt({ name: AES_MODE, iv, tagLength: GCM_AD.length, additionalData:GCM_AD }, derivedKey, plaintext)
+        crypto.subtle.encrypt({ name: AES_MODE, iv: iv, tagLength: GCM_AD.length, additionalData:GCM_AD }, derivedKey, plaintext)
             .then( ciphertext => merge( salt, iv, new Uint8Array(ciphertext) ) ),
     );
 }
@@ -131,7 +131,7 @@ function decrypt(data, passphrase) {
     var doDeriveKey = PBKDF2( passphrase, salt );
 
     return doDeriveKey.then( derivedKey  => 
-        crypto.subtle.decrypt({ name: AES_MODE, iv, tagLength: GCM_AD.length, additionalData: GCM_AD }, derivedKey, ciphertext)
+        crypto.subtle.decrypt({ name: AES_MODE, iv: iv, tagLength: GCM_AD.length, additionalData: GCM_AD }, derivedKey, ciphertext)
     )
     .then(v => buf2utf(v));
 }
