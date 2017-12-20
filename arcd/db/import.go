@@ -8,78 +8,63 @@
 package db
 
 import (
-	"bytes"
-	"compress/gzip"
-	"encoding/json"
+	"archive/tar"
 	"github.com/evilsocket/arc/arcd/log"
-	"github.com/evilsocket/arc/arcd/utils"
-	"io/ioutil"
+	"io"
+	"os"
+	"path/filepath"
 )
 
 func Import(filename string) error {
-	var stores []ExportedStore
-	var buffer []byte
-	var err error
+	log.Infof("Importing %s into %s ...", filename, dbIndex.path)
 
-	if buffer, err = ioutil.ReadFile(filename); err != nil {
+	in, err := os.Open(filename)
+	if err != nil {
 		return err
 	}
 
-	log.Infof("Read %d bytes from %s ...", len(buffer), filename)
-
-	if err = json.Unmarshal(buffer, &stores); err != nil {
-		return err
-	}
-
-	log.Infof("Importing %d stores ...", len(stores))
-
-	Lock()
-	defer Unlock()
-
-	for _, store := range stores {
-		ms := Meta{
-			Id:        store.ID,
-			Title:     store.Title,
-			CreatedAt: store.CreatedAt,
-			UpdatedAt: store.UpdatedAt,
-		}
-		log.Infof("Creating store %d:'%s' ...", store.ID, store.Title)
-		new_store, err := Create(&ms)
-		if err != nil {
+	tr := tar.NewReader(in)
+	for {
+		header, err := tr.Next()
+		switch {
+		// if no more files are found return
+		case err == io.EOF:
+			return nil
+			// return any other error
+		case err != nil:
 			return err
+			// if the header is nil, just skip it (not sure how this happens)
+		case header == nil:
+			continue
 		}
 
-		nstore, _ := dbIndex.records[new_store.Id]
-		for _, er := range store.Records {
-			// log.Debugf("nstore = %v", nstore)
-			meta := Meta{
-				Id:         er.ID,
-				Title:      er.Title,
-				Encryption: er.Buffer.Encryption,
-				CreatedAt:  er.CreatedAt,
-				UpdatedAt:  er.UpdatedAt,
-				ExpiredAt:  er.ExpiredAt,
-				Prune:      er.Prune,
+		// the target location where the dir/file should be created
+		target := filepath.Join(dbIndex.path, header.Name)
+		log.Infof("Creating %s ...", target)
+
+		// check the file type
+		switch header.Typeflag {
+		// if its a dir and it doesn't exist create it
+		case tar.TypeDir:
+			if _, err := os.Stat(target); err != nil {
+				if err := os.MkdirAll(target, 0755); err != nil {
+					return err
+				}
 			}
 
-			data := er.Buffer.Data
-			if er.Buffer.Compressed {
-				log.Debugf("Decompressing %s of data ...", utils.FormatBytes(uint64(len(data))))
-
-				rdata := bytes.NewReader(data)
-				reader, _ := gzip.NewReader(rdata)
-				data, _ = ioutil.ReadAll(reader)
-			}
-
-			log.Infof("Creating record %d:'%s' of %s ...", meta.Id, meta.Title, utils.FormatBytes(uint64(len(data))))
-			reader := bytes.NewReader(data)
-			_, err := nstore.New(&meta, reader)
+			// if it's a file create it
+		case tar.TypeReg:
+			f, err := os.OpenFile(target, os.O_CREATE|os.O_RDWR, os.FileMode(header.Mode))
 			if err != nil {
 				return err
 			}
-		}
+			defer f.Close()
 
-		nstore.Close()
+			// copy over contents
+			if _, err := io.Copy(f, tr); err != nil {
+				return err
+			}
+		}
 	}
 
 	return nil

@@ -162,13 +162,13 @@ Email reports can be optionally encrypted by the server using PGP, in this case 
 
 ## Import / Export
 
-You can export stores and their encrypted records to a JSON file:
+You can export stores and their encrypted records to a TAR file:
 
-    ./arcd -config config.json -output ~/backup.json -export
+    ./arcd -config config.json -output ~/backup.tar -export
 
-Exported files can be later imported with:
+Exported archives can be later imported with:
 
-    ./arcd -config config.json -import ~/backup.json
+    ./arcd -config config.json -import ~/backup.tar
 
 ## Useful Commands
 

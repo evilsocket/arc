@@ -35,30 +35,30 @@ import (
 var (
 	signals    = make(chan os.Signal, 1)
 	apppath    = ""
-	conf_file  = ""
+	confFile   = ""
 	debug      = false
 	logfile    = ""
-	no_colors  = false
-	no_auth    = false
-	no_updates = false
+	noColors   = false
+	noAuth     = false
+	noUpdates  = false
 	export     = false
-	import_fn  = ""
-	output     = "arc.json"
-	db_is_new  = false
+	importFrom = ""
+	output     = "arc.tar"
+	dbIsNew    = false
 )
 
 func init() {
 	flag.StringVar(&apppath, "app", ".", "Path of the web application to serve.")
-	flag.StringVar(&conf_file, "config", "", "JSON configuration file.")
-	flag.BoolVar(&no_auth, "no-auth", no_auth, "Disable authentication.")
-	flag.BoolVar(&no_updates, "no-updates", no_updates, "Disable updates check.")
+	flag.StringVar(&confFile, "config", "", "JSON configuration file.")
+	flag.BoolVar(&noAuth, "no-auth", noAuth, "Disable authentication.")
+	flag.BoolVar(&noUpdates, "no-updates", noUpdates, "Disable updates check.")
 
 	flag.BoolVar(&debug, "log-debug", debug, "Enable debug logs.")
 	flag.StringVar(&logfile, "log-file", logfile, "Log messages to this file instead of standard error.")
-	flag.BoolVar(&no_colors, "log-colors-off", no_colors, "Disable colored output.")
+	flag.BoolVar(&noColors, "log-colors-off", noColors, "Disable colored output.")
 
-	flag.StringVar(&import_fn, "import", import_fn, "Import stores from this JSON export file.")
-	flag.BoolVar(&export, "export", export, "Export store to JSON file, requires --output parameter.")
+	flag.StringVar(&importFrom, "import", importFrom, "Import stores from this TAR export file.")
+	flag.BoolVar(&export, "export", export, "Export store to a TAR archive, requires --output parameter.")
 	flag.StringVar(&output, "output", output, "Export file name.")
 }
 
@@ -75,16 +75,20 @@ func arcLoadApp(r *gin.Engine) *app.App {
 
 func arcBackupper() {
 	period := time.Duration(config.Conf.Backups.Period) * time.Second
-	filename := path.Join(config.Conf.Backups.Folder, "arcd_backup.json")
+	filename := path.Join(config.Conf.Backups.Folder, "arc-backup.tar")
 
 	log.Debugf("Backup task started with a %v period to %s", period, filename)
 	for {
-		time.Sleep(period)
 
+		started := time.Now()
 		log.Infof("Backupping database to %s ...", filename)
 		if err := db.Export(filename); err != nil {
 			log.Errorf("Error while creating the backup file: %s.", err)
+		} else {
+			log.Infof("Backupped %s of data to %s in %s.", utils.FormatBytes(db.Size), log.Bold(filename), time.Since(started))
 		}
+
+		time.Sleep(period)
 	}
 }
 
@@ -184,7 +188,7 @@ func setupRouter() *gin.Engine {
 	api := r.Group("/api")
 	r.POST("/auth", controllers.Auth)
 
-	if no_auth == false {
+	if noAuth == false {
 		api.Use(middlewares.AuthHandler())
 	} else {
 		log.Importantf("API authentication is disabled.")
@@ -219,7 +223,7 @@ func main() {
 
 	flag.Parse()
 
-	log.WithColors = !no_colors
+	log.WithColors = !noColors
 
 	if logfile != "" {
 		log.Output, err = os.Create(logfile)
@@ -238,25 +242,29 @@ func main() {
 
 	log.Infof("%s (%s %s) is starting ...", log.Bold(config.APP_NAME+" v"+config.APP_VERSION), runtime.GOOS, runtime.GOARCH)
 
-	if conf_file != "" {
-		if err = config.Load(conf_file); err != nil {
+	if confFile != "" {
+		if err = config.Load(confFile); err != nil {
 			log.Fatal(err)
 		}
 	}
 
-	if db_is_new, err = db.Setup(); err != nil {
+	if dbIsNew, err = db.Setup(); err != nil {
 		log.Fatal(err)
 	}
 
 	if export == true {
+		started := time.Now()
 		if err = db.Export(output); err != nil {
 			log.Fatal(err)
 		}
+		log.Infof("Archived %s of data in %s to %s.", utils.FormatBytes(db.Size), time.Since(started), log.Bold(output))
 		return
-	} else if import_fn != "" {
-		if err = db.Import(import_fn); err != nil {
+	} else if importFrom != "" {
+		started := time.Now()
+		if err = db.Import(importFrom); err != nil {
 			log.Fatal(err)
 		}
+		log.Infof("Imported %s of data in %s.", utils.FormatBytes(db.Size), time.Since(started))
 		return
 	}
 
@@ -280,7 +288,7 @@ func main() {
 		log.Importantf("Backups are disabled.")
 	}
 
-	if no_updates == false {
+	if noUpdates == false {
 		go arcUpdater()
 	}
 
