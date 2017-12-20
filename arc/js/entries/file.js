@@ -12,7 +12,7 @@ const ENTRY_TYPE_FILE = 4;
 var g_FilesMap = {};
 
 function FilesAdd(id, reader, file) {
-    console.log( "+ FILES[" + id + "] = '" + file.name + "', " + file.type + ", " + file.size + " b" );
+    console.log( "+ FILES[" + id + "] > '" + file.name + "', " + file.type + ", " + file.size + " b" );
     g_FilesMap[id] = {
         name: file.name,
         type: file.type,
@@ -43,40 +43,6 @@ function FilesDel(id) {
 
 function FileEntry(name, value) {
     Entry.call( this, ENTRY_TYPE_FILE, name, value );
-}
-
-function FileEncoded(file) {
-    var b64 = '';
-    // new record, already encoded
-    if( typeof(file.data) == 'string' && file.data.indexOf('data:') == 0 ) {
-        b64 = file.data;
-    }
-    // convert old records which were binary
-    else {
-        console.log( "Found legacy file, encoding to base64" );
-        b64 = 'data:' +  file.type + ';base64,' + btoa(file.data);
-    }
-    return b64;
-}
-
-function FileConvertLegacy(file) {
-    // handle old records
-    if( typeof(file.data) == 'string' && file.data.indexOf('data:') != 0 ) {
-        console.log( "Found legacy file, encoding to base64" );
-        file.data = 'data:' + file.type + ';base64,' + btoa(file.data);
-    }
-
-    return file.data;
-}
-
-function FileMakeBinary(file) {
-    // new records need to be decoded
-    if( typeof(file.data) == 'string' && file.data.indexOf('data:') == 0 ) {
-        var idx = file.data.indexOf(";base64,");
-        if( idx != -1 )
-            file.data = atob( file.data.substr( idx + ";base64,".length ) );
-    }
-    return file.data;
 }
 
 FileEntry.prototype = Object.create(Entry.prototype);
@@ -147,9 +113,8 @@ FileEntry.prototype.RenderToList = function(list, idx, dontclick) {
     
     if( this.is_new == false ) {
         var file = JSON.parse(this.value)
-        
-        file.data = FileConvertLegacy(file);
-
+        // make sure the file is b64 encoded
+        file.data = FileEncoded(file);
         g_FilesMap[entry_id] = file;
     }
  

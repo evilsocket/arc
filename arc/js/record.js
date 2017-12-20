@@ -41,7 +41,7 @@ Record.prototype.fromData = function(data) {
 Record.prototype.Encrypt = function( key ) {
     var data = this.toData(); 
     console.log( "Encrypting " + data.length + " bytes of record." );
-    return AESEncrypt( data, key );
+    return encrypt( data, key );
 }
 
 Record.prototype.Decrypt = function( algo, key, data, success, error ) {
@@ -62,7 +62,7 @@ Record.prototype.Decrypt = function( algo, key, data, success, error ) {
     }
     else {
         console.log( "Decrypting " + data.length + " bytes of data." );
-        AESDecrypt( data, key ).then(on_data).catch(error);
+        decrypt( data, key ).then(on_data).catch(error);
     }
 }
 

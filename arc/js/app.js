@@ -28,19 +28,11 @@ function editEntryFor(id) {
 function downloadFor(id) {
     var name = $('#editable_' +  id).text();
     var file = FilesGet(id);
+    var bytes = FileToUint8Array(file);
 
     console.log( "Dowloading " + file.size + " bytes of data as " + name + " (" + file.type + ")" );
 
-    file.data = FileMakeBinary(file);
-    
-    // https://stackoverflow.com/questions/23795034/creating-a-blob-or-a-file-from-javascript-binary-string-changes-the-number-of-by
-    var bytes = new Uint8Array(file.size);
-    for( var i = 0; i < file.size; i++ ) {
-        bytes[i] = file.data.charCodeAt(i);
-    }
-
-    file = new File([bytes], name, {type: file.type});
-    saveAs(file);
+    saveAs(new File([bytes], name, {type: file.type}));
 }
 
 function onGenerate(n) {
