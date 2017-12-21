@@ -28,6 +28,7 @@ changelog:
       - docs
       - Merge pull request
       - Merge branch
+      - Releasing v
 
 archive:
   format: tar.gz
