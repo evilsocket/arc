@@ -69,11 +69,11 @@ func Generate(conf *config.Configuration) error {
 		return err
 	}
 
-	log.Debugf("Saving key to %s ...", conf.Key)
+	log.Importantf("Saving key to %s ...", log.Bold(conf.Key))
 	if err := pem.Encode(keyfile, &pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(priv)}); err != nil {
 		return err
 	}
 
-	log.Debugf("Saving certificate to %s ...", conf.Certificate)
+	log.Importantf("Saving certificate to %s ...", log.Bold(conf.Certificate))
 	return pem.Encode(certfile, &pem.Block{Type: "CERTIFICATE", Bytes: cert_raw})
 }
