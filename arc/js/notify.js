@@ -9,17 +9,7 @@
     };
     notify_methods = {
       create_notification: function(options) {
-          var supported = true;
-
-          try {
-              new Notification('');
-          } catch (e) {
-              if (e.name == 'TypeError') {
-                  supported = false;
-              }
-          }
-          
-          if( supported ) {
+          if( typeof(Notification) == 'function' ) {
               return new Notification(options.title, options);
           } else {
               return null;
