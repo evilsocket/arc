@@ -5,9 +5,6 @@
  *
  * See LICENSE.
  */
-$.getScript("/js/libs/ace/ace.js");
-$.getScript("/js/libs/ace/ext-modelist.js");
-
 const ENTRY_TYPE_CODE = 9;
 
 function CodeEntry(name, value) {
