@@ -19,6 +19,8 @@ import (
 const (
 	defAddress         = "127.0.0.1"
 	defPort            = 8443
+	defCertificate     = "arcd-tls-cert.pem"
+	defKey             = "arcd-tls-key.pem"
 	defDatabaseName    = "arc.db"
 	defHMacSecret      = ":°F_WQEùwqeflpùwa.pelfùkepwfùw,koefopwkepfwv"
 	defUsername        = "arc"
@@ -94,6 +96,8 @@ type Configuration struct {
 var Conf = Configuration{
 	Address:       defAddress,
 	Port:          defPort,
+	Certificate:   defCertificate,
+	Key:           defKey,
 	Database:      defDatabaseName,
 	Secret:        defHMacSecret,
 	Username:      defUsername,
