@@ -12,6 +12,7 @@
 
 Please provide:
 
+* Contents of the json configuration file you are using (**remove the password hash before posting**).
 * Operating system and browser versions used as clients.
 * If possible, any javascript log on the browser developer console.
 * `uname -a` of the arcd server.
