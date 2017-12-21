@@ -23,7 +23,6 @@ const (
 	defCertificate     = "arcd-tls-cert.pem"
 	defKey             = "arcd-tls-key.pem"
 	defDatabaseName    = "arc.db"
-	defHMacSecret      = ":°F_WQEùwqeflpùwa.pelfùkepwfùw,koefopwkepfwv"
 	defUsername        = "arc"
 	defPassword        = "404fcfb394d23199f6d95f1f36bd2beb6df8564f993f44517f6015fcd16101a9"
 	defTokenDuration   = 60
@@ -100,7 +99,7 @@ var Conf = Configuration{
 	Certificate:   defCertificate,
 	Key:           defKey,
 	Database:      defDatabaseName,
-	Secret:        defHMacSecret,
+	Secret:        "",
 	Username:      defUsername,
 	Password:      defPassword,
 	TokenDuration: defTokenDuration,
@@ -130,7 +129,7 @@ func Load(filename string) error {
 		return err
 	}
 
-	if Conf.Secret == defHMacSecret {
+	if Conf.Secret == "" {
 		return errors.New("HMAC secret not found, please fill the 'secret' configuration field.")
 	}
 

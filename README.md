@@ -42,7 +42,7 @@ You can find binary releases of Arc [here](https://github.com/evilsocket/arc/rel
     cd $GOPATH/src/github.com/evilsocket/arc/arcd
     make
 
-Once you either extracted the release archive or compiled it yourself, copy `sample_config.json` to a new `config.json` file and customize it. The most important fields to change are the `username` and the `password`, which is the SHA256 checksum of the authentication password you want to use, you can generate a new one with:
+Once you either extracted the release archive or compiled it yourself, copy `sample_config.json` to a new `config.json` file and customize it. The most important fields to change are the `secret` ( a key used for token authentication ), the `username` and the `password`, which is the SHA256 checksum of the authentication password you want to use, you can generate a new one with:
 
     echo -n "your-new-password" | sha256sum
 

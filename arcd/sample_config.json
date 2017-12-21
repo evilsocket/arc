@@ -1,6 +1,7 @@
 {
     "address": "0.0.0.0",
     "port": 8443,
+    "secret": "",
     "certificate": "~/arcd-certificate.pem",
     "key": "~/arcd-key.pem",
     "username": "arc",
