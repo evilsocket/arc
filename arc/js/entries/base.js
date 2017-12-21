@@ -5,14 +5,6 @@
  *
  * See LICENSE.
  */
-function Entry(type, name, value) {
-    this.type = type;
-    this.name = name;
-    this.value = value;
-    this.id = 'entry_value_' + Date.now() + '_' + Math.floor(Math.random() * (999999999 + 1)); 
-    this.is_new = true;
-}
-
 $.getCSS = function(path) {
     $('<link/>', {
        rel: 'stylesheet',
@@ -21,8 +13,20 @@ $.getCSS = function(path) {
     }).appendTo('head');
 };
 
+function Entry(type, name, value) {
+    this.type = type;
+    this.name = name;
+    this.value = value;
+    this.id = 'entry_value_' + Date.now() + '_' + Math.floor(Math.random() * (999999999 + 1)); 
+    this.is_new = true;
+}
+
 Entry.prototype.Icon = function() {
     return 'keyboard-o';
+}
+
+Entry.prototype.setValue = function(v) {
+    this.value = v;
 }
 
 Entry.prototype.Describe = function() {
@@ -67,12 +71,20 @@ Entry.prototype.li = function(html) {
     return '<li class="secret-entry-item" id="wrap_' + this.id + '">' + html + '</li>';
 }
 
+Entry.prototype.removeButton = function() {
+    return '<a href="javascript:removeEntry(\'' + this.id + '\')"><i class="fa fa-trash" aria-hidden="true"></i></a>';
+}
+
+Entry.prototype.dragButton = function() {
+    return '<a href="#" onclick="return false"><i class="fa fa-arrows" aria-hidden="true"></i></a>';
+}
+
 Entry.prototype.RenderToList = function(list) {
     var rendered = '<div class="entry-edit">' +
-                     '<a href="javascript:removeEntry(\'' + this.id + '\')"><i class="fa fa-trash" aria-hidden="true"></i></a>' +
-                     '<a href="#" onclick="return false"><i class="fa fa-arrows" aria-hidden="true"></i></a>' +
-                    '</div>' +
-                    this.Render(true);
+                     this.removeButton() +
+                     this.dragButton() +
+                   '</div>' +
+                   this.Render(true);
 
     list.append( this.li( rendered ) );
 

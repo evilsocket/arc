@@ -14,6 +14,7 @@ var REGISTERED_TYPES = [
     new TextEntry( "Text", "" ),
     new MarkdownEntry( "Markdown", "" ),
     new HTMLEntry( "HTML", "" ),
+    new CodeEntry( "Source Code", "" ),
     new FileEntry( "File(s)", "" ),
     new BTCAddressEntry( "Bitcoin Address", "" ),
 ];
@@ -61,7 +62,7 @@ function TypeFactory(o) {
 
             entry.is_new = false;
             entry.name = o.name;
-            entry.value = o.value;
+            entry.setValue(o.value);
             if( o.id ) {
                 entry.id = o.id;
             }

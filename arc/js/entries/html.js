@@ -18,7 +18,7 @@ HTMLEntry.prototype = Object.create(Entry.prototype);
 HTMLEntry.prototype.constructor = HTMLEntry;
 
 HTMLEntry.prototype.Icon = function() {
-    return 'code';
+    return 'html5';
 }
 
 HTMLEntry.prototype.textarea = function(with_value) {

@@ -574,6 +574,7 @@ app.controller('PMController', ['$scope', function (scope) {
     scope.getInputValue = function(input) {
         var value = '';
         var tagname = input.prop('tagName').toLowerCase();
+        var id = input.attr('id');
 
         if( tagname == 'input' || tagname == 'textarea' || tagname == 'select' ) {
             switch(input.attr('type')) {
@@ -583,6 +584,13 @@ app.controller('PMController', ['$scope', function (scope) {
                 default:
                     value = input.val();
             }
+        }
+        else if( input.hasClass('ace_editor') ) {
+            var editor = ace.edit(id);
+            value = JSON.stringify({
+                mode: editor.session.getMode().$id.split('/')[2],
+                code: editor.getValue()
+            });
         }
         else {
             value = input.html();
@@ -628,7 +636,7 @@ app.controller('PMController', ['$scope', function (scope) {
                 FilesDel(entry_id);
                 value = JSON.stringify(file);
             }
-            record.AddEntry(new Entry( type, name, value));
+            record.AddEntry(new Entry(type, name, value));
         }
 
         return [ expire_at, prune, pinned, record ];
