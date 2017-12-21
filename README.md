@@ -64,6 +64,7 @@ This is the example configuration file you need to customize the first time.
 {
     "address": "127.0.0.1",
     "port": 8443,
+    "secret": "s0m3c0mpl3xs7r1ng",
     "certificate": "/some/certificate.pem",
     "key": "/some/key.pem",
     "username": "arc",
@@ -108,6 +109,7 @@ It is necessary to change only the `username` and `password` access parameters o
 | ------------- | ------------- |
 | address | IP address to bind the `arcd` server to. |
 | port | TCP to bind the `arcd` server to. |
+| secret | Secret key to use for authentication token signing and verification. |
 | certificate | HTTPS certificate PEM file (if it does not exist, it will be automatically generated). |
 | key | HTTPS private key PEM file (if it does not exist, it will be automatically generated). |
 | username | API access username. |

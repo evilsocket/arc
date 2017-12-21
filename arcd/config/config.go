@@ -11,6 +11,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"github.com/evilsocket/arc/arcd/log"
 	"github.com/evilsocket/arc/arcd/utils"
 	"io/ioutil"
@@ -127,6 +128,10 @@ func Load(filename string) error {
 	err = json.Unmarshal(raw, &Conf)
 	if err != nil {
 		return err
+	}
+
+	if Conf.Secret == defHMacSecret {
+		return errors.New("HMAC secret not found, please fill the 'secret' configuration field.")
 	}
 
 	// fix path
