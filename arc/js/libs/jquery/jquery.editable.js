@@ -55,11 +55,13 @@
                 })
                 // hide editable and show input on click
                 .click(function(){
+                    var width = $(this).outerWidth();
                     var f_size = $(this).css('font-size');
                     var input_id = '#editable_input_for_' + $(this).attr('id');
                     $(this).hide();
                     $(input_id).css({
                         'font-size': f_size,
+                        'width': ( width * 1.5 ) + 'px'
                     })
                     .val( $(this).text() )
                     .show()
