@@ -166,6 +166,9 @@ func UpdateRecord(c *gin.Context) {
 		return
 	}
 
+	store, _ := db.GetStore(store_id)
+	store.MarkUpdated()
+
 	log.Api(log.DEBUG, c, "Updated record %s of store %s.", record_id, store_id)
 	c.JSON(200, record.Meta())
 }

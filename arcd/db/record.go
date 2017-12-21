@@ -272,6 +272,13 @@ func (r *Record) UpdateBuffer(reader io.Reader) (err error) {
 	return nil
 }
 
+func (r *Record) MarkUpdated() {
+	r.Lock()
+	defer r.Unlock()
+	r.meta.UpdatedAt = time.Now()
+	r.meta.FlushNoLock()
+}
+
 func (r *Record) New(meta *Meta, reader io.Reader) (child *Record, err error) {
 	r.Lock()
 	defer r.Unlock()
