@@ -160,7 +160,8 @@ div.tb-container {
     margin: 0;
 }
 
-#toolbar {
+#toolbar,
+.toolbar-small {
     width: 100%;
     margin: 0;
     padding: 0;
@@ -206,9 +207,20 @@ div.tb-container {
     font-size: 0.9rem !important;
 }
 
-#toolbar button.btn-close {
+#toolbar button.btn-close,
+.toolbar-small button.btn-close-small {
     background-color: transparent;
     float: right;
+}
+
+.tb-container-small {
+    padding: 0;
+    margin: 0;
+    border: 0px;
+}
+
+.toolbar-small button {
+    /* font-size: 0.7rem; */
 }
 
 .action-label {
@@ -442,6 +454,7 @@ ul li.placeholder:before {
 
 #field_selector_body {
     padding: 25px;
+    padding-top: 0px;
 }
 
 .field-box {
