@@ -5,6 +5,9 @@
  *
  * See LICENSE.
  */
+
+var g_EntryCounter = 0;
+
 var REGISTERED_TYPES = [
     new URLEntry( "URL", "https://" ),
     new InputEntry( "Text Input", "" ),
@@ -53,6 +56,7 @@ var REGISTERED_TEMPLATES = [
     ]}
 ];
 
+// Get a registered entry given its type.
 function TypeProto(type) {
     for( var i = 0; i < REGISTERED_TYPES.length; i++ ) {
         var registered = REGISTERED_TYPES[i];
@@ -64,17 +68,19 @@ function TypeProto(type) {
     return null;
 }
 
+// Clone a registered entry and make the instance id unique.
+function TypeClone(e) {
+    var clone = $.extend( true, {}, e );
+    clone.id += '_' + g_EntryCounter++;
+    return clone;
+}
+
 // Create an Entry derived object from the 'o' JSON object.
 function TypeFactory(o) {
     var proto = TypeProto(o.type);
-    var entry = $.extend( true, {}, proto );
+    var entry = TypeClone(proto);
 
-    entry.is_new = false;
-    entry.name = o.name;
-    entry.setValue(o.value);
-    if( o.id ) {
-        entry.id = o.id;
-    }
+    entry.Populate(o);
 
     return entry;
 }

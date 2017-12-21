@@ -464,7 +464,7 @@ app.controller('PMController', ['$scope', function (scope) {
 
     scope.doAddField = function(idx) {
         var list = $('#secret_entry_list'); 
-        var entry = $.extend( true, {}, scope.registeredTypes[idx] );
+        var entry = TypeClone( scope.registeredTypes[idx] );
         entry.RenderToList( list );
     };
 
@@ -479,7 +479,7 @@ app.controller('PMController', ['$scope', function (scope) {
         var fields = tpl.fields;
 
         for( var i = 0; i < fields.length; ++i ) {
-            var entry = $.extend( true, {}, fields[i] );
+            var entry = TypeClone( fields[i] );
             entry.RenderToList( list );
         }
 
@@ -610,10 +610,8 @@ app.controller('PMController', ['$scope', function (scope) {
             var value = scope.getInputValue(input);
 
             if( type == ENTRY_TYPE_FILE ) {
-                var file = FilesGet(entry_id);
                 // free the memory
                 FilesDel(entry_id);
-                value = JSON.stringify(file);
             }
             record.AddEntry(new Entry(type, name, value));
         }

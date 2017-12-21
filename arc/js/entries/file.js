@@ -52,6 +52,12 @@ FileEntry.prototype.Icon = function() {
     return 'cloud-upload';
 }
 
+FileEntry.prototype.getValue = function($elem) {
+    var file = FilesGet($elem.attr('id'));
+    this.value = JSON.stringify(file);
+    return this.value;
+}
+
 FileEntry.prototype.formGroup = function(input, mime) {
     var file = FilesGet(this.id);
     var box  = "";
@@ -105,7 +111,6 @@ FileEntry.prototype.RenderToList = function(list, dontclick) {
     var rendered = '<div class="entry-edit">';
     
     if( this.is_new == false ) {
-        console.log(this.id);
         var file = JSON.parse(this.value)
         // make sure the file is b64 encoded
         file.data = FileEncoded(file);

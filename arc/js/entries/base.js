@@ -17,12 +17,18 @@ function Entry(type, name, value) {
     this.type = type;
     this.name = name;
     this.value = value;
-    this.id = 'entry_value_' + Date.now() + '_' + Math.floor(Math.random() * (999999999 + 1)); 
+    this.id = 'entry_value_' + this.type; 
     this.is_new = true;
 }
 
 Entry.prototype.Icon = function() {
     return 'keyboard-o';
+}
+
+Entry.prototype.Populate = function(o) {
+    this.is_new = false;
+    this.name = o.name;
+    this.setValue(o.value);
 }
 
 Entry.prototype.setValue = function(v) {
