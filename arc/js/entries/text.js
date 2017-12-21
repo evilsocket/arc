@@ -18,6 +18,11 @@ TextEntry.prototype.Icon = function() {
     return 'font';
 }
 
+TextEntry.prototype.getValue = function($elem) {
+    this.value = $elem.html();
+    return this.value;
+}
+
 TextEntry.prototype.Render = function(with_value){
     return this.formGroup(
         '<div ' +

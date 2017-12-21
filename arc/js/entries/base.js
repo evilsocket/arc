@@ -29,6 +29,11 @@ Entry.prototype.setValue = function(v) {
     this.value = v;
 }
 
+Entry.prototype.getValue = function($elem) {
+    this.value = $elem.val();
+    return this.value;
+}
+
 Entry.prototype.Describe = function() {
     return JSON.stringify({
         type: this.type,

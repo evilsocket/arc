@@ -33,6 +33,16 @@ CodeEntry.prototype.setValue = function(v) {
     this.value = JSON.parse(v);
 }
 
+CodeEntry.prototype.getValue = function($elem) {
+    var id = $elem.attr('id');
+    var editor = ace.edit(id);
+
+    this.value.mode = editor.session.getMode().$id.split('/')[2];
+    this.value.code = editor.getValue();
+
+    return JSON.stringify(this.value);
+}
+
 CodeEntry.prototype.Render = function(with_value){
     return this.formGroup(
         '<div ' +

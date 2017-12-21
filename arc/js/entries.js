@@ -53,25 +53,30 @@ var REGISTERED_TEMPLATES = [
     ]}
 ];
 
-// Create an Entry derived object from the 'o' JSON object.
-function TypeFactory(o) {
+function TypeProto(type) {
     for( var i = 0; i < REGISTERED_TYPES.length; i++ ) {
         var registered = REGISTERED_TYPES[i];
-        if( registered.type == o.type ) {
-            var entry = $.extend( true, {}, registered );
-
-            entry.is_new = false;
-            entry.name = o.name;
-            entry.setValue(o.value);
-            if( o.id ) {
-                entry.id = o.id;
-            }
-
-            return entry;
+        if( registered.type == type ) {
+            return registered;
         }
     }
 
     return null;
+}
+
+// Create an Entry derived object from the 'o' JSON object.
+function TypeFactory(o) {
+    var proto = TypeProto(o.type);
+    var entry = $.extend( true, {}, proto );
+
+    entry.is_new = false;
+    entry.name = o.name;
+    entry.setValue(o.value);
+    if( o.id ) {
+        entry.id = o.id;
+    }
+
+    return entry;
 }
 
 

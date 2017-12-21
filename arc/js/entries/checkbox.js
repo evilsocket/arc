@@ -22,6 +22,11 @@ CheckboxEntry.prototype.Icon = function() {
     return 'check-square-o';
 }
 
+CheckboxEntry.prototype.getValue = function($elem) {
+    this.value = $elem.is(':checked') ? '1' : '0';
+    return this.value;
+}
+
 CheckboxEntry.prototype.input = function(type, with_value) {
     return '<input ' + 
              'class="ui-checkbox" ' +

@@ -572,31 +572,10 @@ app.controller('PMController', ['$scope', function (scope) {
     };
 
     scope.getInputValue = function(input) {
-        var value = '';
-        var tagname = input.prop('tagName').toLowerCase();
-        var id = input.attr('id');
+        var type = parseInt( input.attr('data-entry-type') );
+        var proto = TypeProto(type);
 
-        if( tagname == 'input' || tagname == 'textarea' || tagname == 'select' ) {
-            switch(input.attr('type')) {
-                case 'checkbox':
-                    value = input.is(':checked') ? '1' : '0'
-                    break;
-                default:
-                    value = input.val();
-            }
-        }
-        else if( input.hasClass('ace_editor') ) {
-            var editor = ace.edit(id);
-            value = JSON.stringify({
-                mode: editor.session.getMode().$id.split('/')[2],
-                code: editor.getValue()
-            });
-        }
-        else {
-            value = input.html();
-        }
-
-        return value;
+        return proto.getValue(input);
     };
 
     scope.buildRecord = function() {
