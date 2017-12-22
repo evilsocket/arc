@@ -1,7 +1,5 @@
 .PHONY: build fmt lint run test vet deps install
 
-SRC_PATH=.
-TARGET=arcd
 PREFIX_DIR=/usr/local
 BIN_DIR=$(PREFIX_DIR)/bin
 CONFIG_DIR=$(PREFIX_DIR)/etc
@@ -11,23 +9,26 @@ SERVICE_LN_DIR=/etc/systemd/system
 
 default: build
 
-build: deps fmt vet lint 
-	@go build $(FLAGS) -o $(TARGET) $(SRC_PATH)
+build: deps fmt lint build_arcd build_arc_decrypt
 
-vet:
-	@go vet $(SRC_PATH)
+
+build_arcd:
+	@go build $(FLAGS) -o arcd ./cmd/arcd/
+
+build_arc_decrypt:
+	@go build $(FLAGS) -o arc_decrypt ./cmd/arc_decrypt/
 
 fmt:
-	@go fmt $(SRC_PATH)/...
+	@go fmt ./...
 
 lint:
-	@golint $(SRC_PATH)
+	@golint .
 
 test:
-	@go test $(SRC_PATH)/...
+	@go test ./...
 
 clean:
-	@rm -rf $(TARGET)
+	@rm -rf arcd arc_decrypt
 
 deps:
 	@go get github.com/gin-gonic/gin
@@ -40,11 +41,13 @@ deps:
 
 # runs on previlege
 install: build
-	@echo "Installing $(TARGET) in $(PREFIX_DIR)"
-	@install -D -m 744 (SRC_PATH)/$(TARGET) $(BIN_DIR)/$(TARGET)
-	@setcap 'cap_net_bind_service=+ep' $(BIN_DIR)/$(TARGET)
+	@echo "Installing arcd in $(PREFIX_DIR)" 
+	@install -D -m 744 (SRC_PATH)/arcd $(BIN_DIR)/arcd
+	@setcap 'cap_net_bind_service=+ep' $(BIN_DIR)/arcd
+	@echo "Installing arc_decrypt in $(PREFIX_DIR)" 
+	@install -D -m 744 (SRC_PATH)/arc_decrypt $(BIN_DIR)/arc_decrypt
 	@cp -r ../arc $(WEBAPP_DIR)/arc
-	@install -D -m 644 $(SRC_PATH)/sample_config.json $(CONFIG_DIR)/$(TARGET)/config.json
-	@install -D -m 644 $(SRC_PATH)/arcd@.service $(SERVICE_DIR)/arcd@.service
+	@install -D -m 644 ./sample_config.json $(CONFIG_DIR)/arcd/config.json
+	@install -D -m 644 ./arcd@.service $(SERVICE_DIR)/arcd@.service
 	@ln -s $(SERVICE_DIR)/arcd@.service $(SERVICE_LN_DIR)/arcd@.service || echo "symlink already exists...skipping"
 	@echo "Done."

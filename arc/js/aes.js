@@ -54,12 +54,32 @@ function checkPrerequisites() {
     return errors;
 }
 
+function buf2hex(buf) {
+    var hexStr = '';
+    for (var i = 0; i < buf.length; i++) {
+        var hex = '';
+        if( typeof(buf) == 'string' ) {
+            hex = ( buf[i].charCodeAt(i) & 0xff ).toString(16); 
+        } else {
+            hex = (buf[i] & 0xff).toString(16);
+        }
+
+        hex = (hex.length === 1) ? '0' + hex : hex;
+        hexStr += hex;
+    }
+
+    return hexStr.toUpperCase();
+}
+
 function merge(salt, iv, ciphertext) {
+    console.log( "SALT: " + buf2hex(salt) );
     var buff = new Uint8Array( PBKDF_SALT_SIZE + AES_IV_SIZE + ciphertext.length );
 
     buff.set( salt );
     buff.set( iv, PBKDF_SALT_SIZE );
     buff.set( ciphertext, PBKDF_SALT_SIZE + AES_IV_SIZE );
+
+    console.log( buf2hex(buff) );
 
     return buf2a(buff);
 }
@@ -127,6 +147,10 @@ function encrypt(message, passphrase) {
 
 function decrypt(data, passphrase) {
     const [ salt, iv, ciphertext ] = unmerge(data);
+
+    console.log( "SALT   : " + buf2hex(salt));
+    console.log( "IV     : " + buf2hex(iv));
+    console.log( "CIPHER : " + buf2hex(ciphertext));
 
     var doDeriveKey = PBKDF2( passphrase, salt );
 

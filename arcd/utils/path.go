@@ -21,6 +21,14 @@ func Exists(path string) bool {
 	return true
 }
 
+func FileSize(filename string) (error, int64) {
+	s, e := os.Stat(filename)
+	if e != nil {
+		return e, 0
+	}
+	return nil, s.Size()
+}
+
 func ExpandPath(path string) (string, error) {
 	if strings.HasPrefix(path, "~") {
 		usr, err := user.Current()

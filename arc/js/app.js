@@ -677,6 +677,9 @@ app.controller('PMController', ['$scope', function (scope) {
             scope.progressAt = new Date();
             scope.uploading = false;
             scope.arc.GetRecordBuffer( secret.id, function(data){
+                console.log( "DATA.TYP = " + typeof(data) );
+                console.log( "DATA.LEN = " + data.length );
+                console.log( buf2hex(a2buf(data)) );
                 // start decrypting data when message is updated
                 scope.showLoader( "Decrypting data ...", function() {
                     var record = new Record(secret.title);

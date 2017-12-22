@@ -99,7 +99,6 @@ func GetRecordBuffer(c *gin.Context) {
 		// Let the client handle the decompression :P
 		if meta.Compressed {
 			c.Writer.Header().Set("Content-Encoding", "gzip")
-			c.Writer.Header().Set("Content-Type", "application/octet-stream")
 			c.Writer.Header().Set("Vary", "Accept-Encoding")
 		}
 

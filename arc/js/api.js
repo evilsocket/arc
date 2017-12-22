@@ -38,6 +38,7 @@ Arc.prototype.Api = function( method, path, data, success, error, raw ) {
         contentType: "application/json",
         dataType: raw ? undefined : 'json',
         cache: false,
+        processData: false,
         timeout: 60 * 60 * 1000
     });
 }
