@@ -26,8 +26,8 @@ func FormatBytes(s uint64) string {
 		return fmt.Sprintf("%d B", s)
 	}
 
-	sizes := []string{"B", "kB", "MB", "GB", "TB", "PB", "EB"}
-	base := float64(1000)
+	sizes := []string{"B", "KB", "MB", "GB", "TB", "PB", "EB"}
+	base := float64(1024)
 	e := math.Floor(logn(float64(s), base))
 	suffix := sizes[int(e)]
 	val := math.Floor(float64(s)/math.Pow(base, e)*10+0.5) / 10
