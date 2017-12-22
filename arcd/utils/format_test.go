@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-// TestLogn run a defined list of tests againts logn function
+// TestLogn run a defined list of tests on logn function
 func TestLogn(t *testing.T) {
 	tests := []struct {
 		n   float64
@@ -26,6 +26,7 @@ func TestLogn(t *testing.T) {
 	}
 }
 
+// TestFormatBytes run tests on FormatBytes function
 func TestFormatBytes(t *testing.T) {
 	tests := []struct {
 		exp string
