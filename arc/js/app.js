@@ -626,29 +626,27 @@ app.controller('PMController', ['$scope', function (scope) {
 
         scope.showLoader("Encrypting record ...", function(){
             // Execute asynchronously to not block the ui.
-            setTimeout( function() {
-                var [ expire_at, prune, pinned, record ] = scope.buildRecord();
+            setTimeout( async function() {
+                const [ expire_at, prune, pinned, record ] = scope.buildRecord();
 
-                record.Encrypt(scope.key).then(function(data){
-                    var size = data.length;
-                    scope.trackTotal = size;
-                    scope.progressAt = new Date();
-                    scope.uploading = true;
-                    scope.showLoader("Adding record ...", function(){
-                        var r = {
-                            'title': record.title,
-                            'expired_at': expire_at,
-                            'prune': prune,
-                            'pinned': pinned,
-                            'encryption': 'aes',
-                            'size': size
-                        };
+                const encrypted  = await record.Encrypt(scope.key);
+                const size = encrypted.length;
+                scope.trackTotal = size;
+                scope.progressAt = new Date();
+                scope.uploading = true;
+                scope.showLoader("Adding record ...", function(){
+                    const r = {
+                        'title': record.title,
+                        'expired_at': expire_at,
+                        'prune': prune,
+                        'pinned': pinned,
+                        'encryption': 'aes',
+                        'size': size
+                    };
 
-                        scope.arc.AddRecord( r, data, function(record) {
-                            scope.getStore(function() {});
-                        },
-                        scope.errorHandler ).uploadProgress(scope.trackProgress);
-                    });
+                    scope.arc
+                        .AddRecord( r, encrypted, scope.getStore, scope.errorHandler)
+                        .uploadProgress(scope.trackProgress);
                 });
 
             }, 0 );
@@ -678,9 +676,9 @@ app.controller('PMController', ['$scope', function (scope) {
             scope.uploading = false;
             scope.arc.GetRecordBuffer( secret.id, function(data){
                 // start decrypting data when message is updated
-                scope.showLoader( "Decrypting data ...", function() {
-                    var record = new Record(secret.title);
-                    record.Decrypt( secret.encryption, scope.key, data, 
+                scope.showLoader( "Decrypting data ...", async function() {
+                    const record = new Record(secret.title);
+                    await record.Decrypt( secret.encryption, scope.key, data,
                         function(){
                             scope.setRoute("/" + scope.store_id + "/" + id);
                             scope.setSecret(secret)
