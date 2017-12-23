@@ -38,7 +38,7 @@ footer a:hover {
 }
 
 #login {
-    width: 60%;
+    width: auto; 
     margin-top: 15%;
 }
 
