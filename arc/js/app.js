@@ -380,7 +380,7 @@ app.controller('PMController', ['$scope', function (scope) {
 
     scope.doSelectStore = function() {
         scope.arc.Stores(function(stores){
-            document.title = "Arc";
+            document.title = "Arc v" + VERSION;
             scope.setRoute(null);
             scope.delTimeout();
                    
