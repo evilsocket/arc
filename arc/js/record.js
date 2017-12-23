@@ -5,69 +5,83 @@
  *
  * See LICENSE.
  */
+
 function Record(title) {
-    this.title = title
+    this.title = title;
     this.entries = [];
 }
 
-Record.prototype.AddEntry = function(entry) {
+Record.prototype.AddEntry = function (entry) {
     this.entries.push(entry);
-}
+};
 
-Record.prototype.toData = function() {
-   for( var i = 0; i < this.entries.length; i++ ) {
+Record.prototype.toData = function () {
+    for (let i = 0; i < this.entries.length; i++) {
         this.entries[i].is_new = false;
     }
-    return JSON.stringify(this.entries); 
-}
+    return JSON.stringify(this.entries);
+};
 
-Record.prototype.isValidData = function(data) {
-    return ( data == "[]" || data.indexOf('"value"') != -1 );
-}
+Record.prototype.isValidData = function (data) {
+    return (data === "[]" || data.indexOf('"value"') !== -1);
+};
 
-Record.prototype.fromData = function(data) {
-    if( this.isValidData(data) ) {
-        var objects = JSON.parse(data);
-        console.log( "Record has " + objects.length + " entries." );
+Record.prototype.fromData = function (data) {
+    if (this.isValidData(data)) {
+        const objects = JSON.parse(data);
+        console.log("Record has " + objects.length + " entries.");
         this.entries = [];
-        for( var i = 0; i < objects.length; i++ ) {
-            this.AddEntry( TypeFactory(objects[i]) );
+        for (let i = 0; i < objects.length; i++) {
+            this.AddEntry(TypeFactory(objects[i]));
         }
     } else {
         throw "Invalid record data.";
     }
-}
+};
 
-Record.prototype.Encrypt = function( key ) {
-    var data = this.toData(); 
-    console.log( "Encrypting " + data.length + " bytes of record." );
-    return encrypt( data, key );
-}
+Record.prototype.Encrypt = async function (key) {
+    const data = this.toData();
+    console.log("Encrypting " + data.length + " bytes of record.");
+    return await encrypt(data, key);
+};
 
-Record.prototype.Decrypt = function( algo, key, data, success, error ) {
-    var record = this;
-    const on_data = function(decrypted) {
-        console.log( "Decrypted " + decrypted.length + " bytes of plaintext." );
+Record.prototype.Decrypt = async function (algo, key, data, success, error) {
+    const record = this;
+    const on_data = function (decrypted) {
+        console.log("Decrypted " + decrypted.length + " bytes of plaintext.");
         try {
             record.fromData(decrypted);
             success();
         }
-        catch(e) {
-            error(e); 
+        catch (e) {
+            error(e);
         }
     };
 
-    if( algo == 'none' ) {
+    if (algo === 'none') {
         on_data(data);
     }
     else {
-        console.log( "Decrypting " + data.length + " bytes of data." );
-        decrypt( data, key ).then(on_data).catch(function(e){
-            console.log(e);
-            console.log( "GCM failed, trying CBC for legacy data ...");
+        console.log("Decrypting " + data.length + " bytes of data.");
+        let err, decrypted;
+
+        [err, decrypted] = await to(decrypt(data, key));
+        if (err) {
+            console.log(err);
+            console.log("GCM failed, trying CBC for legacy data ...");
             // let's see if it's legacy data in CBC mode
-            decrypt_cbc( data, key ).then(on_data).catch(error);
-        });
+            [err, decrypted] = await to(decrypt_cbc(data, key));
+            if (err) {
+                error(err);
+                return;
+            }
+        }
+
+        if (decrypted) {
+            on_data(decrypted);
+        } else {
+            error(new Error("Decrypted data unavailable"))
+        }
     }
-}
+};
 
