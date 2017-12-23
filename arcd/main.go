@@ -34,18 +34,19 @@ import (
 )
 
 var (
-	signals    = make(chan os.Signal, 1)
-	appPath    = ""
-	confFile   = ""
-	debug      = false
-	logfile    = ""
-	noColors   = false
-	noAuth     = false
-	noUpdates  = false
-	export     = false
-	importFrom = ""
-	output     = "arc.tar"
-	dbIsNew    = false
+	signals        = make(chan os.Signal, 1)
+	appPath        = ""
+	confFile       = ""
+	debug          = false
+	logfile        = ""
+	noColors       = false
+	noAuth         = false
+	noUpdates      = false
+	export         = false
+	importFrom     = ""
+	output         = "arc.tar"
+	dbIsNew        = false
+	tlsFingerprint = ""
 )
 
 func init() {
@@ -70,10 +71,12 @@ func arcLoadApp(r *gin.Engine) *app.App {
 	}
 
 	secureMiddleware := secure.New(secure.Options{
+		AllowedHosts:       controllers.AllowedHosts,
 		FrameDeny:          true,
 		ContentTypeNosniff: true,
 		BrowserXssFilter:   true,
 		ReferrerPolicy:     "same-origin",
+		PublicKey:          fmt.Sprintf("pin-sha256=\"%s\"; max-age=5184000", tlsFingerprint),
 	})
 	secureFunc := func() gin.HandlerFunc {
 		return func(c *gin.Context) {
@@ -317,8 +320,6 @@ func main() {
 
 	address := fmt.Sprintf("%s:%d", config.Conf.Address, config.Conf.Port)
 
-	r := setupRouter()
-
 	if config.Conf.Certificate, err = utils.ExpandPath(config.Conf.Certificate); err != nil {
 		log.Fatal(err)
 	} else if config.Conf.Key, err = utils.ExpandPath(config.Conf.Key); err != nil {
@@ -333,9 +334,18 @@ func main() {
 		log.Infof("New RSA key and certificate have been generated, remember to add them as exceptions to your browser!")
 	}
 
+	tlsFingerprint, err = tls.Fingerprint(config.Conf.Certificate)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Importantf("TLS certificate fingerprint is %s", log.Bold(tlsFingerprint))
+
+	r := setupRouter()
 	if address[0] == ':' {
 		address = "0.0.0.0" + address
 	}
+
 	log.Infof("Running on %s ...", log.Bold("https://"+address+"/"))
 	if err = r.RunTLS(address, config.Conf.Certificate, config.Conf.Key); err != nil {
 		log.Fatal(err)
