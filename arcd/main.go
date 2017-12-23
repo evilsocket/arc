@@ -71,7 +71,6 @@ func arcLoadApp(r *gin.Engine) *app.App {
 	}
 
 	secureMiddleware := secure.New(secure.Options{
-		AllowedHosts:       controllers.AllowedHosts,
 		FrameDeny:          true,
 		ContentTypeNosniff: true,
 		BrowserXssFilter:   true,
