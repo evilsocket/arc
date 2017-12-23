@@ -81,7 +81,7 @@ function unmerge(data) {
 }
 
 async function PBKDF2(passphrase, salt) {
-    const passphrase = typeof(passphrase) === 'object' ? passphrase : utf2buf(passphrase);
+    passphrase = typeof(passphrase) === 'object' ? passphrase : utf2buf(passphrase);
 
     const passphraseKey = await crypto.subtle.importKey( "raw", passphrase, "PBKDF2", false, ["deriveKey"]);
 

@@ -1,4 +1,4 @@
-export default function to(promise) {
+function to(promise) {
     return promise.then(data => {
         return [null, data];
     })

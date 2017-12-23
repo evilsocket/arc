@@ -645,7 +645,7 @@ app.controller('PMController', ['$scope', function (scope) {
                     };
 
                     scope.arc
-                        .AddRecord( r, encrypted, scope.getStore, scope.errorHandler)
+                        .AddRecord( r, encrypted, () => { scope.getStore(() => {}) }, scope.errorHandler)
                         .uploadProgress(scope.trackProgress);
                 });
 

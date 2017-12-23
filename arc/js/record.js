@@ -5,7 +5,6 @@
  *
  * See LICENSE.
  */
-import to from "./to";
 
 function Record(title) {
     this.title = title;
@@ -74,6 +73,7 @@ Record.prototype.Decrypt = async function (algo, key, data, success, error) {
             [err, decrypted] = await to(decrypt_cbc(data, key));
             if (err) {
                 error(err);
+                return;
             }
         }
 
