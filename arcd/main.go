@@ -71,8 +71,8 @@ func arcLoadApp(r *gin.Engine) *app.App {
 
 	secureMiddleware := secure.New(secure.Options{
 		FrameDeny:          true,
-		SSLRedirect:        true,
 		ContentTypeNosniff: true,
+		BrowserXssFilter:   true,
 		ReferrerPolicy:     "same-origin",
 	})
 	secureFunc := func() gin.HandlerFunc {
