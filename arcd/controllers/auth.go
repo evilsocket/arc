@@ -55,7 +55,7 @@ type AuthResponse struct {
 func Auth(c *gin.Context) {
 	var auth AuthRequest
 
-	if err := c.BindJSON(&auth); err != nil {
+	if err := SafeBind(c, &auth); err != nil {
 		utils.BadRequest(c)
 	} else if config.Conf.Auth(auth.Username, auth.Password) == false {
 		log.Warningf("Invalid login credentials: user='%s' pass='%s'.", log.Bold(auth.Username), log.Bold(auth.Password))

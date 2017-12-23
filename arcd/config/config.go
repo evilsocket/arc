@@ -20,6 +20,7 @@ import (
 const (
 	defAddress         = "127.0.0.1"
 	defPort            = 8443
+	defMaxReqSize      = int64(512 * 1024)
 	defCertificate     = "arcd-tls-cert.pem"
 	defKey             = "arcd-tls-key.pem"
 	defDatabaseName    = "arc.db"
@@ -80,6 +81,7 @@ type bkConfig struct {
 type Configuration struct {
 	Address       string    `json:"address"`
 	Port          int       `json:"port"`
+	MaxReqSize    int64     `json:"max_req_size"`
 	Certificate   string    `json:"certificate"`
 	Key           string    `json:"key"`
 	Database      string    `json:"database"`
@@ -96,6 +98,7 @@ type Configuration struct {
 var Conf = Configuration{
 	Address:       defAddress,
 	Port:          defPort,
+	MaxReqSize:    defMaxReqSize,
 	Certificate:   defCertificate,
 	Key:           defKey,
 	Database:      defDatabaseName,

@@ -27,6 +27,9 @@ import (
 	"github.com/evilsocket/arc/arcd/events"
 	"github.com/evilsocket/arc/arcd/log"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/gin-gonic/gin/json"
+	"io"
 	"time"
 )
 
@@ -45,6 +48,21 @@ var ServerStatus = Status{
 	Version: config.APP_VERSION,
 	Size:    &db.Size,
 	Events:  &events.Pool,
+}
+
+func SafeBind(c *gin.Context, obj interface{}) error {
+	decoder := json.NewDecoder(io.LimitReader(c.Request.Body, config.Conf.MaxReqSize))
+	if binding.EnableDecoderUseNumber {
+		decoder.UseNumber()
+	}
+	if err := decoder.Decode(obj); err != nil {
+		return err
+	}
+
+	if binding.Validator == nil {
+		return nil
+	}
+	return binding.Validator.ValidateStruct(obj)
 }
 
 // swagger:route GET /api/status status getStatus
