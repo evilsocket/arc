@@ -10,12 +10,14 @@ package main
 import (
 	"flag"
 	"fmt"
+	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"os"
 	"os/signal"
 	"path"
 	"regexp"
 	"runtime"
+	"strconv"
 	"syscall"
 	"time"
 
@@ -245,6 +247,25 @@ func setupRouter() *gin.Engine {
 
 func main() {
 	var err error
+
+	if len(os.Args) >= 3 && os.Args[1] == "password" {
+		password := os.Args[2]
+		cost := bcrypt.DefaultCost
+		if len(os.Args) == 4 {
+			cost, err = strconv.Atoi(os.Args[3])
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
+
+		hash, err := bcrypt.GenerateFromPassword([]byte(password), cost)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fmt.Println(string(hash))
+		return
+	}
 
 	flag.Parse()
 

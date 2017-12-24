@@ -42,9 +42,9 @@ You can find binary releases of Arc [here](https://github.com/evilsocket/arc/rel
     cd $GOPATH/src/github.com/evilsocket/arc/arcd
     make
 
-Once you either extracted the release archive or compiled it yourself, copy `sample_config.json` to a new `config.json` file and customize it. The most important fields to change are the `secret` ( a key used for token authentication ), the `username` and the `password`, which is the SHA256 checksum of the authentication password you want to use, you can generate a new one with:
+Once you either extracted the release archive or compiled it yourself, copy `sample_config.json` to a new `config.json` file and customize it. The most important fields to change are the `secret` ( a key used for token authentication ), the `username` and the `password`, which is the `bcrypt` hash of the authentication password you want to use, you can generate a new one with:
 
-    echo -n "your-new-password" | sha256sum
+    ./arcd password "your-new-password" <optional-cost>
 
 Once everything is ready, youn can finally start the `arcd` server:
 
@@ -65,11 +65,11 @@ This is the example configuration file you need to customize the first time.
     "address": "127.0.0.1",
     "port": 8443,
     "max_req_size": 524288,
+    "username": "arc",
+    "password": "$2a$10$eyt99XOsVnATorza8PjqkOtJJdw1/Skr6LSps7JT4heYficAOdEhq",
     "secret": "s0m3c0mpl3xs7r1ng",
     "certificate": "/some/certificate.pem",
     "key": "/some/key.pem",
-    "username": "arc",
-    "password": "404fcfb394d23199f6d95f1f36bd2beb6df8564f993f44517f6015fcd16101a9",
     "database": "~/arcdb",
     "token_duration": 60,
     "compression": true,
@@ -111,11 +111,11 @@ It is necessary to change only the `username` and `password` access parameters o
 | address | IP address to bind the `arcd` server to. |
 | port | TCP to bind the `arcd` server to. |
 | max\_req\_size | Maximum size in bytes to accept as a JSON request, it does not include record data. |
+| username | API access username. |
+| password | API access password `bcrypt` hash. |
 | secret | Secret key to use for authentication token signing and verification. |
 | certificate | HTTPS certificate PEM file (if it does not exist, it will be automatically generated). |
 | key | HTTPS private key PEM file (if it does not exist, it will be automatically generated). |
-| username | API access username. |
-| password | API access password `sha256` hash. |
 | database | Database root directory. |
 | token\_duration | Validity in minutes of a JWT API token after it's being generated. |
 | compression | If true, records bigger than 1024 bytes will be asynchronously gzipped and served as compressed streams to the client. |

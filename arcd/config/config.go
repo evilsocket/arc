@@ -8,12 +8,11 @@
 package config
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"github.com/evilsocket/arc/arcd/log"
 	"github.com/evilsocket/arc/arcd/utils"
+	"golang.org/x/crypto/bcrypt"
 	"io/ioutil"
 )
 
@@ -25,7 +24,7 @@ const (
 	defKey             = "arcd-tls-key.pem"
 	defDatabaseName    = "arc.db"
 	defUsername        = "arc"
-	defPassword        = "404fcfb394d23199f6d95f1f36bd2beb6df8564f993f44517f6015fcd16101a9"
+	defPassword        = "$2a$10$gwnHUhLVV9tgPtZfX4.jDOz6qzGgRHZmtE2YpMr9K1RpIO71YJViO"
 	defTokenDuration   = 60
 	defSchedulerPeriod = 15
 	defBackupsEnabled  = false
@@ -149,6 +148,9 @@ func (c Configuration) Auth(username, password string) bool {
 		return false
 	}
 
-	hash := sha256.Sum256([]byte(password))
-	return hex.EncodeToString(hash[:]) == c.Password
+	if e := bcrypt.CompareHashAndPassword([]byte(c.Password), []byte(password)); e != nil {
+		return false
+	}
+
+	return true
 }
