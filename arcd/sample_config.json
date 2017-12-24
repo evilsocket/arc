@@ -35,6 +35,7 @@
     "backups": {
         "enabled": false,
         "period": 1800,
-        "folder": "/some/backup/path/"
+        "folder": "/some/backup/path/",
+        "run": "scp arc-backup.tar user@backup-server:/media/arc_backup/"
     }
 }

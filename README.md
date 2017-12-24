@@ -109,7 +109,8 @@ This is the example configuration file you need to customize the first time.
     "backups": {
         "enabled": false,
         "period": 1800,
-        "folder": "/some/backup/path/"
+        "folder": "/some/backup/path/",
+        "run": "scp arc-backup.tar user@backup-server:/media/arc_backup/"
     }
 }
 ```
@@ -142,6 +143,7 @@ It is necessary to change only the `username` and `password` access parameters o
 | backups.enabled | Enable automatic backups. |
 | backups.period | Number of seconds between one backup and the next one. |
 | backups.folder | Destination folder for the backup file. |
+| backups.run | If filled, this command will be executed after the backup archive is created. |
 
 ## Realtime Notifications
 

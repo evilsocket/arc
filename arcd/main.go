@@ -136,7 +136,7 @@ func setupScheduler() {
 func setupBackups() {
 	if config.Conf.Backups.Enabled {
 		log.Debugf("Starting backup task with a period of %ds ...", config.Conf.Backups.Period)
-		backup.Start(config.Conf.Backups.Period, config.Conf.Backups.Folder)
+		backup.Start(config.Conf.Backups.Period, config.Conf.Backups.Folder, config.Conf.Backups.Run)
 	} else {
 		log.Importantf("Backups are disabled.")
 	}

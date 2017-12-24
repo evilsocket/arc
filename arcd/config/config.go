@@ -73,6 +73,7 @@ type bkConfig struct {
 	Enabled bool   `json:"enabled"`
 	Period  int    `json:"period"`
 	Folder  string `json:"folder"`
+	Run     string `json:"run"`
 }
 
 // Arc server configuration.
