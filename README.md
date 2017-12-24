@@ -1,6 +1,16 @@
-# Arc
+<p align="center">
+  <img alt="Arc Logo" src="https://raw.githubusercontent.com/evilsocket/arc/master/arc/img/logo.png" height="140" />
+  <h3 align="center">Arc</h3>
+  <p align="center">A manager for your secrets.</p>
+  <p align="center">
+    <a href="https://github.com/evilsocket/arc/releases/latest"><img alt="Release" src="https://img.shields.io/github/release/evilsocket/arc.svg?style=flat-square"></a>
+    <a href="/LICENSE"><img alt="Software License" src="https://img.shields.io/badge/license-GPL3-brightgreen.svg?style=flat-square"></a>
+    <a href="https://travis-ci.org/evilsocket/arc"><img alt="Travis" src="https://img.shields.io/travis/evilsocket/arc/master.svg?style=flat-square"></a>
+    <a href="https://goreportcard.com/report/github.com/evilsocket/arc"><img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/evilsocket/arc?style=flat-square"></a>
+  </p>
+</p>
 
-[![Build Status](https://travis-ci.org/evilsocket/arc.svg?branch=master)](https://travis-ci.org/evilsocket/arc) [![Go Report Card](https://goreportcard.com/badge/github.com/evilsocket/arc)](https://goreportcard.com/report/github.com/evilsocket/arc)
+---
 
 Arc is a manager for your secrets made of `arcd`, a RESTful API server written in Go which exposes read and write primitives for encrypted records, and `arc`, the client application implemented in HTML5 and javascript, which runs in every modern browser and  it is served by `arcd` itself.
 
