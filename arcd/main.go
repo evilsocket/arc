@@ -32,7 +32,6 @@ import (
 	"github.com/evilsocket/arc/arcd/utils"
 
 	"github.com/gin-gonic/gin"
-	"gopkg.in/unrolled/secure.v1"
 )
 
 var (
@@ -72,29 +71,7 @@ func arcLoadApp(r *gin.Engine) *app.App {
 		log.Fatal(err)
 	}
 
-	secureMiddleware := secure.New(secure.Options{
-		FrameDeny:          true,
-		ContentTypeNosniff: true,
-		BrowserXssFilter:   true,
-		ReferrerPolicy:     "same-origin",
-		PublicKey:          fmt.Sprintf("pin-sha256=\"%s\"; max-age=5184000", tlsFingerprint),
-	})
-	secureFunc := func() gin.HandlerFunc {
-		return func(c *gin.Context) {
-			err := secureMiddleware.Process(c.Writer, c.Request)
-			// If there was an error, do not continue.
-			if err != nil {
-				c.Abort()
-				return
-			}
-			// Avoid header rewrite if response is a redirection.
-			if status := c.Writer.Status(); status > 300 && status < 399 {
-				c.Abort()
-			}
-		}
-	}()
-
-	r.Use(secureFunc)
+	r.Use(middlewares.Security(tlsFingerprint))
 	r.Use(middlewares.ServeStatic("/", webapp.Path, webapp.Manifest.Index))
 
 	return webapp
