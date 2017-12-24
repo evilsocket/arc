@@ -143,6 +143,14 @@ func Load(filename string) error {
 	return nil
 }
 
+func (c Configuration) HashPassword(password string, cost int) string {
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), cost)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return string(hash)
+}
+
 func (c Configuration) Auth(username, password string) bool {
 	if c.Username != username {
 		return false

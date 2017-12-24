@@ -48,6 +48,7 @@ var (
 	output         = "arc.tar"
 	dbIsNew        = false
 	tlsFingerprint = ""
+	router         = (*gin.Engine)(nil)
 )
 
 func init() {
@@ -65,18 +66,6 @@ func init() {
 	flag.StringVar(&output, "output", output, "Export file name.")
 }
 
-func arcLoadApp(r *gin.Engine) *app.App {
-	err, webapp := app.Open(appPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	r.Use(middlewares.Security(tlsFingerprint))
-	r.Use(middlewares.ServeStatic("/", webapp.Path, webapp.Manifest.Index))
-
-	return webapp
-}
-
 func arcSignalHandler() {
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
 	s := <-signals
@@ -86,15 +75,119 @@ func arcSignalHandler() {
 	os.Exit(1)
 }
 
+func setupLogging() {
+	var err error
+
+	log.WithColors = !noColors
+
+	if logfile != "" {
+		log.Output, err = os.Create(logfile)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		defer log.Output.Close()
+	}
+
+	if debug == true {
+		log.MinLevel = log.DEBUG
+	} else {
+		log.MinLevel = log.INFO
+	}
+}
+
+func setupDatabase() {
+	var err error
+
+	if dbIsNew, err = db.Setup(); err != nil {
+		log.Fatal(err)
+	}
+
+	if export == true {
+		started := time.Now()
+		if err = db.Export(output); err != nil {
+			log.Fatal(err)
+		}
+		log.Infof("Archived %s of data in %s to %s.", utils.FormatBytes(db.Size), time.Since(started), log.Bold(output))
+		os.Exit(0)
+	} else if importFrom != "" {
+		started := time.Now()
+		if err = db.Import(importFrom); err != nil {
+			log.Fatal(err)
+		}
+		log.Infof("Imported %s of data in %s.", utils.FormatBytes(db.Size), time.Since(started))
+		os.Exit(0)
+	}
+}
+
+func setupScheduler() {
+	if config.Conf.Scheduler.Enabled {
+		if err := events.Setup(); err != nil {
+			log.Fatal(err)
+		}
+
+		log.Debugf("Starting scheduler with a period of %ds ...", config.Conf.Scheduler.Period)
+		scheduler.Start(config.Conf.Scheduler.Period)
+	} else {
+		log.Importantf("Scheduler is disabled.")
+	}
+}
+
+func setupBackups() {
+	if config.Conf.Backups.Enabled {
+		log.Debugf("Starting backup task with a period of %ds ...", config.Conf.Backups.Period)
+		backup.Start(config.Conf.Backups.Period, config.Conf.Backups.Folder)
+	} else {
+		log.Importantf("Backups are disabled.")
+	}
+}
+
+func setupUpdates() {
+	if noUpdates == false {
+		updater.Start(config.APP_VERSION)
+	}
+}
+
+func setupTLS() {
+	var err error
+
+	if config.Conf.Certificate, err = utils.ExpandPath(config.Conf.Certificate); err != nil {
+		log.Fatal(err)
+	} else if config.Conf.Key, err = utils.ExpandPath(config.Conf.Key); err != nil {
+		log.Fatal(err)
+	}
+
+	if utils.Exists(config.Conf.Certificate) == false || utils.Exists(config.Conf.Key) == false {
+		log.Importantf("TLS certificate files not found, generating new ones ...")
+		if err = tls.Generate(&config.Conf); err != nil {
+			log.Fatal(err)
+		}
+		log.Infof("New RSA key and certificate have been generated, remember to add them as exceptions to your browser!")
+	}
+
+	tlsFingerprint, err = tls.Fingerprint(config.Conf.Certificate)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Importantf("TLS certificate fingerprint is %s", log.Bold(tlsFingerprint))
+}
+
 func setupRouter() *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 
-	r := gin.New()
+	router = gin.New()
 
-	webapp := arcLoadApp(r)
+	err, webapp := app.Open(appPath)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	api := r.Group("/api")
-	r.POST("/auth", controllers.Auth)
+	router.Use(middlewares.Security(tlsFingerprint))
+	router.Use(middlewares.ServeStatic("/", webapp.Path, webapp.Manifest.Index))
+
+	api := router.Group("/api")
+	router.POST("/auth", controllers.Auth)
 
 	if noAuth == false {
 		api.Use(middlewares.AuthHandler())
@@ -123,7 +216,7 @@ func setupRouter() *gin.Engine {
 	api.PUT("/store/:id/record/:r_id", controllers.UpdateRecord)
 	api.DELETE("/store/:id/record/:r_id", controllers.DeleteRecord)
 
-	return r
+	return router
 }
 
 func main() {
@@ -138,117 +231,37 @@ func main() {
 				log.Fatal(err)
 			}
 		}
-
-		hash, err := bcrypt.GenerateFromPassword([]byte(password), cost)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		fmt.Println(string(hash))
+		fmt.Println(config.Conf.HashPassword(password, cost))
 		return
 	}
 
 	flag.Parse()
 
-	log.WithColors = !noColors
+	go arcSignalHandler()
 
-	if logfile != "" {
-		log.Output, err = os.Create(logfile)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		defer log.Output.Close()
-	}
-
-	if debug == true {
-		log.MinLevel = log.DEBUG
-	} else {
-		log.MinLevel = log.INFO
-	}
+	setupLogging()
 
 	log.Infof("%s (%s %s) is starting ...", log.Bold(config.APP_NAME+" v"+config.APP_VERSION), runtime.GOOS, runtime.GOARCH)
-
 	if confFile != "" {
 		if err = config.Load(confFile); err != nil {
 			log.Fatal(err)
 		}
 	}
 
-	if dbIsNew, err = db.Setup(); err != nil {
-		log.Fatal(err)
-	}
-
-	if export == true {
-		started := time.Now()
-		if err = db.Export(output); err != nil {
-			log.Fatal(err)
-		}
-		log.Infof("Archived %s of data in %s to %s.", utils.FormatBytes(db.Size), time.Since(started), log.Bold(output))
-		return
-	} else if importFrom != "" {
-		started := time.Now()
-		if err = db.Import(importFrom); err != nil {
-			log.Fatal(err)
-		}
-		log.Infof("Imported %s of data in %s.", utils.FormatBytes(db.Size), time.Since(started))
-		return
-	}
-
-	go arcSignalHandler()
-
-	if config.Conf.Scheduler.Enabled {
-		if err := events.Setup(); err != nil {
-			log.Fatal(err)
-		}
-
-		log.Debugf("Starting scheduler with a period of %ds ...", config.Conf.Scheduler.Period)
-		scheduler.Start(config.Conf.Scheduler.Period)
-	} else {
-		log.Importantf("Scheduler is disabled.")
-	}
-
-	if config.Conf.Backups.Enabled {
-		log.Debugf("Starting backup task with a period of %ds ...", config.Conf.Backups.Period)
-		backup.Start(config.Conf.Backups.Period, config.Conf.Backups.Folder)
-	} else {
-		log.Importantf("Backups are disabled.")
-	}
-
-	if noUpdates == false {
-		updater.Start(config.APP_VERSION)
-	}
+	setupDatabase()
+	setupScheduler()
+	setupBackups()
+	setupUpdates()
+	setupTLS()
+	setupRouter()
 
 	address := fmt.Sprintf("%s:%d", config.Conf.Address, config.Conf.Port)
-
-	if config.Conf.Certificate, err = utils.ExpandPath(config.Conf.Certificate); err != nil {
-		log.Fatal(err)
-	} else if config.Conf.Key, err = utils.ExpandPath(config.Conf.Key); err != nil {
-		log.Fatal(err)
-	}
-
-	if utils.Exists(config.Conf.Certificate) == false || utils.Exists(config.Conf.Key) == false {
-		log.Importantf("TLS certificate files not found, generating new ones ...")
-		if err = tls.Generate(&config.Conf); err != nil {
-			log.Fatal(err)
-		}
-		log.Infof("New RSA key and certificate have been generated, remember to add them as exceptions to your browser!")
-	}
-
-	tlsFingerprint, err = tls.Fingerprint(config.Conf.Certificate)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.Importantf("TLS certificate fingerprint is %s", log.Bold(tlsFingerprint))
-
-	r := setupRouter()
 	if address[0] == ':' {
 		address = "0.0.0.0" + address
 	}
 
 	log.Infof("Running on %s ...", log.Bold("https://"+address+"/"))
-	if err = r.RunTLS(address, config.Conf.Certificate, config.Conf.Key); err != nil {
+	if err = router.RunTLS(address, config.Conf.Certificate, config.Conf.Key); err != nil {
 		log.Fatal(err)
 	}
 }
