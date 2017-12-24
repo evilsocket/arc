@@ -58,7 +58,7 @@ func Auth(c *gin.Context) {
 	if err := SafeBind(c, &auth); err != nil {
 		utils.BadRequest(c)
 	} else if config.Conf.Auth(auth.Username, auth.Password) == false {
-		log.Warningf("Invalid login credentials: user='%s' pass='%s'.", log.Bold(auth.Username), log.Bold(auth.Password))
+		log.Warningf("Invalid login credentials provided.")
 		events.Add(
 			events.Login(false,
 				strings.Split(c.Request.RemoteAddr, ":")[0],
