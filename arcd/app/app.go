@@ -18,7 +18,6 @@ import (
 
 const (
 	kManifestFileName = "manifest.json"
-	kSeedsFileName    = "seeds.json"
 )
 
 // Information about the author of the web application.
