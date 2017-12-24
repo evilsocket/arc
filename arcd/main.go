@@ -220,16 +220,15 @@ func setupRouter() *gin.Engine {
 }
 
 func main() {
-	var err error
-
 	if len(os.Args) >= 3 && os.Args[1] == "password" {
 		password := os.Args[2]
 		cost := bcrypt.DefaultCost
 		if len(os.Args) == 4 {
-			cost, err = strconv.Atoi(os.Args[3])
+			n, err := strconv.Atoi(os.Args[3])
 			if err != nil {
 				log.Fatal(err)
 			}
+			cost = n
 		}
 		fmt.Println(config.Conf.HashPassword(password, cost))
 		return
@@ -243,7 +242,7 @@ func main() {
 
 	log.Infof("%s (%s %s) is starting ...", log.Bold(config.APP_NAME+" v"+config.APP_VERSION), runtime.GOOS, runtime.GOARCH)
 	if confFile != "" {
-		if err = config.Load(confFile); err != nil {
+		if err := config.Load(confFile); err != nil {
 			log.Fatal(err)
 		}
 	}
@@ -261,7 +260,7 @@ func main() {
 	}
 
 	log.Infof("Running on %s ...", log.Bold("https://"+address+"/"))
-	if err = router.RunTLS(address, config.Conf.Certificate, config.Conf.Key); err != nil {
+	if err := router.RunTLS(address, config.Conf.Certificate, config.Conf.Key); err != nil {
 		log.Fatal(err)
 	}
 }
