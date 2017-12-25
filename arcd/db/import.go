@@ -66,6 +66,4 @@ func Import(filename string) error {
 			}
 		}
 	}
-
-	return nil
 }

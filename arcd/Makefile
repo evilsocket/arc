@@ -31,6 +31,7 @@ clean:
 
 deps:
 	@go get github.com/gin-gonic/gin
+	@go get gopkg.in/unrolled/secure.v1
 	@go get github.com/theckman/go-flock
 	@go get gopkg.in/gomail.v2 
 	@go get github.com/stretchr/testify/assert

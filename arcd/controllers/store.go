@@ -26,7 +26,7 @@ func ListStores(c *gin.Context) {
 
 func CreateStore(c *gin.Context) {
 	var meta db.Meta
-	if err := c.BindJSON(&meta); err != nil {
+	if err := SafeBind(c, &meta); err != nil {
 		utils.BadRequest(c)
 	} else if store, err := db.Create(&meta); err != nil {
 		utils.ServerError(c, err)
@@ -63,7 +63,7 @@ func UpdateStore(c *gin.Context) {
 	var meta db.Meta
 	if err != nil {
 		utils.NotFound(c)
-	} else if err := c.BindJSON(&meta); err != nil {
+	} else if err := SafeBind(c, &meta); err != nil {
 		utils.BadRequest(c)
 	} else if err := store.Update(&meta); err != nil {
 		utils.ServerError(c, err)

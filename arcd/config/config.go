@@ -8,23 +8,23 @@
 package config
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"github.com/evilsocket/arc/arcd/log"
 	"github.com/evilsocket/arc/arcd/utils"
+	"golang.org/x/crypto/bcrypt"
 	"io/ioutil"
 )
 
 const (
 	defAddress         = "127.0.0.1"
 	defPort            = 8443
+	defMaxReqSize      = int64(512 * 1024)
 	defCertificate     = "arcd-tls-cert.pem"
 	defKey             = "arcd-tls-key.pem"
 	defDatabaseName    = "arc.db"
 	defUsername        = "arc"
-	defPassword        = "404fcfb394d23199f6d95f1f36bd2beb6df8564f993f44517f6015fcd16101a9"
+	defPassword        = "$2a$10$gwnHUhLVV9tgPtZfX4.jDOz6qzGgRHZmtE2YpMr9K1RpIO71YJViO"
 	defTokenDuration   = 60
 	defSchedulerPeriod = 15
 	defBackupsEnabled  = false
@@ -73,6 +73,7 @@ type bkConfig struct {
 	Enabled bool   `json:"enabled"`
 	Period  int    `json:"period"`
 	Folder  string `json:"folder"`
+	Run     string `json:"run"`
 }
 
 // Arc server configuration.
@@ -80,6 +81,7 @@ type bkConfig struct {
 type Configuration struct {
 	Address       string    `json:"address"`
 	Port          int       `json:"port"`
+	MaxReqSize    int64     `json:"max_req_size"`
 	Certificate   string    `json:"certificate"`
 	Key           string    `json:"key"`
 	Database      string    `json:"database"`
@@ -96,6 +98,7 @@ type Configuration struct {
 var Conf = Configuration{
 	Address:       defAddress,
 	Port:          defPort,
+	MaxReqSize:    defMaxReqSize,
 	Certificate:   defCertificate,
 	Key:           defKey,
 	Database:      defDatabaseName,
@@ -141,11 +144,22 @@ func Load(filename string) error {
 	return nil
 }
 
+func (c Configuration) HashPassword(password string, cost int) string {
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), cost)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return string(hash)
+}
+
 func (c Configuration) Auth(username, password string) bool {
 	if c.Username != username {
 		return false
 	}
 
-	hash := sha256.Sum256([]byte(password))
-	return hex.EncodeToString(hash[:]) == c.Password
+	if e := bcrypt.CompareHashAndPassword([]byte(c.Password), []byte(password)); e != nil {
+		return false
+	}
+
+	return true
 }

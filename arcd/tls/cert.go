@@ -10,11 +10,15 @@ package tls
 import (
 	"crypto/rand"
 	"crypto/rsa"
+	"crypto/sha256"
 	"crypto/x509"
 	"crypto/x509/pkix"
+	"encoding/base64"
 	"encoding/pem"
+	"errors"
 	"github.com/evilsocket/arc/arcd/config"
 	"github.com/evilsocket/arc/arcd/log"
+	"io/ioutil"
 	"math/big"
 	"os"
 	"time"
@@ -76,4 +80,29 @@ func Generate(conf *config.Configuration) error {
 
 	log.Importantf("Saving certificate to %s ...", log.Bold(conf.Certificate))
 	return pem.Encode(certfile, &pem.Block{Type: "CERTIFICATE", Bytes: cert_raw})
+}
+
+func Fingerprint(filename string) (string, error) {
+	contents, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return "", err
+	}
+
+	var block *pem.Block
+	for len(contents) > 0 {
+		block, contents = pem.Decode(contents)
+		if block == nil {
+			break
+		}
+
+		cert, err := x509.ParseCertificate(block.Bytes)
+		if err != nil {
+			return "", err
+		}
+
+		digest := sha256.Sum256(cert.RawSubjectPublicKeyInfo)
+		return base64.StdEncoding.EncodeToString(digest[:]), nil
+	}
+
+	return "", errors.New("No PEM block found.")
 }

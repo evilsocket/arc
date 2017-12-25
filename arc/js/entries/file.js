@@ -145,7 +145,10 @@ FileEntry.prototype.OnRendered = function(dontclick) {
                 // snapshot scope
                 var cb = function() {
                     var new_file = fileInput.files[i];
-                    var new_entry = new FileEntry( new_file.name, new_file );
+                    var new_entry = TypeClone(file_entry);
+                    
+                    new_entry.name = new_file.name;
+                    new_entry.value = new_file;
 
                     new_entry.RenderToList( list, true );
 

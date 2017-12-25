@@ -10,6 +10,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/evilsocket/arc/arcd/config"
 	"github.com/evilsocket/arc/arcd/db"
 	"github.com/evilsocket/arc/arcd/log"
 	"github.com/evilsocket/arc/arcd/utils"
@@ -43,6 +44,13 @@ func CreateRecord(c *gin.Context) {
 	}
 
 	raw := c.Request.Form.Get("meta")
+	nbytes := int64(len(raw))
+	if nbytes > config.Conf.MaxReqSize {
+		log.Warningf("Request meta field is %d bytes, while max request size is %d.", nbytes, config.Conf.MaxReqSize)
+		utils.BadRequest(c)
+		return
+	}
+
 	err = json.Unmarshal([]byte(raw), &meta)
 	if err != nil {
 		utils.BadRequest(c)
@@ -148,6 +156,13 @@ func UpdateRecord(c *gin.Context) {
 	}
 
 	raw := c.Request.Form.Get("meta")
+	nbytes := int64(len(raw))
+	if nbytes > config.Conf.MaxReqSize {
+		log.Warningf("Request meta field is %d bytes, while max request size is %d.", nbytes, config.Conf.MaxReqSize)
+		utils.BadRequest(c)
+		return
+	}
+
 	err = json.Unmarshal([]byte(raw), &meta)
 	if err != nil {
 		utils.BadRequest(c)

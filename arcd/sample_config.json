@@ -5,7 +5,7 @@
     "certificate": "~/arcd-certificate.pem",
     "key": "~/arcd-key.pem",
     "username": "arc",
-    "password": "404fcfb394d23199f6d95f1f36bd2beb6df8564f993f44517f6015fcd16101a9",
+    "password": "$2a$10$RuOcSEwPNNFlA/lxjpRY3.3J0tR0LG/FyfG/IXolgdDxPh7.urgGe",
     "database": "~/db",
     "token_duration": 60,
     "compression": true,
@@ -35,6 +35,7 @@
     "backups": {
         "enabled": false,
         "period": 1800,
-        "folder": "/some/backup/path/"
+        "folder": "/some/backup/path/",
+        "run": "scp arc-backup.tar user@backup-server:/media/arc_backup/"
     }
 }

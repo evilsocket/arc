@@ -1,6 +1,16 @@
-# Arc
+<p align="center">
+  <img alt="Arc Logo" src="https://raw.githubusercontent.com/evilsocket/arc/master/arc/img/logo.png" height="140" />
+  <h3 align="center">Arc</h3>
+  <p align="center">A manager for your secrets.</p>
+  <p align="center">
+    <a href="https://github.com/evilsocket/arc/releases/latest"><img alt="Release" src="https://img.shields.io/github/release/evilsocket/arc.svg?style=flat-square"></a>
+    <a href="/LICENSE"><img alt="Software License" src="https://img.shields.io/badge/license-GPL3-brightgreen.svg?style=flat-square"></a>
+    <a href="https://travis-ci.org/evilsocket/arc"><img alt="Travis" src="https://img.shields.io/travis/evilsocket/arc/master.svg?style=flat-square"></a>
+    <a href="https://goreportcard.com/report/github.com/evilsocket/arc"><img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/evilsocket/arc?style=flat-square"></a>
+  </p>
+</p>
 
-[![Build Status](https://travis-ci.org/evilsocket/arc.svg?branch=master)](https://travis-ci.org/evilsocket/arc) [![Go Report Card](https://goreportcard.com/badge/github.com/evilsocket/arc)](https://goreportcard.com/report/github.com/evilsocket/arc)
+---
 
 Arc is a manager for your secrets made of `arcd`, a RESTful API server written in Go which exposes read and write primitives for encrypted records, and `arc`, the client application implemented in HTML5 and javascript, which runs in every modern browser and  it is served by `arcd` itself.
 
@@ -42,9 +52,9 @@ You can find binary releases of Arc [here](https://github.com/evilsocket/arc/rel
     cd $GOPATH/src/github.com/evilsocket/arc/arcd
     make
 
-Once you either extracted the release archive or compiled it yourself, copy `sample_config.json` to a new `config.json` file and customize it. The most important fields to change are the `secret` ( a key used for token authentication ), the `username` and the `password`, which is the SHA256 checksum of the authentication password you want to use, you can generate a new one with:
+Once you either extracted the release archive or compiled it yourself, copy `sample_config.json` to a new `config.json` file and customize it. The most important fields to change are the `secret` ( a key used for token authentication ), the `username` and the `password`, which is the `bcrypt` hash of the authentication password you want to use, you can generate a new one with:
 
-    echo -n "your-new-password" | sha256sum
+    ./arcd password "your-new-password" <optional-cost>
 
 Once everything is ready, youn can finally start the `arcd` server:
 
@@ -64,11 +74,12 @@ This is the example configuration file you need to customize the first time.
 {
     "address": "127.0.0.1",
     "port": 8443,
+    "max_req_size": 524288,
+    "username": "arc",
+    "password": "$2a$10$eyt99XOsVnATorza8PjqkOtJJdw1/Skr6LSps7JT4heYficAOdEhq",
     "secret": "s0m3c0mpl3xs7r1ng",
     "certificate": "/some/certificate.pem",
     "key": "/some/key.pem",
-    "username": "arc",
-    "password": "404fcfb394d23199f6d95f1f36bd2beb6df8564f993f44517f6015fcd16101a9",
     "database": "~/arcdb",
     "token_duration": 60,
     "compression": true,
@@ -98,7 +109,8 @@ This is the example configuration file you need to customize the first time.
     "backups": {
         "enabled": false,
         "period": 1800,
-        "folder": "/some/backup/path/"
+        "folder": "/some/backup/path/",
+        "run": "scp arc-backup.tar user@backup-server:/media/arc_backup/"
     }
 }
 ```
@@ -109,11 +121,12 @@ It is necessary to change only the `username` and `password` access parameters o
 | ------------- | ------------- |
 | address | IP address to bind the `arcd` server to. |
 | port | TCP to bind the `arcd` server to. |
+| max\_req\_size | Maximum size in bytes to accept as a JSON request, it does not include record data. |
+| username | API access username. |
+| password | API access password `bcrypt` hash. |
 | secret | Secret key to use for authentication token signing and verification. |
 | certificate | HTTPS certificate PEM file (if it does not exist, it will be automatically generated). |
 | key | HTTPS private key PEM file (if it does not exist, it will be automatically generated). |
-| username | API access username. |
-| password | API access password `sha256` hash. |
 | database | Database root directory. |
 | token\_duration | Validity in minutes of a JWT API token after it's being generated. |
 | compression | If true, records bigger than 1024 bytes will be asynchronously gzipped and served as compressed streams to the client. |
@@ -130,6 +143,7 @@ It is necessary to change only the `username` and `password` access parameters o
 | backups.enabled | Enable automatic backups. |
 | backups.period | Number of seconds between one backup and the next one. |
 | backups.folder | Destination folder for the backup file. |
+| backups.run | If filled, this command will be executed after the backup archive is created. |
 
 ## Realtime Notifications
 
