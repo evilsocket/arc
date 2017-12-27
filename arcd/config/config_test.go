@@ -7,7 +7,11 @@ import (
 )
 
 func TestAuth(t *testing.T) {
-	Load("sample_config.json")
+	// The test should fail if the Load failed
+	err := Load("../sample_config.json")
+	if err != nil {
+		t.Errorf("Failed to load sample_config.json: %v", err)
+	}
 
 	result := Conf.Auth("test", "test")
 	assert.Equal(t, false, result)
