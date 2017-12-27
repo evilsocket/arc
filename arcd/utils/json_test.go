@@ -5,6 +5,6 @@ import (
 )
 
 func TestJErrors(t *testing.T) {
-	// Exemple: https://github.com/sirupsen/logrus#testing
+	// Example: https://github.com/sirupsen/logrus#testing
 	t.Skip("Implements local logger to test logging functions")
 }
