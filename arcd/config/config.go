@@ -25,6 +25,7 @@ const (
 	defDatabaseName    = "arc.db"
 	defUsername        = "arc"
 	defPassword        = "$2a$10$gwnHUhLVV9tgPtZfX4.jDOz6qzGgRHZmtE2YpMr9K1RpIO71YJViO"
+	defSecret          = ""
 	defTokenDuration   = 60
 	defSchedulerPeriod = 15
 	defBackupsEnabled  = false
@@ -52,7 +53,7 @@ type PGPConfig struct {
 }
 
 // Reports configuration.
-type rpConfig struct {
+type ReportsConfig struct {
 	Enabled   bool       `json:"enabled"`
 	RateLimit int        `json:"rate_limit"`
 	Filter    []string   `json:"filter"`
@@ -62,14 +63,14 @@ type rpConfig struct {
 }
 
 // Scheduler configuration.
-type schConfig struct {
-	Enabled bool     `json:"enabled"`
-	Period  int      `json:"period"`
-	Reports rpConfig `json:"reports"`
+type SchedulerConfig struct {
+	Enabled bool          `json:"enabled"`
+	Period  int           `json:"period"`
+	Reports ReportsConfig `json:"reports"`
 }
 
 // Backups configuration.
-type bkConfig struct {
+type BackupsConfig struct {
 	Enabled bool   `json:"enabled"`
 	Period  int    `json:"period"`
 	Folder  string `json:"folder"`
@@ -79,20 +80,20 @@ type bkConfig struct {
 // Arc server configuration.
 // swagger:response
 type Configuration struct {
-	Address       string    `json:"address"`
-	Port          int       `json:"port"`
-	MaxReqSize    int64     `json:"max_req_size"`
-	Certificate   string    `json:"certificate"`
-	Key           string    `json:"key"`
-	Database      string    `json:"database"`
-	Secret        string    `json:"secret"`
-	Username      string    `json:"username"`
-	Password      string    `json:"password"`
-	TokenDuration int       `json:"token_duration"`
-	Compression   bool      `json:"compression"`
-	CheckExpired  int       `json:"check_expired"`
-	Scheduler     schConfig `json:"scheduler"`
-	Backups       bkConfig  `json:"backups"`
+	Address       string          `json:"address"`
+	Port          int             `json:"port"`
+	MaxReqSize    int64           `json:"max_req_size"`
+	Certificate   string          `json:"certificate"`
+	Key           string          `json:"key"`
+	Database      string          `json:"database"`
+	Secret        string          `json:"secret"`
+	Username      string          `json:"username"`
+	Password      string          `json:"password"`
+	TokenDuration int             `json:"token_duration"`
+	Compression   bool            `json:"compression"`
+	CheckExpired  int             `json:"check_expired"`
+	Scheduler     SchedulerConfig `json:"scheduler"`
+	Backups       BackupsConfig   `json:"backups"`
 }
 
 var Conf = Configuration{
@@ -102,18 +103,18 @@ var Conf = Configuration{
 	Certificate:   defCertificate,
 	Key:           defKey,
 	Database:      defDatabaseName,
-	Secret:        "",
+	Secret:        defSecret,
 	Username:      defUsername,
 	Password:      defPassword,
 	TokenDuration: defTokenDuration,
 	Compression:   defCompression,
-	Backups: bkConfig{
+	Backups: BackupsConfig{
 		Enabled: defBackupsEnabled,
 	},
-	Scheduler: schConfig{
+	Scheduler: SchedulerConfig{
 		Enabled: true,
 		Period:  defSchedulerPeriod,
-		Reports: rpConfig{
+		Reports: ReportsConfig{
 			Enabled:   false,
 			RateLimit: defRateLimit,
 		},
