@@ -22,10 +22,11 @@ func Import(filename string) error {
 	if err != nil {
 		return err
 	}
+	defer in.Close()
 
-	tr := tar.NewReader(in)
+	archiver := tar.NewReader(in)
 	for {
-		header, err := tr.Next()
+		header, err := archiver.Next()
 		switch {
 		// if no more files are found return
 		case err == io.EOF:
@@ -61,7 +62,7 @@ func Import(filename string) error {
 			defer f.Close()
 
 			// copy over contents
-			if _, err := io.Copy(f, tr); err != nil {
+			if _, err := io.Copy(f, archiver); err != nil {
 				return err
 			}
 		}
