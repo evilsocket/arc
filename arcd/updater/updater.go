@@ -15,15 +15,18 @@ import (
 	"time"
 )
 
+var versionParser = regexp.MustCompile("^https://github\\.com/evilsocket/arc/releases/tag/v([\\d\\.a-z]+)$")
+
 func worker(currVersion string) {
+	interval := time.Duration(60) * time.Minute
+	client := &http.Client{
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
+	}
+
 	for {
 		log.Debugf("Checking for newer versions ...")
-
-		client := &http.Client{
-			CheckRedirect: func(req *http.Request, via []*http.Request) error {
-				return http.ErrUseLastResponse
-			},
-		}
 
 		req, _ := http.NewRequest("GET", "https://github.com/evilsocket/arc/releases/latest", nil)
 		resp, err := client.Do(req)
@@ -40,8 +43,7 @@ func worker(currVersion string) {
 
 		log.Debugf("Location header = '%s'", location)
 
-		var verParser = regexp.MustCompile("^https://github\\.com/evilsocket/arc/releases/tag/v([\\d\\.a-z]+)$")
-		m := verParser.FindStringSubmatch(location)
+		m := versionParser.FindStringSubmatch(location)
 		if len(m) == 2 {
 			latest := m[1]
 			log.Debugf("Latest version is '%s'", latest)
@@ -55,7 +57,7 @@ func worker(currVersion string) {
 			log.Warningf("Unexpected location header: '%s'.", location)
 		}
 
-		time.Sleep(time.Duration(60) * time.Minute)
+		time.Sleep(interval)
 	}
 }
 
