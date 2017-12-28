@@ -11,9 +11,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/evilsocket/arc/arcd/log"
+	"github.com/evilsocket/arc/arcd/utils"
 	"io/ioutil"
-	"os"
-	"path/filepath"
 )
 
 const (
@@ -43,18 +42,13 @@ type App struct {
 }
 
 func Open(path string) (err error, app *App) {
-	if path, err = filepath.Abs(path); err != nil {
+	if path, err = utils.ExpandPath(path); err != nil {
 		return
 	}
 
 	log.Debugf("Loading web application from %s ...", log.Bold(path))
 
-	stat, err := os.Stat(path)
-	if err != nil {
-		return
-	}
-
-	if stat.IsDir() == false {
+	if utils.IsFolder(path) == false {
 		err = fmt.Errorf("Path %s is not a folder.", path)
 		return
 	}
@@ -66,7 +60,7 @@ func Open(path string) (err error, app *App) {
 		Description: "",
 	}
 
-	if _, err = os.Stat(manifest_fn); err == nil {
+	if utils.Exists(manifest_fn) {
 		log.Debugf("Loading manifest from %s ...", log.Bold(manifest_fn))
 		raw, ferr := ioutil.ReadFile(manifest_fn)
 		if ferr != nil {
