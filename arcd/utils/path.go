@@ -22,10 +22,16 @@ func Exists(path string) bool {
 	return true
 }
 
+func IsFolder(path string) bool {
+	if stat, err := os.Stat(path); err != nil {
+		return stat.IsDir()
+	}
+	return false
+}
+
 // ExpandPath return Absolute path
 // replace ~ by the path to home directory
 func ExpandPath(path string) (string, error) {
-
 	// Check if path is empty
 	if path != "" {
 		if strings.HasPrefix(path, "~") {
