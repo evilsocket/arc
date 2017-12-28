@@ -17,6 +17,9 @@ import (
 )
 
 func Export(filename string) error {
+	Lock()
+	defer Unlock()
+
 	log.Importantf("Exporting %d stores from %s ...", dbIndex.NumRecords(), dbIndex.path)
 
 	out, err := os.Create(filename)
@@ -24,11 +27,8 @@ func Export(filename string) error {
 		return nil
 	}
 
-	tw := tar.NewWriter(out)
-	defer tw.Close()
-
-	Lock()
-	defer Unlock()
+	archiver := tar.NewWriter(out)
+	defer archiver.Close()
 
 	return filepath.Walk(dbIndex.path, func(file string, fi os.FileInfo, err error) error {
 		// return on any error
@@ -45,9 +45,7 @@ func Export(filename string) error {
 		// update the name to correctly reflect the desired destination when untaring
 		header.Name = strings.TrimPrefix(strings.Replace(file, dbIndex.path, "", -1), string(filepath.Separator))
 
-		log.Debugf("Writing header for '%s'", header.Name)
-		// write the header
-		if err := tw.WriteHeader(header); err != nil {
+		if err := archiver.WriteHeader(header); err != nil {
 			return err
 		}
 
@@ -57,15 +55,14 @@ func Export(filename string) error {
 		}
 
 		log.Debugf("Writing contents for %s ...", file)
-		// open files for taring
 		f, err := os.Open(file)
-		defer f.Close()
 		if err != nil {
 			return err
 		}
+		defer f.Close()
 
 		// copy file data into tar writer
-		if _, err := io.Copy(tw, f); err != nil {
+		if _, err := io.Copy(archiver, f); err != nil {
 			return err
 		}
 
