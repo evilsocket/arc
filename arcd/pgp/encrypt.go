@@ -78,30 +78,40 @@ func createEntity() *openpgp.Entity {
 	return &e
 }
 
-func Encrypt(message string) (err error, ciphertext string) {
+func EncryptStream(r io.Reader, w io.Writer) error {
 	if PrivateKey == nil || PublicKey == nil {
-		return fmt.Errorf("One or both PGP keys has not been loaded."), ""
+		return fmt.Errorf("One or both PGP keys has not been loaded.")
 	}
 
-	var buffer bytes.Buffer
-	w, err := armor.Encode(&buffer, "PGP MESSAGE", make(map[string]string))
+	armorer, err := armor.Encode(w, "PGP MESSAGE", make(map[string]string))
 	if err != nil {
-		return err, ""
+		return err
 	}
 
 	toEntity := createEntity()
-	plain, err := openpgp.Encrypt(w, []*openpgp.Entity{toEntity}, nil, nil, nil)
+	crypter, err := openpgp.Encrypt(armorer, []*openpgp.Entity{toEntity}, nil, nil, nil)
 	if err != nil {
+		return err
+	}
+
+	_, err = io.Copy(crypter, r)
+	if err != nil {
+		return err
+	}
+
+	crypter.Close()
+	armorer.Close()
+
+	return nil
+}
+
+func Encrypt(message string) (err error, ciphertext string) {
+	writer := new(bytes.Buffer)
+	reader := strings.NewReader(message)
+
+	if err := EncryptStream(reader, writer); err != nil {
 		return err, ""
 	}
 
-	_, err = io.Copy(plain, strings.NewReader(message))
-	if err != nil {
-		return err, ""
-	}
-
-	plain.Close()
-	w.Close()
-
-	return nil, buffer.String()
+	return nil, writer.String()
 }
