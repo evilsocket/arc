@@ -23,7 +23,8 @@ func Exists(path string) bool {
 }
 
 func IsFolder(path string) bool {
-	if stat, err := os.Stat(path); err != nil {
+	stat, err := os.Stat(path)
+	if err != nil {
 		return false
 	}
 	return stat.IsDir()
