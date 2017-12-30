@@ -23,10 +23,11 @@ func Exists(path string) bool {
 }
 
 func IsFolder(path string) bool {
-	if stat, err := os.Stat(path); err != nil {
-		return stat.IsDir()
+	stat, err := os.Stat(path)
+	if err != nil {
+		return false
 	}
-	return false
+	return stat.IsDir()
 }
 
 // ExpandPath return Absolute path
