@@ -11,7 +11,7 @@ SERVICE_LN_DIR=/etc/systemd/system
 
 default: build
 
-build: deps fmt vet lint 
+build: deps fmt vet lint
 	@go build $(FLAGS) -o $(TARGET) $(SRC_PATH)
 
 vet:
@@ -33,11 +33,12 @@ deps:
 	@go get github.com/gin-gonic/gin
 	@go get gopkg.in/unrolled/secure.v1
 	@go get github.com/theckman/go-flock
-	@go get gopkg.in/gomail.v2 
+	@go get gopkg.in/gomail.v2
 	@go get github.com/stretchr/testify/assert
-	@go get github.com/dgrijalva/jwt-go 
+	@go get github.com/dgrijalva/jwt-go
 	@go get golang.org/x/crypto/...
 	@go get golang.org/x/crypto/openpgp
+	@go get -u github.com/golang/lint/golint
 
 # runs on previlege
 install: build
