@@ -21,7 +21,7 @@ func Security(tlsFingerprint string) gin.HandlerFunc {
 		ContentTypeNosniff: true,
 		BrowserXssFilter:   true,
 		ReferrerPolicy:     "same-origin",
-		PublicKey:          fmt.Sprintf("pin-sha256=\"%s\"; max-age=5184000", tlsFingerprint),
+		// PublicKey:          fmt.Sprintf("pin-sha256=\"%s\"; max-age=5184000", tlsFingerprint),
 	})
 
 	return func(c *gin.Context) {

@@ -116,7 +116,8 @@ PasswordEntry.prototype.input = function(with_value) {
                     this.btn( 'copy', 'clipboard' ) +
                     this.btn( 'make', 'refresh' ) +
                 '</span>' +
-            '</div>';
+            '</div>' +
+            '<div class="pwstrength_viewport_progress"></div>';
 }
 
 PasswordEntry.prototype.Render = function(with_value){

@@ -639,3 +639,7 @@ li.pinned:before {
     from { transform: scale(1) rotate(0deg);}
     to { transform: scale(1) rotate(360deg);}
 }
+
+.pwstrength_viewport_progress {
+    margin-top: 5px;
+}
