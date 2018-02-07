@@ -48,6 +48,10 @@ Entry.prototype.Describe = function() {
     });
 }
 
+Entry.prototype.safeValue = function() {
+    return escapeHtml(this.value);
+}
+
 Entry.prototype.formGroup = function(input) {
     return '<div class="form-group">' + 
              '<h5 class="editable label label-default entry-title label-' + this.type + '" id="editable_' + this.id + '">' + this.name + '</h5>' +
@@ -63,7 +67,7 @@ Entry.prototype.input = function(type, with_value) {
              'type="' + type + '" ' + 
              'name="' + this.id + '" ' + 
              'id="' + this.id + '" ' +
-             'value="' + ( with_value ? this.value : '' ) + '"' +
+             'value="' + ( with_value ? this.safeValue() : '' ) + '"' +
              ( type == 'file' ? 'multiple' : '' ) +
              '/>';
 }
@@ -75,7 +79,7 @@ Entry.prototype.textarea = function(with_md, with_value) {
              'data-entry-type="' + this.type + '" ' +
              'name="' + this.name + '" ' + 
              'id="' + this.id + '" ' +
-             '>' + ( with_value ? this.value : '' ) + '</textarea>';
+             '>' + ( with_value ? this.safeValue() : '' ) + '</textarea>';
 }
 
 Entry.prototype.li = function(html) {

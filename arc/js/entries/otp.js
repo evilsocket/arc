@@ -54,7 +54,7 @@ TOTPEntry.prototype.input = function(with_value) {
              'placeholder="Enter the TOTP secret here." ' +
              'name="' + this.id + '" ' + 
              'id="' + this.id + '" ' +
-             'value="' + ( with_value ? this.value : '' ) + '"' +
+             'value="' + ( with_value ? this.safeValue() : '' ) + '"' +
              '/>';
 }
 

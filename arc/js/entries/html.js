@@ -27,7 +27,7 @@ HTMLEntry.prototype.textarea = function(with_value) {
              'data-entry-type="' + this.type + '" ' +
              'name="' + this.id + '" ' + 
              'id="' + this.id + '" ' +
-             '>' + ( with_value ? this.value : '' ) + '</textarea>';
+             '>' + ( with_value ? this.safeValue() : '' ) + '</textarea>';
 }
 
 HTMLEntry.prototype.Render = function(with_value){

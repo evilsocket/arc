@@ -111,7 +111,7 @@ PasswordEntry.prototype.input = function(with_value) {
                 'data-entry-type="' + this.type + '" ' +
                 'name="' + this.id + '" ' + 
                 'id="' + this.id + '" ' +
-                'value="' + ( with_value ? this.value : '' ) + '"/>' +
+                'value="' + ( with_value ? this.safeValue() : '' ) + '"/>' +
                 '<span class="input-group-btn">' +
                     this.btn( 'copy', 'clipboard' ) +
                     this.btn( 'make', 'refresh' ) +
