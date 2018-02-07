@@ -1,4 +1,4 @@
-(function ($) {
+(function($) {
   $.extend($.summernote.lang, {
     'tr-TR': {
       font: {
@@ -32,7 +32,8 @@
         maximumFileSize: 'Maksimum dosya boyutu',
         maximumFileSizeError: 'Maksimum dosya boyutu aşıldı.',
         url: 'Resim bağlantısı',
-        remove: 'Resimi Kaldır'
+        remove: 'Resimi Kaldır',
+        original: 'Original'
       },
       video: {
         video: 'Video',
