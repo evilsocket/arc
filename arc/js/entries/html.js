@@ -37,6 +37,12 @@ HTMLEntry.prototype.Render = function(with_value){
 HTMLEntry.prototype.OnRendered = function(id) {
     Entry.prototype.OnRendered.call( this );
 
+    // https://github.com/summernote/summernote/issues/2017
+    // https://github.com/evilsocket/arc/issues/130
+    if(!!document.createRange) {
+      document.getSelection().removeAllRanges();
+    }
+
     $('#' + this.id).summernote({
         popover: {
          image: [],
