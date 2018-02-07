@@ -9,7 +9,7 @@
 var g_EntryCounter = 0;
 
 var REGISTERED_TYPES = [
-    new URLEntry( "URL", "https://" ),
+    new URLEntry( "URL", "" ),
     new InputEntry( "Text Input", "" ),
     new CheckboxEntry( "Checkbox", "" ),
     new PasswordEntry( "Password", "" ),
@@ -123,7 +123,10 @@ function TypeProto(type) {
 // Clone a registered entry and make the instance id unique.
 function TypeClone(e) {
     var clone = $.extend( true, {}, e );
+
     clone.id += '_' + g_EntryCounter++;
+    clone.value = "";
+
     return clone;
 }
 
