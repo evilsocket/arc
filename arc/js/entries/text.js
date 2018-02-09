@@ -29,7 +29,7 @@ TextEntry.prototype.Render = function(with_value){
             'data-entry-type="' + this.type + '" ' +
             'class="div-editable" ' + 
             'id="' + this.id + '" ' +
-            'contenteditable="true">'+this.safeValue()+"</div>"
+            'contenteditable="true">'+this.value+"</div>"
     );
 }
 
