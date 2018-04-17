@@ -44,6 +44,7 @@ HTMLEntry.prototype.OnRendered = function(id) {
     }
 
     $('#' + this.id).summernote({
+        dialogsInBody: true,
         popover: {
          image: [],
          link: [],
