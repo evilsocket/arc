@@ -10,10 +10,14 @@
     notify_methods = {
       create_notification: function(options) {
           if( typeof(Notification) == 'function' ) {
-              return new Notification(options.title, options);
-          } else {
-              return null;
-          }
+              try {
+                return new Notification(options.title, options);
+              } 
+              catch(err) {
+                  console.log(err);
+              }
+          } 
+          return null;
       },
       close_notification: function(notification, options) {
         return setTimeout(notification.close.bind(notification), options.closeTime);
