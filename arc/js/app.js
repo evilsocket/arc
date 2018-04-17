@@ -768,6 +768,73 @@ app.controller('PMController', ['$scope', function (scope) {
         }
     };
 
+    scope.onShowMove = function() {
+        // this shouldn't happen, but better be safe than sorry :)
+        if( scope.secret == null ){
+            return;
+        }
+        scope.arc.Stores(function(stores){
+            var html = '';
+            for( var i = 0; i < stores.length; i++ ) {
+                var store = stores[i]
+                if( store.id != scope.store_id ) {
+                    html += '<option value="' + store.id + '">' + store.title + '</option>';
+                }
+            }
+
+            $('#copy_move_title').html(scope.secret.title);
+            $('#copy_move_store').html(html);
+            $('#copy_move_modal').css('z-index', '1500').modal();
+        },
+        scope.errorHandler );
+    };
+
+    scope.onMove = function() {
+        var move = $('#copy_move_action').val() == '1';
+        var dest_store_id = $('#copy_move_store').val();
+
+        $('#copy_move_modal').modal('hide');
+        $('#secret_modal').modal('hide');
+
+        scope.showLoader("Encrypting record ...", function(){
+            var [ expire_at, prune, pinned, record ] = scope.buildRecord();
+            record.Encrypt(scope.key).then(function(data){
+                var action = move ? "Moving" : "Copying";
+                var size = data.length
+                scope.trackTotal = size;
+                scope.progressAt = new Date();
+                scope.uploading = true;
+
+                scope.showLoader(action + " record ...", function(){
+                    var r = {
+                        'title': record.title,
+                        'expired_at': expire_at,
+                        'prune': prune,
+                        'pinned': pinned,
+                        'encryption': 'aes',
+                        'size': size
+                    };
+
+                    scope.arc.AddRecordTo( r, data, dest_store_id, function(record) {
+                        if( move ) {
+                            scope.arc.DeleteRecord(scope.secret, function(){ 
+                                scope.setSecret(null);
+                                scope.getStore( function() {
+                                    scope.$apply();
+                                });
+                            },
+                            scope.errorHandler );
+                        } else {
+                            scope.getStore(function() {});
+                        }
+                    },
+                    scope.errorHandler )
+                    .uploadProgress(scope.trackProgress);
+                });
+            });
+        });
+    };
+
     scope.showEvent = function(idx) {
         var e = scope.status.events[idx];
         $('#event_title').html( e.Title );

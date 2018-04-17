@@ -183,12 +183,15 @@ Arc.prototype.GetRecordBuffer = function( record_id, success, error ) {
     return this.Api( 'GET', path, null, success, error, true );
 };
 
+Arc.prototype.AddRecordTo = function( record, data, store_id, success, error ) {
+    return this.ApiStream( 'POST', '/api/store/' + store_id + '/records', record, data, success, error );
+}
+
 Arc.prototype.AddRecord = function( record, data, success, error ) {
     if( this.HasStore() == false ) {
         return error("No store has been selected.");
     }
-
-    return this.ApiStream( 'POST', '/api/store/' + this.store.id + '/records', record, data, success, error );
+    return this.AddRecordTo(record, data, this.store.id, success, error );
 }
 
 Arc.prototype.UpdateRecord = function( record, data, success, error) {
