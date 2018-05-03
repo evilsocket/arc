@@ -43,7 +43,7 @@ deps:
 # runs on previlege
 install: build
 	@echo "Installing $(TARGET) in $(PREFIX_DIR)"
-	@install -D -m 744 (SRC_PATH)/$(TARGET) $(BIN_DIR)/$(TARGET)
+	@install -D -m 744 $(SRC_PATH)/$(TARGET) $(BIN_DIR)/$(TARGET)
 	@setcap 'cap_net_bind_service=+ep' $(BIN_DIR)/$(TARGET)
 	@cp -r ../arc $(WEBAPP_DIR)/arc
 	@install -D -m 644 $(SRC_PATH)/sample_config.json $(CONFIG_DIR)/$(TARGET)/config.json
