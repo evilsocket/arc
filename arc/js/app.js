@@ -29,10 +29,17 @@ function downloadFor(id) {
     var name = $('#editable_' +  id).text();
     var file = FilesGet(id);
     var bytes = FileToUint8Array(file);
+   
+    if( "MobileWrapper" in window ) {
+        console.log( "Sending " + file.size + " bytes of data as " + name + " to the mobile layer." );
 
-    console.log( "Dowloading " + file.size + " bytes of data as " + name + " (" + file.type + ")" );
+        MobileWrapper.onFileDownload( name, bytes );
+    } else {
 
-    saveAs(new File([bytes], name, {type: file.type}));
+        console.log( "Dowloading " + file.size + " bytes of data as " + name + " (" + file.type + ")" );
+
+        saveAs(new File([bytes], name, {type: file.type}));
+    }
 }
 
 function onGenerate(n) {
