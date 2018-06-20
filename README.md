@@ -29,9 +29,7 @@ Records are generated, encrypted and decrypted **client side** by `arc` (with AE
 Elements can be created (with optional expiration dates), arranged and edited using `arc` and are stored on `arcd` as AES256 encrypted (and compressed) raw data.
 
 <p align="center">
-    <a href="https://www.youtube.com/watch?v=8iG7rHXZtiA">
-        <img src="https://img.youtube.com/vi/8iG7rHXZtiA/hqdefault.jpg" alt="random demo"/>
-    </a>
+  <img src="https://raw.githubusercontent.com/evilsocket/arc/master/screenshot.png" alt="ARC"/>
 </p>
 
 ## Hardware? 
