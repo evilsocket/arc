@@ -60,8 +60,15 @@ Entry.prototype.formGroup = function(input) {
             '</div>';
 }
 
+Entry.prototype.btn = function(name, icon) {
+    return '<button id="btn_entry_' + name + '_' + this.id + '" type="button" class="btn btn-default">' +
+             '<span class="fa fa-' + icon + '"></span>' + 
+           '</button>';
+}
+
 Entry.prototype.input = function(type, with_value) {
-    return '<input ' + 
+    return '<div class="input-group mif">' +
+            '<input ' + 
              'class="form-control" ' +
              'data-entry-type="' + this.type + '" ' +
              'type="' + type + '" ' + 
@@ -69,7 +76,11 @@ Entry.prototype.input = function(type, with_value) {
              'id="' + this.id + '" ' +
              'value="' + ( with_value ? this.safeValue() : '' ) + '"' +
              ( type == 'file' ? 'multiple' : '' ) +
-             '/>';
+             '/>' +
+             '<span class="input-group-btn">' +
+                this.btn( 'copy', 'clipboard' ) +
+             '</span>' +
+            '</div>';
 }
 
 Entry.prototype.textarea = function(with_md, with_value) {
@@ -110,4 +121,18 @@ Entry.prototype.Render = function(with_value){
     return "Unhandled entry type " + this.type;
 }
 
-Entry.prototype.OnRendered = function() { }
+Entry.prototype.OnRendered = function() { 
+    var elem_id = this.id;
+    var $btn_entry_copy = $('#btn_entry_copy_' + elem_id);
+    $btn_entry_copy.click(function() {
+        var prev = $btn_entry_copy.html();
+        var value = $('#' + elem_id).val();
+
+        copyTextToClipboard(value);
+
+        $btn_entry_copy.html("<small>Copied!</small>");
+        setTimeout(function(){
+            $btn_entry_copy.html(prev);
+        }, 1000);
+    });
+}
