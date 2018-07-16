@@ -108,8 +108,9 @@ PasswordEntry.prototype.input = function(with_value) {
                 'id="' + this.id + '" ' +
                 'value="' + ( with_value ? this.safeValue() : '' ) + '"/>' +
                 '<span class="input-group-btn">' +
-                    this.btn( 'copy', 'clipboard' ) +
                     this.btn( 'make', 'refresh' ) +
+                    this.btn( 'view', 'eye' ) +
+                    this.btn( 'copy', 'clipboard' ) +
                 '</span>' +
             '</div>' +
             '<div class="pwstrength_viewport_progress"></div>';
@@ -140,6 +141,19 @@ PasswordEntry.prototype.OnRendered = function() {
         }
     };
     $('#' + elem_id).pwstrength(options);
+
+    $('#btn_pass_view_' + elem_id).click(function(e){
+        var type = $('#' + elem_id).attr('type');
+        var $span = $('#btn_pass_view_' + elem_id + ' > span.fa');
+        
+        if( type == 'password' ) {
+            $span.removeClass('fa-eye').addClass('fa-eye-slash');
+            $('#' + elem_id).attr('type', 'text');
+        } else {
+            $span.removeClass('fa-eye-slash').addClass('fa-eye');
+            $('#' + elem_id).attr('type', 'password');
+        }
+    });
 
     var $btn_pass_copy = $('#btn_pass_copy_' + elem_id);
     $btn_pass_copy.click(function() {
