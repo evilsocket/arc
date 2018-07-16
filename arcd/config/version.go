@@ -9,5 +9,5 @@ package config
 
 const (
 	APP_NAME    = "arcd"
-	APP_VERSION = "1.2.1"
+	APP_VERSION = "1.3.0"
 )
