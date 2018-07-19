@@ -67,9 +67,9 @@ Entry.prototype.btn = function(name, icon) {
 }
 
 Entry.prototype.input = function(type, with_value) {
-    return '<div class="input-group mif">' +
+    return '<div ' + ( type != 'file' ? 'class="input-group mif"' : '' ) + '>' +
             '<input ' + 
-             'class="form-control" ' +
+             ( type != 'file' ? 'class="form-control" ' : ' ' )+
              'data-entry-type="' + this.type + '" ' +
              'type="' + type + '" ' + 
              'name="' + this.id + '" ' + 
@@ -77,9 +77,10 @@ Entry.prototype.input = function(type, with_value) {
              'value="' + ( with_value ? this.safeValue() : '' ) + '"' +
              ( type == 'file' ? 'multiple' : '' ) +
              '/>' +
+             ( type != 'file' ? 
              '<span class="input-group-btn">' +
                 this.btn( 'copy', 'clipboard' ) +
-             '</span>' +
+             '</span>' : '' ) +
             '</div>';
 }
 
