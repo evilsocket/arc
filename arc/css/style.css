@@ -336,6 +336,13 @@ button.btn-password {
     border: 1px solid #ced4da;
 }
 
+button.btn-inner {
+    background-color: white;
+    border-top: 1px solid #ced4da;
+    border-bottom: 1px solid #ced4da;
+    border-right: 1px solid #ced4da;
+}
+
 .pwstrength_viewport_progress {
     margin-top: -10px;
     margin-bottom: 15px;

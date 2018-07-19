@@ -61,15 +61,15 @@ Entry.prototype.formGroup = function(input) {
 }
 
 Entry.prototype.btn = function(name, icon) {
-    return '<button id="btn_entry_' + name + '_' + this.id + '" type="button" class="btn btn-default">' +
-             '<span class="fa fa-' + icon + '"></span>' + 
+    return '<button id="btn_entry_' + name + '_' + this.id + '" type="button" class="btn btn-default btn-inner">' +
+             '<span class="fa fa-' + icon + '" style="color:#bbb"></span>' + 
            '</button>';
 }
 
 Entry.prototype.input = function(type, with_value) {
     return '<div ' + ( type != 'file' ? 'class="input-group mif"' : '' ) + '>' +
             '<input ' + 
-             ( type != 'file' ? 'class="form-control" ' : ' ' )+
+             ( type != 'file' ? 'class="form-control" style="border-right: none" ' : ' ' )+
              'data-entry-type="' + this.type + '" ' +
              'type="' + type + '" ' + 
              'name="' + this.id + '" ' + 
