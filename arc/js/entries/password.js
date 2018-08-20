@@ -39,9 +39,9 @@ PasswordEntry.prototype.Icon = function() {
     return 'key';
 }
 
-PasswordEntry.prototype.btn = function(name, icon) {
-    return '<button id="btn_pass_' + name + '_' + this.id + '" type="button" class="btn btn-default btn-password">' +
-             '<span class="fa fa-' + icon + '"></span>' + 
+PasswordEntry.prototype.btn = function(name, icon, borderRight) {
+    return '<button id="btn_pass_' + name + '_' + this.id + '" type="button" class="btn btn-default btn-password btn-inner" style="' + ( borderRight ? '' : 'border-right: none' ) + '">' +
+             '<span class="fa fa-' + icon + '" style="color:#bbb"></span>' + 
            '</button>';
 }
 
@@ -50,14 +50,15 @@ PasswordEntry.prototype.input = function(with_value) {
             '<input ' + 
                 'type="password" ' + 
                 'class="form-control" ' +
+                'style="border-right: none" ' +
                 'data-entry-type="' + this.type + '" ' +
                 'name="' + this.id + '" ' + 
                 'id="' + this.id + '" ' +
                 'value="' + ( with_value ? this.safeValue() : '' ) + '"/>' +
                 '<span class="input-group-btn">' +
-                    this.btn( 'make', 'refresh' ) +
-                    this.btn( 'view', 'eye' ) +
-                    this.btn( 'copy', 'clipboard' ) +
+                    this.btn( 'make', 'refresh', false ) +
+                    this.btn( 'view', 'eye', false ) +
+                    this.btn( 'copy', 'clipboard', true ) +
                 '</span>' +
             '</div>' +
             '<div class="pwstrength_viewport_progress"></div>';

@@ -341,6 +341,7 @@ button.btn-inner {
     border-top: 1px solid #ced4da;
     border-bottom: 1px solid #ced4da;
     border-right: 1px solid #ced4da;
+    border-left: none;
 }
 
 .pwstrength_viewport_progress {
