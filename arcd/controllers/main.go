@@ -21,6 +21,10 @@
 package controllers
 
 import (
+	"encoding/json"
+	"io"
+	"time"
+
 	"github.com/evilsocket/arc/arcd/app"
 	"github.com/evilsocket/arc/arcd/config"
 	"github.com/evilsocket/arc/arcd/db"
@@ -28,9 +32,6 @@ import (
 	"github.com/evilsocket/arc/arcd/log"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
-	"github.com/gin-gonic/gin/json"
-	"io"
-	"time"
 )
 
 type Status struct {
