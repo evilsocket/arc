@@ -2,11 +2,12 @@
 *.o
 *.a
 *.so
+build
 
 # Folders
 _obj
 _test
-arcd/_dependencies
+arc/_dependencies
 
 # Architecture specific extensions/prefixes
 *.[568vq]
@@ -25,3 +26,12 @@ _testmain.go
 dist
 cryptojs_decrypt.js
 sample_config.json
+
+_vendor
+arc
+config.json
+*.db
+gomake.json
+
+.DS_Store
+.idea

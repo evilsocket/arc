@@ -6,12 +6,8 @@ go:
 git:
   depth: 3
 
-before_install:
-  - cd arcd
 install:
-  - make deps
-
-go_import_path: github.com/evilsocket/arc
+  - make
 
 script:
   - make test

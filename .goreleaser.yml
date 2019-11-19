@@ -1,6 +1,6 @@
 builds:
-  - main: arcd/main.go
-    binary: arcd
+  - main: cmd/arc/*.go
+    binary: arc
     env:
       - CGO_ENABLED=0
     goos:
@@ -40,4 +40,3 @@ archive:
       - README.md
       - Dockerfile
       - sample_config.json
-      - arc/**/*

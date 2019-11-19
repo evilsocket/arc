@@ -12,7 +12,7 @@
 
 ---
 
-Arc is a manager for your secrets made of `arcd`, a RESTful API server written in Go which exposes read and write primitives for encrypted records, and `arc`, the client application implemented in HTML5 and javascript, which runs in every modern browser and  it is served by `arcd` itself.
+Arc is a manager for your secrets made of `arc`, a RESTful API server written in Go which exposes read and write primitives for encrypted records, and `arc`, the client application implemented in HTML5 and javascript, which runs in every modern browser and  it is served by `arc` itself.
 
 Records are generated, encrypted and decrypted **client side** by `arc` (with AES256 in GCM mode, using 10000 iterations for the PBKDF2 key derivation function, everything [WebCrypto](https://www.w3.org/TR/WebCryptoAPI/) based ), which offers an intuitive management system equipped with UI widgets including:
 
@@ -26,7 +26,7 @@ Records are generated, encrypted and decrypted **client side** by `arc` (with AE
 - Bitcoin wallet address with auto updating balance.
 - Manager for [Time-based One-time Password Algorithm (TOTP) codes](http://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm) as per the [TOTP RFC Draft](http://tools.ietf.org/id/draft-mraihi-totp-timebased-06.html). This component produces the same codes as the Google Authenticator app and can be used for 2FA.
 
-Elements can be created (with optional expiration dates), arranged and edited using `arc` and are stored on `arcd` as AES256 encrypted (and compressed) raw data.
+Elements can be created (with optional expiration dates), arranged and edited using `arc` and are stored on `arc` as AES256 encrypted (and compressed) raw data.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/evilsocket/arc/master/screenshot.png" alt="ARC"/>
@@ -34,7 +34,7 @@ Elements can be created (with optional expiration dates), arranged and edited us
 
 ## Hardware? 
 
-Ideally `arcd` should run on a dedicated portable hardware like a Raspberry Pi Zero, for instance it is possible to simply access it via Bluetooth and a modern browser once configured [btnap](https://github.com/bablokb/pi-btnap), but precompiled versions are available for [several operating systems and architectures](https://github.com/evilsocket/arc/releases) (including ARM, ARM64 and MIPS) therefore Arc can run on pretty much everything with a CPU, from [your smartphone](https://twitter.com/evilsocket/status/942846649713426434), your router, your Mac or your Windows computer. As a rule of thumb, the more [isolated](https://en.wikipedia.org/wiki/Compartmentalization_(information_security)) the hardware is, the better. 
+Ideally `arc` should run on a dedicated portable hardware like a Raspberry Pi Zero, for instance it is possible to simply access it via Bluetooth and a modern browser once configured [btnap](https://github.com/bablokb/pi-btnap), but precompiled versions are available for [several operating systems and architectures](https://github.com/evilsocket/arc/releases) (including ARM, ARM64 and MIPS) therefore Arc can run on pretty much everything with a CPU, from [your smartphone](https://twitter.com/evilsocket/status/942846649713426434), your router, your Mac or your Windows computer. As a rule of thumb, the more [isolated](https://en.wikipedia.org/wiki/Compartmentalization_(information_security)) the hardware is, the better. 
 
 The idea is to use Arc as a single storage and manager for your passwords, encrypted notes, files and `-all the secret things here-`.
 
@@ -44,19 +44,17 @@ The idea is to use Arc as a single storage and manager for your passwords, encry
 
 ## Usage
 
-You can find binary releases of Arc [here](https://github.com/evilsocket/arc/releases), if instead you want to build it from source, make sure you have Go >= 1.8 installed and configured correctly, then clone this repository, install the dependencies and compile the `arcd` server component:
+You can find binary releases of Arc [here](https://github.com/evilsocket/arc/releases), if instead you want to build it from source, make sure you have Go >= 1.8 installed and configured correctly, then clone this repository, install the dependencies and compile the `arc` server component:
 
-    git clone https://github.com/evilsocket/arc $GOPATH/src/github.com/evilsocket/arc
-    cd $GOPATH/src/github.com/evilsocket/arc/arcd
-    make
+    go get github.com/evilsocket/arc/cmd/arc
 
 Once you either extracted the release archive or compiled it yourself, copy `sample_config.json` to a new `config.json` file and customize it. The most important fields to change are the `secret` ( a key used for token authentication ), the `username` and the `password`, which is the `bcrypt` hash of the authentication password you want to use, you can generate a new one with:
 
-    ./arcd password "your-new-password" <optional-cost>
+    arc password "your-new-password" <optional-cost>
 
-Once everything is ready, youn can finally start the `arcd` server:
+Once everything is ready, youn can finally start the `arc` server:
 
-    ./arcd -config config.json -app arc
+    arc -config config.json -app arc
 
 Now browse `https://localhost:8443/` ( or the address and port you configured ) and login with the configured credentials (make sure to add the generated HTTPS certificate as an exception in your browser).
 
@@ -117,8 +115,8 @@ It is necessary to change only the `username` and `password` access parameters o
 
 | Configuration | Description |
 | ------------- | ------------- |
-| address | IP address to bind the `arcd` server to. |
-| port | TCP to bind the `arcd` server to. |
+| address | IP address to bind the `arc` server to. |
+| port | TCP to bind the `arc` server to. |
 | max\_req\_size | Maximum size in bytes to accept as a JSON request, it does not include record data. |
 | username | API access username. |
 | password | API access password `bcrypt` hash. |
@@ -136,7 +134,7 @@ It is necessary to change only the `username` and `password` access parameters o
 | scheduler.reports.to | Destination email address. |
 | scheduler.reports.smtp | SMTP server information. |
 | scheduler.reports.pgp.enabled | If true, email notifications will be encrypted with PGP. |
-| scheduler.reports.pgp.keys.private | Path of the private key file to use to encrypt emails, if not found or empty it will be automatically generated by `arcd`. |
+| scheduler.reports.pgp.keys.private | Path of the private key file to use to encrypt emails, if not found or empty it will be automatically generated by `arc`. |
 | scheduler.reports.pgp.keys.public | Path of the PGP public key of the email notifications recipient. |
 | backups.enabled | Enable automatic backups. |
 | backups.period | Number of seconds between one backup and the next one. |
@@ -178,11 +176,11 @@ Email reports can be optionally encrypted by the server using PGP, in this case 
 
 You can export stores and their encrypted records to a TAR file:
 
-    ./arcd -config config.json -output ~/backup.tar -export
+    ./arc -config config.json -output ~/backup.tar -export
 
 Exported archives can be later imported with:
 
-    ./arcd -config config.json -import ~/backup.tar
+    ./arc -config config.json -import ~/backup.tar
 
 ## Useful Commands
 
@@ -190,14 +188,14 @@ Generate self signed certificate in order to use Arc on HTTPS:
 
     openssl req -new -x509 -sha256 -key key.pem -out certificate-pem -days 365  
 
-Allow the `arcd` binary to bind to privileged ports without having root privileges (bind to port 443 for HTTPS without root):
+Allow the `arc` binary to bind to privileged ports without having root privileges (bind to port 443 for HTTPS without root):
 
-    sudo setcap 'cap_net_bind_service=+ep' arcd
+    sudo setcap 'cap_net_bind_service=+ep' arc
 
-Lines to add to `/etc/rc.local` in order to make arcd start at boot (running as `pi` user, configuration, logs and and ui are in the home folder):
+Lines to add to `/etc/rc.local` in order to make arc start at boot (running as `pi` user, configuration, logs and and ui are in the home folder):
 
     export ARC=/home/pi/
-    sudo -H -u pi bash -c "$ARC/arcd -config $ARC/config.json -app $ARC/arc -log-file $ARC/arcd.log &"
+    sudo -H -u pi bash -c "$ARC/arc -config $ARC/config.json -app $ARC/arc -log-file $ARC/arc.log &"
 
 ## Bugs
 

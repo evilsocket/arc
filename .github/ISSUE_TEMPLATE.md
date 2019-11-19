@@ -15,8 +15,8 @@ Please provide:
 * Contents of the json configuration file you are using (**remove the password hash before posting**).
 * Operating system and browser versions used as clients.
 * If possible, any javascript log on the browser developer console.
-* `uname -a` of the arcd server.
-* Debug output while reproducing the issue ( `arcd --log-debug ...` ).
+* `uname -a` of the arc server.
+* Debug output while reproducing the issue ( `arc --log-debug ...` ).
 
 ### Steps to Reproduce
 

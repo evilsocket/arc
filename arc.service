@@ -1,0 +1,10 @@
+[Unit]
+Description=arc server
+After=network.target
+
+[Service]
+Type=simple
+User=%i
+ExecStart=/usr/local/bin/arc -config /usr/local/etc/arc/config.json
+StandardOutput=syslog
+Restart=on-failure

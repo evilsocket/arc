@@ -61,12 +61,12 @@ tar -zxf $ARCHIVE_FILE -C $DEST_PATH
 
 cd - &>/dev/null
 
-echo "@ Stopping arcd ..."
-sudo killall -9 arcd &>/dev/null
+echo "@ Stopping arc ..."
+sudo killall -9 arc &>/dev/null
 
 echo "@ Restarting ..."
 rm -rf $DEST_PATH/*.log
-sudo setcap 'cap_net_bind_service=+ep' $DEST_PATH/arcd
+sudo setcap 'cap_net_bind_service=+ep' $DEST_PATH/arc
 
 sudo /etc/rc.local
 
