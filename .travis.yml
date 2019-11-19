@@ -8,7 +8,3 @@ git:
 
 install:
   - make
-
-script:
-  - make test
-
