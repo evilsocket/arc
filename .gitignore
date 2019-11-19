@@ -7,7 +7,6 @@ build
 # Folders
 _obj
 _test
-arc/_dependencies
 
 # Architecture specific extensions/prefixes
 *.[568vq]
@@ -28,7 +27,6 @@ cryptojs_decrypt.js
 sample_config.json
 
 _vendor
-arc
 config.json
 *.db
 gomake.json
