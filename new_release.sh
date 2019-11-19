@@ -3,7 +3,7 @@
 
 VERSION_FILE=$(dirname "${BASH_SOURCE[0]}")/config/version.go
 echo "version file is $VERSION_FILE"
-CURRENT_VERSION=$(cat $VERSION_FILE | grep Version | cut -d '"' -f 2)
+CURRENT_VERSION=$(cat $VERSION_FILE | grep APP_VERSION | cut -d '"' -f 2)
 TO_UPDATE=(
   "$VERSION_FILE"
   webui/js/version.js
