@@ -20,6 +20,9 @@ for file in "${TO_UPDATE[@]}"; do
   git add $file
 done
 
+make assets
+git add webui
+
 git commit -m "releasing v$NEW_VERSION"
 git push
 git tag -a v$NEW_VERSION -m "release v$NEW_VERSION"
