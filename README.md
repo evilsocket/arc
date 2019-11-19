@@ -195,7 +195,7 @@ Allow the `arc` binary to bind to privileged ports without having root privilege
 Lines to add to `/etc/rc.local` in order to make arc start at boot (running as `pi` user, configuration, logs and and ui are in the home folder):
 
     export ARC=/home/pi/
-    sudo -H -u pi bash -c "$ARC/arc -config $ARC/config.json -app $ARC/arc -log-file $ARC/arc.log &"
+    sudo -H -u pi bash -c "$ARC/arc -config $ARC/config.json -log-file $ARC/arc.log &"
 
 ## Bugs
 
