@@ -56,7 +56,7 @@
   <script type="text/javascript" src="/js/app.js"></script>
 </head>
 <body id="ngscope" ng-app="PM" ng-controller="PMController">
-  <div class="container-fluid">
+  <div class="main-container container-fluid">
 
     <div ng-include src="'/views/modals/error.html?v=2'"></div>
     <div ng-include src="'/views/modals/event.html'"></div>
@@ -78,7 +78,6 @@
 
       <!-- no store selected, show available stores -->
       <div ng-switch-when="false">
-        <br/>
         <ul id="stores_list" class="list-group stores-list">
           <li class="list-group-item">
             <div class="row">
@@ -111,7 +110,6 @@
 
       <!-- store selected, load records from it -->
       <div ng-switch-when="true">
-        <br/>
         <ul id="secrets_list" class="list-group secrets-list">
 
           <li class="list-group-item nohover">
@@ -193,10 +191,11 @@
 
           <span ng-switch on="status.online">
             <div ng-switch-when="false" style="color: red; font-weight: bold;">
-              Server is offline.
+              The API is offline.
             </div>
             <div ng-switch-when="true">
-              The server is running v{{ status.version }}, started {{ status.started | timeago }}, {{ status.size | bytes }} big, latency is {{ latency }} ms.
+              Running v{{ status.version }}, started {{ status.started | timeago }}, {{ status.size | bytes }} big,
+              latency is {{ latency }} ms.
             </div>
           </span>
 
