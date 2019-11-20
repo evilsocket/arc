@@ -28,10 +28,9 @@ clean:
 	@rm -rf build
 
 install: build
-	@echo "Installing $(TARGET) in $(PREFIX_DIR)"
-	@install -D -m 744 build/$(TARGET) $(BIN_DIR)/$(TARGET)
-	@setcap 'cap_net_bind_service=+ep' $(BIN_DIR)/$(TARGET)
-	@install -D -m 644 sample_config.json $(CONFIG_DIR)/$(TARGET)/config.json
-	@install -D -m 644 arc.service $(SERVICE_DIR)/arc.service
-	@ln -s $(SERVICE_DIR)/arc.service $(SERVICE_LN_DIR)/arc.service || echo "symlink already exists...skipping"
-	@echo "Done."
+	@cp build/$(TARGET) /usr/local/bin/
+	@setcap 'cap_net_bind_service=+ep' /usr/local/bin/$(TARGET)
+	@mkdir -p /usr/local/etc/$(TARGET)
+	@cp sample_config.json /usr/local/etc/$(TARGET)/config.json
+	@cp arc.service /etc/systemd/system/
+    @systemctl daemon-reload
