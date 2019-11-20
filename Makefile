@@ -33,4 +33,4 @@ install: build
 	@mkdir -p /usr/local/etc/$(TARGET)
 	@cp sample_config.json /usr/local/etc/$(TARGET)/config.json
 	@cp arc.service /etc/systemd/system/
-    @systemctl daemon-reload
+	@systemctl daemon-reload
