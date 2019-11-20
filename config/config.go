@@ -10,11 +10,11 @@ package config
 import (
 	"encoding/json"
 	"errors"
-	"io/ioutil"
-
-	"github.com/evilsocket/arc/log"
 	"github.com/evilsocket/arc/utils"
+	"github.com/evilsocket/islazy/log"
+	"github.com/evilsocket/islazy/tui"
 	"golang.org/x/crypto/bcrypt"
+	"io/ioutil"
 )
 
 const (
@@ -125,7 +125,7 @@ var Conf = Configuration{
 // Load function convert a loaded JSON config file to a config struct
 // return err if secret param is empty
 func Load(filename string) error {
-	log.Infof("Loading configuration from %s ...", log.Bold(filename))
+	log.Info("Loading configuration from %s ...", tui.Bold(filename))
 	raw, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return err
@@ -152,7 +152,7 @@ func Load(filename string) error {
 func (c Configuration) HashPassword(password string, cost int) string {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), cost)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("%v", err)
 	}
 	return string(hash)
 }

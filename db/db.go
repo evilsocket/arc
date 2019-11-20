@@ -8,7 +8,7 @@
 package db
 
 import (
-	"github.com/evilsocket/arc/log"
+	"github.com/evilsocket/islazy/log"
 	"sort"
 	"time"
 )
@@ -160,11 +160,11 @@ func PrunableRecords() (records []*Record, err error) {
 }
 
 func Flush() {
-	log.Infof("Flushing database ...")
+	log.Info("Flushing database ...")
 
 	start := time.Now()
 	dbIndex.Flush()
 	elapsed := time.Since(start)
 
-	log.Infof("Database flushed in %s.", elapsed)
+	log.Info("Database flushed in %s.", elapsed)
 }

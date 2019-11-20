@@ -8,8 +8,10 @@
 package utils
 
 import (
-	"github.com/evilsocket/arc/log"
+	"fmt"
+	"github.com/evilsocket/islazy/log"
 	"github.com/gin-gonic/gin"
+	"strings"
 )
 
 // ErrorResponse is used when sending a HTTP status response different than 200
@@ -25,8 +27,20 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
-func jError(level int, c *gin.Context, code int, message string) {
-	log.Api(level, c, "[%d] %s", code, message)
+func Api(level log.Verbosity, c *gin.Context, format string, args ...interface{}) {
+	who := strings.Split(c.Request.RemoteAddr, ":")[0]
+	req := fmt.Sprintf("%s %s", c.Request.Method, c.Request.URL.Path)
+	format = fmt.Sprintf("%s '%s' > %s", who, req, format)
+	if level == log.WARNING {
+		log.Warning(format, args...)
+
+	} else {
+		log.Error(format, args...)
+	}
+}
+
+func jError(level log.Verbosity, c *gin.Context, code int, message string) {
+	Api(level, c, "[%d] %s", code, message)
 	c.JSON(code, ErrorResponse{
 		Code:    code,
 		Message: message,

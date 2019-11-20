@@ -11,7 +11,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"github.com/evilsocket/arc/config"
-	"github.com/evilsocket/arc/log"
+	"github.com/evilsocket/islazy/log"
 	"github.com/evilsocket/arc/pgp"
 	"github.com/evilsocket/arc/utils"
 	"gopkg.in/gomail.v2"
@@ -58,7 +58,7 @@ func rateLimit(event Event) bool {
 
 func Report(event Event) {
 	if rateLimit(event) == true {
-		log.Importantf("Dropping event '%s' because of rate limiting.", event.Title)
+		log.Warning("Dropping event '%s' because of rate limiting.", event.Title)
 		return
 	}
 
@@ -67,7 +67,7 @@ func Report(event Event) {
 		repotype = "PGP encrypted"
 	}
 
-	log.Infof("Reporting %s event '%s' to %s ...", repotype, event.Title, config.Conf.Scheduler.Reports.To)
+	log.Info("Reporting %s event '%s' to %s ...", repotype, event.Title, config.Conf.Scheduler.Reports.To)
 
 	smtp := config.Conf.Scheduler.Reports.SMTP
 	d := gomail.NewDialer(smtp.Address, smtp.Port, smtp.Username, smtp.Password)
@@ -84,14 +84,14 @@ func Report(event Event) {
 	if pgpConf.Enabled {
 		ctype = "text/plain"
 		if err, body = pgp.Encrypt(body); err != nil {
-			log.Errorf("Could not PGP encrypt the message: %s.", err)
+			log.Error("Could not PGP encrypt the message: %s.", err)
 		}
 	}
 
 	m.SetBody(ctype, body)
 
 	if err := d.DialAndSend(m); err != nil {
-		log.Errorf("Error: %s.", err)
+		log.Error("Error: %s.", err)
 	}
 }
 
@@ -99,7 +99,7 @@ func Add(event Event) {
 	lock.Lock()
 	defer lock.Unlock()
 	Pool = append([]Event{event}, Pool...)
-	log.Infof("New event (Pool size is %d): %s.", len(Pool), event)
+	log.Info("New event (Pool size is %d): %s.", len(Pool), event)
 
 	if config.Conf.Scheduler.Reports.Enabled && utils.InSlice(event.Name, config.Conf.Scheduler.Reports.Filter) == true {
 		go Report(event)
@@ -110,7 +110,7 @@ func Clear() {
 	lock.Lock()
 	defer lock.Unlock()
 	Pool = make([]Event, 0)
-	log.Debugf("Events Pool has been cleared.")
+	log.Debug("Events Pool has been cleared.")
 }
 
 func AddNew(name, title, description string) Event {

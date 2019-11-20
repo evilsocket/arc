@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"github.com/evilsocket/arc/config"
 	"github.com/evilsocket/arc/db"
-	"github.com/evilsocket/arc/log"
+	"github.com/evilsocket/islazy/log"
+	"github.com/evilsocket/islazy/tui"
 	"golang.org/x/crypto/bcrypt"
 	"os"
 	"os/signal"
@@ -18,7 +19,7 @@ func arcSignalHandler() {
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
 	s := <-signals
 	log.Raw("\n")
-	log.Importantf("RECEIVED SIGNAL: %s", s)
+	log.Warning("RECEIVED SIGNAL: %s", s)
 	db.Flush()
 	os.Exit(1)
 }
@@ -30,7 +31,7 @@ func main() {
 		if len(os.Args) == 4 {
 			n, err := strconv.Atoi(os.Args[3])
 			if err != nil {
-				log.Fatal(err)
+				log.Fatal("%v", err)
 			}
 			cost = n
 		}
@@ -44,10 +45,10 @@ func main() {
 
 	setupLogging()
 
-	log.Infof("%s (%s %s) is starting ...", log.Bold(config.APP_NAME+" v"+config.APP_VERSION), runtime.GOOS, runtime.GOARCH)
+	log.Info("%s (%s %s) is starting ...", tui.Bold(config.APP_NAME+" v"+config.APP_VERSION), runtime.GOOS, runtime.GOARCH)
 	if confFile != "" {
 		if err := config.Load(confFile); err != nil {
-			log.Fatal(err)
+			log.Fatal("%v", err)
 		}
 	}
 
@@ -63,8 +64,8 @@ func main() {
 		address = "0.0.0.0" + address
 	}
 
-	log.Infof("Running on %s ...", log.Bold("https://"+address+"/"))
+	log.Info("Running on %s ...", tui.Bold("https://"+address+"/"))
 	if err := router.RunTLS(address, config.Conf.Certificate, config.Conf.Key); err != nil {
-		log.Fatal(err)
+		log.Fatal("%v", err)
 	}
 }

@@ -8,13 +8,14 @@ import (
 	"github.com/evilsocket/arc/controllers"
 	"github.com/evilsocket/arc/db"
 	"github.com/evilsocket/arc/events"
-	"github.com/evilsocket/arc/log"
 	"github.com/evilsocket/arc/middlewares"
 	"github.com/evilsocket/arc/scheduler"
 	"github.com/evilsocket/arc/tls"
 	"github.com/evilsocket/arc/updater"
 	"github.com/evilsocket/arc/utils"
 	"github.com/evilsocket/arc/webui"
+	"github.com/evilsocket/islazy/log"
+	"github.com/evilsocket/islazy/tui"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -44,9 +45,8 @@ func init() {
 	flag.BoolVar(&noAuth, "no-auth", noAuth, "Disable authentication.")
 	flag.BoolVar(&noUpdates, "no-updates", noUpdates, "Disable updates check.")
 
-	flag.BoolVar(&debug, "log-debug", debug, "Enable debug logs.")
-	flag.StringVar(&logfile, "log-file", logfile, "Log messages to this file instead of standard error.")
-	flag.BoolVar(&noColors, "log-colors-off", noColors, "Disable colored output.")
+	flag.BoolVar(&debug, "debug", debug, "Enable debug logs.")
+	flag.StringVar(&logfile, "log", logfile, "Log messages to this file instead of standard error.")
 
 	flag.StringVar(&importFrom, "import", importFrom, "Import stores from this TAR export file.")
 	flag.BoolVar(&export, "export", export, "Export store to a TAR archive, requires --output parameter.")
@@ -54,23 +54,23 @@ func init() {
 }
 
 func setupLogging() {
-	var err error
-
-	log.WithColors = !noColors
-
 	if logfile != "" {
-		log.Output, err = os.Create(logfile)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		defer log.Output.Close()
+		log.Output = logfile
 	}
 
 	if debug == true {
-		log.MinLevel = log.DEBUG
+		log.Level = log.DEBUG
 	} else {
-		log.MinLevel = log.INFO
+		log.Level = log.INFO
+	}
+
+	log.DateFormat = "06-Jan-02"
+	log.TimeFormat = "15:04:05"
+	log.DateTimeFormat = "2006-01-02 15:04:05"
+	log.Format = "{datetime} {level:color}{level:name}{reset} {message}"
+
+	if err := log.Open(); err != nil {
+		panic(err)
 	}
 }
 
@@ -78,22 +78,22 @@ func setupDatabase() {
 	var err error
 
 	if dbIsNew, err = db.Setup(); err != nil {
-		log.Fatal(err)
+		log.Fatal("%v", err)
 	}
 
 	if export == true {
 		started := time.Now()
 		if err = db.Export(output); err != nil {
-			log.Fatal(err)
+			log.Fatal("%v", err)
 		}
-		log.Infof("Archived %s of data in %s to %s.", utils.FormatBytes(db.Size), time.Since(started), log.Bold(output))
+		log.Info("Archived %s of data in %s to %s.", utils.FormatBytes(db.Size), time.Since(started), tui.Bold(output))
 		os.Exit(0)
 	} else if importFrom != "" {
 		started := time.Now()
 		if err = db.Import(importFrom); err != nil {
-			log.Fatal(err)
+			log.Fatal("%v", err)
 		}
-		log.Infof("Imported %s of data in %s.", utils.FormatBytes(db.Size), time.Since(started))
+		log.Info("Imported %s of data in %s.", utils.FormatBytes(db.Size), time.Since(started))
 		os.Exit(0)
 	}
 }
@@ -101,22 +101,22 @@ func setupDatabase() {
 func setupScheduler() {
 	if config.Conf.Scheduler.Enabled {
 		if err := events.Setup(); err != nil {
-			log.Fatal(err)
+			log.Fatal("%v", err)
 		}
 
-		log.Debugf("Starting scheduler with a period of %ds ...", config.Conf.Scheduler.Period)
+		log.Debug("Starting scheduler with a period of %ds ...", config.Conf.Scheduler.Period)
 		scheduler.Start(config.Conf.Scheduler.Period)
 	} else {
-		log.Importantf("Scheduler is disabled.")
+		log.Warning("Scheduler is disabled.")
 	}
 }
 
 func setupBackups() {
 	if config.Conf.Backups.Enabled {
-		log.Debugf("Starting backup task with a period of %ds ...", config.Conf.Backups.Period)
+		log.Debug("Starting backup task with a period of %ds ...", config.Conf.Backups.Period)
 		backup.Start(config.Conf.Backups.Period, config.Conf.Backups.Folder, config.Conf.Backups.Run)
 	} else {
-		log.Importantf("Backups are disabled.")
+		log.Warning("Backups are disabled.")
 	}
 }
 
@@ -130,25 +130,25 @@ func setupTLS() {
 	var err error
 
 	if config.Conf.Certificate, err = utils.ExpandPath(config.Conf.Certificate); err != nil {
-		log.Fatal(err)
+		log.Fatal("%v", err)
 	} else if config.Conf.Key, err = utils.ExpandPath(config.Conf.Key); err != nil {
-		log.Fatal(err)
+		log.Fatal("%v", err)
 	}
 
 	if utils.Exists(config.Conf.Certificate) == false || utils.Exists(config.Conf.Key) == false {
-		log.Importantf("TLS certificate files not found, generating new ones ...")
+		log.Warning("TLS certificate files not found, generating new ones ...")
 		if err = tls.Generate(&config.Conf); err != nil {
-			log.Fatal(err)
+			log.Fatal("%v", err)
 		}
-		log.Infof("New RSA key and certificate have been generated, remember to add them as exceptions to your browser!")
+		log.Info("New RSA key and certificate have been generated, remember to add them as exceptions to your browser!")
 	}
 
 	tlsFingerprint, err = tls.Fingerprint(config.Conf.Certificate)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("%v", err)
 	}
 
-	log.Importantf("TLS certificate fingerprint is %s", log.Bold(tlsFingerprint))
+	log.Warning("TLS certificate fingerprint is %s", tui.Bold(tlsFingerprint))
 }
 
 type binaryFileSystem struct {
@@ -171,9 +171,9 @@ func (b *binaryFileSystem) Exists(prefix string, filepath string) bool {
 
 func BinaryFileSystem(root string) *binaryFileSystem {
 	fs := &assetfs.AssetFS{
-		Asset:     webui.Asset,
-		AssetDir:  webui.AssetDir,
-		Prefix:    root}
+		Asset:    webui.Asset,
+		AssetDir: webui.AssetDir,
+		Prefix:   root}
 	return &binaryFileSystem{
 		fs,
 	}
@@ -196,7 +196,7 @@ func setupRouter() *gin.Engine {
 	if noAuth == false {
 		api.Use(middlewares.AuthHandler())
 	} else {
-		log.Importantf("API authentication is disabled.")
+		log.Warning("API authentication is disabled.")
 	}
 
 	api.GET("/status", controllers.GetStatus)

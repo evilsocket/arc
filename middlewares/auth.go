@@ -11,8 +11,8 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/evilsocket/arc/config"
 	"github.com/evilsocket/arc/events"
-	"github.com/evilsocket/arc/log"
 	"github.com/evilsocket/arc/utils"
+	"github.com/evilsocket/islazy/log"
 	"github.com/gin-gonic/gin"
 	"regexp"
 	"strings"
@@ -62,7 +62,7 @@ func AuthHandler() gin.HandlerFunc {
 			token := m[1]
 			valid, err := ValidateToken(token, config.Conf.Secret)
 			if err != nil {
-				log.Api(log.WARNING, c, "Error while validating bearer token: %s", err)
+				utils.Api(log.WARNING, c, "Error while validating bearer token: %s", err)
 				events.Add(events.InvalidToken(strings.Split(c.Request.RemoteAddr, ":")[0],
 					token,
 					err))

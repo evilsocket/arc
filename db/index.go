@@ -8,7 +8,7 @@
 package db
 
 import (
-	"github.com/evilsocket/arc/log"
+	"github.com/evilsocket/islazy/log"
 	"github.com/evilsocket/arc/utils"
 	"github.com/theckman/go-flock"
 	"path/filepath"
@@ -22,7 +22,7 @@ type Index struct {
 }
 
 func LoadIndex(path string) (i *Index, err error) {
-	log.Debugf("Loading index from '%s' ...", path)
+	log.Debug("Loading index from '%s' ...", path)
 
 	i = &Index{
 		path:    path,
@@ -35,7 +35,7 @@ func LoadIndex(path string) (i *Index, err error) {
 
 	matches, err := filepath.Glob(filepath.Join(path, "*"))
 	if err != nil {
-		log.Errorf("Error while globbing folder %s: %s", path, err)
+		log.Error("Error while globbing folder %s: %s", path, err)
 		return i, err
 	}
 
@@ -46,11 +46,11 @@ func LoadIndex(path string) (i *Index, err error) {
 		if err == nil {
 			meta_path := filepath.Join(folder, "meta.json")
 			if utils.Exists(meta_path) {
-				log.Debugf("Loading record from %s ...", folder)
+				log.Debug("Loading record from %s ...", folder)
 				if child, err := OpenRecord(folder); err == nil {
 					i.records[id] = child
 				} else {
-					log.Errorf("Error while loading record from %s: %s", folder, err)
+					log.Error("Error while loading record from %s: %s", folder, err)
 				}
 			}
 		}

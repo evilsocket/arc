@@ -12,7 +12,8 @@ import (
 	"crypto/rsa"
 	_ "crypto/sha256"
 	"fmt"
-	"github.com/evilsocket/arc/log"
+	"github.com/evilsocket/islazy/log"
+	"github.com/evilsocket/islazy/tui"
 	"golang.org/x/crypto/openpgp"
 	"golang.org/x/crypto/openpgp/armor"
 	"golang.org/x/crypto/openpgp/packet"
@@ -37,7 +38,7 @@ func LoadKey(filename string, private bool) error {
 		desc = "private"
 	}
 
-	log.Infof("Loading PGP %s key from %s ...", desc, log.Bold(filename))
+	log.Info("Loading PGP %s key from %s ...", desc, tui.Bold(filename))
 
 	in, err := os.Open(filename)
 	if err != nil {
@@ -104,7 +105,7 @@ func SaveKey(out io.Writer, key *rsa.PrivateKey, private bool) (err error) {
 }
 
 func GenerateKeys(private, public string) error {
-	log.Warningf("Generating %d bits RSA key (this may take a few seconds) ...", RSA_BITS)
+	log.Warning("Generating %d bits RSA key (this may take a few seconds) ...", RSA_BITS)
 
 	key, err := rsa.GenerateKey(rand.Reader, RSA_BITS)
 	if err != nil {
@@ -127,13 +128,13 @@ func GenerateKeys(private, public string) error {
 		return err
 	}
 
-	log.Infof("RSA private key saved to %s.", log.Bold(private))
+	log.Info("RSA private key saved to %s.", tui.Bold(private))
 
 	if err := SaveKey(pub, key, false); err != nil {
 		return err
 	}
 
-	log.Infof("RSA public key saved to %s.", log.Bold(public))
+	log.Info("RSA public key saved to %s.", tui.Bold(public))
 
 	return nil
 }

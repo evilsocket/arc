@@ -22,15 +22,15 @@ package controllers
 
 import (
 	"encoding/json"
-	"io"
-	"time"
-
 	"github.com/evilsocket/arc/config"
 	"github.com/evilsocket/arc/db"
 	"github.com/evilsocket/arc/events"
-	"github.com/evilsocket/arc/log"
+	"github.com/evilsocket/arc/utils"
+	"github.com/evilsocket/islazy/log"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+	"io"
+	"time"
 )
 
 type Status struct {
@@ -74,7 +74,7 @@ func SafeBind(c *gin.Context, obj interface{}) error {
 // Responses:
 //        200: Status
 func GetStatus(c *gin.Context) {
-	// log.Api(log.DEBUG, c, "Requested status.")
+	// utils.Api(log.DEBUG, c, "Requested status.")
 	c.JSON(200, ServerStatus)
 }
 
@@ -93,6 +93,6 @@ func ClearEvents(c *gin.Context) {
 // Responses:
 //        200: Configuration
 func GetConfig(c *gin.Context) {
-	log.Api(log.DEBUG, c, "Requested configuration.")
+	utils.Api(log.DEBUG, c, "Requested configuration.")
 	c.JSON(200, config.Conf)
 }

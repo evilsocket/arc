@@ -9,7 +9,7 @@ package updater
 
 import (
 	"github.com/evilsocket/arc/events"
-	"github.com/evilsocket/arc/log"
+	"github.com/evilsocket/islazy/log"
 	"net/http"
 	"regexp"
 	"time"
@@ -26,35 +26,35 @@ func worker(currVersion string) {
 	}
 
 	for {
-		log.Debugf("Checking for newer versions ...")
+		log.Debug("Checking for newer versions ...")
 
 		req, _ := http.NewRequest("GET", "https://github.com/evilsocket/arc/releases/latest", nil)
 		resp, err := client.Do(req)
 		if err != nil {
 			if err := events.Setup(); err != nil {
-				log.Fatal(err)
+				log.Fatal("%v", err)
 			}
-			log.Errorf("Error while checking latest version: %s.", err)
+			log.Error("Error while checking latest version: %s.", err)
 			return
 		}
 		defer resp.Body.Close()
 
 		location := resp.Header.Get("Location")
 
-		log.Debugf("Location header = '%s'", location)
+		log.Debug("Location header = '%s'", location)
 
 		m := versionParser.FindStringSubmatch(location)
 		if len(m) == 2 {
 			latest := m[1]
-			log.Debugf("Latest version is '%s'", latest)
+			log.Debug("Latest version is '%s'", latest)
 			if currVersion != latest {
-				log.Importantf("Update to %s available at %s.", latest, location)
+				log.Warning("Update to %s available at %s.", latest, location)
 				events.Add(events.UpdateAvailable(currVersion, latest, location))
 			} else {
-				log.Debugf("No updates available.")
+				log.Debug("No updates available.")
 			}
 		} else {
-			log.Warningf("Unexpected location header: '%s'.", location)
+			log.Warning("Unexpected location header: '%s'.", location)
 		}
 
 		time.Sleep(interval)

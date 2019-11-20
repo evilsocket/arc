@@ -9,7 +9,7 @@ package middlewares
 
 import (
 	"fmt"
-	"github.com/evilsocket/arc/log"
+	"github.com/evilsocket/islazy/log"
 	"github.com/gin-gonic/gin"
 	"gopkg.in/unrolled/secure.v1"
 	"strings"
@@ -29,7 +29,7 @@ func Security(tlsFingerprint string) gin.HandlerFunc {
 		if err != nil {
 			who := strings.Split(c.Request.RemoteAddr, ":")[0]
 			req := fmt.Sprintf("%s %s", c.Request.Method, c.Request.URL.Path)
-			log.Warningf("%s > %s | Security exception: %s", who, req, err)
+			log.Warning("%s > %s | Security exception: %s", who, req, err)
 			c.Abort()
 			return
 		}

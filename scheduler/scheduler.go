@@ -10,14 +10,14 @@ package scheduler
 import (
 	"github.com/evilsocket/arc/db"
 	"github.com/evilsocket/arc/events"
-	"github.com/evilsocket/arc/log"
+	"github.com/evilsocket/islazy/log"
 	"time"
 )
 
 func worker(secs int) {
 	period := time.Duration(secs) * time.Second
 
-	log.Debugf("Scheduler started with a %v period.", period)
+	log.Debug("Scheduler started with a %v period.", period)
 
 	for {
 		time.Sleep(period)
@@ -34,9 +34,9 @@ func worker(secs int) {
 					}
 
 					if meta.Prune {
-						log.Infof("Pruning record %d ( %s ) ...", meta.Id, meta.Title)
+						log.Info("Pruning record %d ( %s ) ...", meta.Id, meta.Title)
 						if _, err := store.Del(meta.Id); err != nil {
-							log.Errorf("Error while deleting record %d: %s.", meta.Id, err)
+							log.Error("Error while deleting record %d: %s.", meta.Id, err)
 						}
 					}
 				}

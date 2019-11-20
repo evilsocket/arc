@@ -9,7 +9,7 @@ package db
 
 import (
 	"archive/tar"
-	"github.com/evilsocket/arc/log"
+	"github.com/evilsocket/islazy/log"
 	"io"
 	"os"
 	"path/filepath"
@@ -20,7 +20,7 @@ func Export(filename string) error {
 	Lock()
 	defer Unlock()
 
-	log.Importantf("Exporting %d stores from %s ...", dbIndex.NumRecords(), dbIndex.path)
+	log.Warning("Exporting %d stores from %s ...", dbIndex.NumRecords(), dbIndex.path)
 
 	out, err := os.Create(filename)
 	if err != nil {
@@ -54,7 +54,7 @@ func Export(filename string) error {
 			return nil
 		}
 
-		log.Debugf("Writing contents for %s ...", file)
+		log.Debug("Writing contents for %s ...", file)
 		f, err := os.Open(file)
 		if err != nil {
 			return err

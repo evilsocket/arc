@@ -9,14 +9,14 @@ package db
 
 import (
 	"archive/tar"
-	"github.com/evilsocket/arc/log"
+	"github.com/evilsocket/islazy/log"
 	"io"
 	"os"
 	"path/filepath"
 )
 
 func Import(filename string) error {
-	log.Infof("Importing %s into %s ...", filename, dbIndex.path)
+	log.Info("Importing %s into %s ...", filename, dbIndex.path)
 
 	in, err := os.Open(filename)
 	if err != nil {
@@ -41,7 +41,7 @@ func Import(filename string) error {
 
 		// the target location where the dir/file should be created
 		target := filepath.Join(dbIndex.path, header.Name)
-		log.Infof("Creating %s ...", target)
+		log.Info("Creating %s ...", target)
 
 		// check the file type
 		switch header.Typeflag {

@@ -9,7 +9,7 @@ package db
 
 import (
 	"encoding/json"
-	"github.com/evilsocket/arc/log"
+	"github.com/evilsocket/islazy/log"
 	"github.com/theckman/go-flock"
 	"io/ioutil"
 	"path/filepath"
@@ -43,16 +43,16 @@ func (m *Meta) Unlock() error {
 }
 
 func (m *Meta) FlushNoLock() error {
-	log.Debugf("Flushing meta file '%s'.", m.path)
+	log.Debug("Flushing meta file '%s'.", m.path)
 
 	buff, err := json.Marshal(m)
 	if err != nil {
-		log.Errorf("Error while serializing meta file: %s", err)
+		log.Error("Error while serializing meta file: %s", err)
 		return err
 	}
 
 	if err = ioutil.WriteFile(m.path, buff, 0644); err != nil {
-		log.Errorf("Error while writing meta file to %s: %s", m.path, err)
+		log.Error("Error while writing meta file to %s: %s", m.path, err)
 		return err
 	}
 
@@ -83,7 +83,7 @@ func (m *Meta) Update(values *Meta) (err error) {
 
 func (m *Meta) Close() {
 	if err := m.Flush(); err != nil {
-		log.Errorf("Error while flushing meta file '%s': %s", m.path, err)
+		log.Error("Error while flushing meta file '%s': %s", m.path, err)
 	}
 }
 
@@ -110,10 +110,10 @@ func CreateMeta(path string, values *Meta) (meta *Meta, err error) {
 	}
 
 	if err = meta.SetPath(path); err != nil {
-		log.Errorf("Error setting path %s: %s", path, err)
+		log.Error("Error setting path %s: %s", path, err)
 		return nil, err
 	} else if err = meta.Flush(); err != nil {
-		log.Errorf("Error flushing meta file: %s", err)
+		log.Error("Error flushing meta file: %s", err)
 		return nil, err
 	}
 
@@ -121,24 +121,24 @@ func CreateMeta(path string, values *Meta) (meta *Meta, err error) {
 }
 
 func OpenMeta(path string) (meta *Meta, err error) {
-	log.Debugf("Opening meta from '%s' ...", path)
+	log.Debug("Opening meta from '%s' ...", path)
 
 	buff, err := ioutil.ReadFile(path)
 	if err != nil {
-		log.Errorf("Error opening %s: %s", path, err)
+		log.Error("Error opening %s: %s", path, err)
 		return nil, err
 	}
 
 	var m Meta
 	if err = json.Unmarshal(buff, &m); err != nil {
-		log.Errorf("Error while parsing json from buffer '%s': %s", string(buff), err)
+		log.Error("Error while parsing json from buffer '%s': %s", string(buff), err)
 		return nil, err
 	}
 
 	m.SetPath(path)
 	meta = &m
 
-	// log.Debugf("%+v", meta)
+	// log.Debug("%+v", meta)
 
 	return meta, nil
 }

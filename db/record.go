@@ -11,7 +11,7 @@ import (
 	"compress/gzip"
 	"fmt"
 	"github.com/evilsocket/arc/config"
-	"github.com/evilsocket/arc/log"
+	"github.com/evilsocket/islazy/log"
 	"github.com/evilsocket/arc/utils"
 	"io"
 	"os"
@@ -26,10 +26,10 @@ type Record struct {
 }
 
 func CreateRecord(root_path string, meta *Meta, reader *io.Reader) (record *Record, err error) {
-	log.Debugf("Creating record %d:'%s' on '%s' with reader %v...", meta.Id, meta.Title, root_path, reader)
+	log.Debug("Creating record %d:'%s' on '%s' with reader %v...", meta.Id, meta.Title, root_path, reader)
 
 	if root_path, err = utils.ExpandPath(root_path); err != nil {
-		log.Errorf("Error expanding %s: %s", root_path, err)
+		log.Error("Error expanding %s: %s", root_path, err)
 		return nil, err
 	}
 
@@ -37,9 +37,9 @@ func CreateRecord(root_path string, meta *Meta, reader *io.Reader) (record *Reco
 	meta_path := filepath.Join(record_path, "meta.json")
 
 	if utils.Exists(record_path) == false {
-		log.Debugf("Creating record path '%s' ...", record_path)
+		log.Debug("Creating record path '%s' ...", record_path)
 		if err = os.MkdirAll(record_path, os.ModePerm); err != nil {
-			log.Errorf("Error creating folder %s: %s", record_path, err)
+			log.Error("Error creating folder %s: %s", record_path, err)
 			return nil, err
 		}
 	}
@@ -63,7 +63,7 @@ func CreateRecord(root_path string, meta *Meta, reader *io.Reader) (record *Reco
 	if reader != nil {
 		err = record.UpdateBuffer(*reader)
 		if err != nil {
-			log.Errorf("Error while updating the buffer: %s", err)
+			log.Error("Error while updating the buffer: %s", err)
 			return nil, err
 		}
 	}
@@ -72,10 +72,10 @@ func CreateRecord(root_path string, meta *Meta, reader *io.Reader) (record *Reco
 }
 
 func OpenRecord(path string) (record *Record, err error) {
-	log.Debugf("Opening record from path '%s' ...", path)
+	log.Debug("Opening record from path '%s' ...", path)
 
 	if path, err = utils.ExpandPath(path); err != nil {
-		log.Errorf("Error expanding %s: %s", path, err)
+		log.Error("Error expanding %s: %s", path, err)
 		return nil, err
 	}
 
@@ -161,39 +161,39 @@ func (r *Record) Unlock() error {
 }
 
 func (r *Record) Update(meta *Meta) (err error) {
-	log.Debugf("Updating record '%s' meta.", r.path)
+	log.Debug("Updating record '%s' meta.", r.path)
 	return r.meta.Update(meta)
 }
 
 func (r *Record) compress() (err error) {
 	datapath := r.DataPath()
 
-	log.Debugf("Compressing buffer %s ...", datapath)
+	log.Debug("Compressing buffer %s ...", datapath)
 
 	start := time.Now()
 	reader, err := os.Open(datapath)
 	if err != nil {
-		log.Errorf("Error while opening %s: %s.", datapath, err)
+		log.Error("Error while opening %s: %s.", datapath, err)
 		return err
 	}
 
 	tmp_filename := datapath + ".tmp.gz"
 	writer, err := os.Create(tmp_filename)
 	if err != nil {
-		log.Errorf("Error while creating %s: %s.", tmp_filename, err)
+		log.Error("Error while creating %s: %s.", tmp_filename, err)
 		return err
 	}
 	defer writer.Close()
 
 	gzipper, err := gzip.NewWriterLevel(writer, gzip.BestCompression)
 	if err != nil {
-		log.Errorf("Error while creating gzipper: %s.", err)
+		log.Error("Error while creating gzipper: %s.", err)
 		return err
 	}
 
 	_, err = io.Copy(gzipper, reader)
 	if err != nil {
-		log.Errorf("Error while compressing %s: %s.", tmp_filename, err)
+		log.Error("Error while compressing %s: %s.", tmp_filename, err)
 		return err
 	}
 
@@ -205,7 +205,7 @@ func (r *Record) compress() (err error) {
 
 	err = os.Rename(tmp_filename, datapath)
 	if err != nil {
-		log.Errorf("Error while renaming %s to %s: %s.", tmp_filename, datapath, err)
+		log.Error("Error while renaming %s to %s: %s.", tmp_filename, datapath, err)
 		return err
 	}
 
@@ -219,7 +219,7 @@ func (r *Record) compress() (err error) {
 	Size += r.meta.Size
 	bps := uint64(float64(r.meta.Size) / elapsed.Seconds())
 
-	log.Infof("Compressed %s in %s (%s/s).", utils.FormatBytes(r.meta.Size), elapsed, utils.FormatBytes(bps))
+	log.Info("Compressed %s in %s (%s/s).", utils.FormatBytes(r.meta.Size), elapsed, utils.FormatBytes(bps))
 	return nil
 }
 
@@ -234,17 +234,17 @@ func (r *Record) UpdateBuffer(reader io.Reader) (err error) {
 		Size -= uint64(stats.Size())
 	}
 
-	log.Debugf("Writing buffer to %s ...", datapath)
+	log.Debug("Writing buffer to %s ...", datapath)
 
 	start := time.Now()
 	writer, err := os.Create(datapath)
 	if err != nil {
-		log.Errorf("Error while creating %s: %s.", datapath, err)
+		log.Error("Error while creating %s: %s.", datapath, err)
 		return err
 	}
 	written, err := io.Copy(writer, reader)
 	if err != nil {
-		log.Errorf("Error while writing to %s: %s.", datapath, err)
+		log.Error("Error while writing to %s: %s.", datapath, err)
 		writer.Close()
 		return err
 	}
@@ -258,13 +258,13 @@ func (r *Record) UpdateBuffer(reader io.Reader) (err error) {
 	r.meta.FlushNoLock()
 	Size += r.meta.Size
 
-	log.Debugf("Wrote %s (%d b) in %s ...", utils.FormatBytes(r.meta.Size), r.meta.Size, elapsed)
+	log.Debug("Wrote %s (%d b) in %s ...", utils.FormatBytes(r.meta.Size), r.meta.Size, elapsed)
 
 	if config.Conf.Compression && r.meta.Size > 1024 {
 		go func() {
 			err := r.compress()
 			if err != nil {
-				log.Errorf("Error while compressing %s: %s.", datapath, err)
+				log.Error("Error while compressing %s: %s.", datapath, err)
 			}
 		}()
 	}
@@ -283,7 +283,7 @@ func (r *Record) New(meta *Meta, reader io.Reader) (child *Record, err error) {
 	r.Lock()
 	defer r.Unlock()
 
-	log.Debugf("Creating new record '%s' for parent %s.", meta.Title, r.path)
+	log.Debug("Creating new record '%s' for parent %s.", meta.Title, r.path)
 
 	meta.Id = r.meta.NextId
 
@@ -331,7 +331,7 @@ func (r *Record) Get(id uint64) *Record {
 }
 
 func (r *Record) Close() {
-	log.Debugf("Closing record %s ...", r.path)
+	log.Debug("Closing record %s ...", r.path)
 	r.meta.Close()
 }
 
@@ -339,7 +339,7 @@ func (r *Record) Delete() error {
 	for _, child := range r.children.records {
 		child.Delete()
 	}
-	log.Debugf("Deleting record %s ...", r.path)
+	log.Debug("Deleting record %s ...", r.path)
 	Size -= r.Size()
 	return os.RemoveAll(r.path)
 }

@@ -7,7 +7,7 @@ After=network.target
 [Service]
 Type=simple
 PermissionsStartOnly=true
-ExecStart=/usr/local/bin/arc -config /usr/local/etc/arc/config.json -log-file /var/log/arc.log
+ExecStart=/usr/local/bin/arc -config /usr/local/etc/arc/config.json -log /var/log/arc.log
 Restart=always
 RestartSec=30
 

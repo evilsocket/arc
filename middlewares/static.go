@@ -10,7 +10,7 @@ package middlewares
 // This middleware is a variation of github.com/gin-gonic/contrib/static
 // created because of this https://github.com/evilsocket/arc/issues/64
 import (
-	// "github.com/evilsocket/arc/log"
+	// "github.com/evilsocket/islazy/log"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"os"
@@ -54,7 +54,7 @@ func (l *localFileSystem) Exists(prefix string, filepath string) bool {
 }
 
 func ServeStatic(url, root, index string) gin.HandlerFunc {
-	// log.Debugf("Creating static middleware for path %s (index=%s)", log.Bold(root), index)
+	// log.Debug("Creating static middleware for path %s (index=%s)", tui.Bold(root), index)
 	return Serve(url, Static(root, index))
 }
 
@@ -68,7 +68,7 @@ func Serve(url string, fs ServeFileSystem) gin.HandlerFunc {
 		path := c.Request.URL.Path
 		// Fixes https://github.com/evilsocket/arc/issues/64
 		if path == "/" {
-			// log.Debugf("Fixing request path / to %s.", log.Bold(IndexFile))
+			// log.Debug("Fixing request path / to %s.", tui.Bold(IndexFile))
 			path = IndexFile
 		}
 

@@ -10,9 +10,10 @@ package controllers
 import (
 	"github.com/evilsocket/arc/config"
 	"github.com/evilsocket/arc/events"
-	"github.com/evilsocket/arc/log"
 	"github.com/evilsocket/arc/middlewares"
 	"github.com/evilsocket/arc/utils"
+	"github.com/evilsocket/islazy/log"
+	"github.com/evilsocket/islazy/tui"
 	"github.com/gin-gonic/gin"
 	"strings"
 )
@@ -58,7 +59,7 @@ func Auth(c *gin.Context) {
 	if err := SafeBind(c, &auth); err != nil {
 		utils.BadRequest(c)
 	} else if config.Conf.Auth(auth.Username, auth.Password) == false {
-		log.Warningf("Invalid login credentials provided.")
+		log.Warning("Invalid login credentials provided.")
 		events.Add(
 			events.Login(false,
 				strings.Split(c.Request.RemoteAddr, ":")[0],
@@ -75,7 +76,7 @@ func Auth(c *gin.Context) {
 				auth.Username,
 				auth.Password,
 			))
-		log.Api(log.INFO, c, "User %s requested new API token", log.Bold(auth.Username))
+		utils.Api(log.INFO, c, "User %s requested new API token", tui.Bold(auth.Username))
 		c.JSON(200, gin.H{"token": token})
 	}
 }

@@ -9,8 +9,9 @@ package db
 
 import (
 	"github.com/evilsocket/arc/config"
-	"github.com/evilsocket/arc/log"
 	"github.com/evilsocket/arc/utils"
+	"github.com/evilsocket/islazy/log"
+	"github.com/evilsocket/islazy/tui"
 	"os"
 	"time"
 )
@@ -31,10 +32,10 @@ func Setup() (created bool, err error) {
 
 	if _, err = os.Stat(config.Conf.Database); os.IsNotExist(err) {
 		created = true
-		log.Warningf("Creating database %s ...", log.Bold(config.Conf.Database))
+		log.Warning("Creating database %s ...", tui.Bold(config.Conf.Database))
 	} else {
 		created = false
-		log.Infof("Loading database %s ...", log.Bold(config.Conf.Database))
+		log.Info("Loading database %s ...", tui.Bold(config.Conf.Database))
 	}
 
 	dbIndex, err = LoadIndex(config.Conf.Database)
@@ -50,8 +51,8 @@ func Setup() (created bool, err error) {
 
 	elapsed := time.Since(started)
 
-	log.Debugf("  dbNextId=%d", dbNextId)
-	log.Infof("%s of records loaded in %s.", utils.FormatBytes(Size), elapsed)
+	log.Debug("  dbNextId=%d", dbNextId)
+	log.Info("%s of records loaded in %s.", utils.FormatBytes(Size), elapsed)
 
 	return created, nil
 }

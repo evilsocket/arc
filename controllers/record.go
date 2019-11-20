@@ -12,7 +12,7 @@ import (
 	"fmt"
 	"github.com/evilsocket/arc/config"
 	"github.com/evilsocket/arc/db"
-	"github.com/evilsocket/arc/log"
+	"github.com/evilsocket/islazy/log"
 	"github.com/evilsocket/arc/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -23,7 +23,7 @@ func ListRecords(c *gin.Context) {
 	if err != nil {
 		utils.NotFound(c)
 	} else {
-		log.Api(log.DEBUG, c, "Requested records of store %s.", store_id)
+		utils.Api(log.DEBUG, c, "Requested records of store %s.", store_id)
 		c.JSON(200, records)
 	}
 }
@@ -46,7 +46,7 @@ func CreateRecord(c *gin.Context) {
 	raw := c.Request.Form.Get("meta")
 	nbytes := int64(len(raw))
 	if nbytes > config.Conf.MaxReqSize {
-		log.Warningf("Request meta field is %d bytes, while max request size is %d.", nbytes, config.Conf.MaxReqSize)
+		log.Warning("Request meta field is %d bytes, while max request size is %d.", nbytes, config.Conf.MaxReqSize)
 		utils.BadRequest(c)
 		return
 	}
@@ -62,7 +62,7 @@ func CreateRecord(c *gin.Context) {
 		utils.ServerError(c, err)
 	}
 
-	log.Api(log.DEBUG, c,
+	utils.Api(log.DEBUG, c,
 		"Created record %d (store %s) with %s of %s encrypted data.",
 		record.Id(),
 		store_id,
@@ -78,7 +78,7 @@ func GetRecord(c *gin.Context) {
 	if err != nil {
 		utils.NotFound(c)
 	} else {
-		log.Api(log.DEBUG, c, "Requested record %d of store %s.", record.Id, store_id)
+		utils.Api(log.DEBUG, c, "Requested record %d of store %s.", record.Id, store_id)
 		c.JSON(200, record)
 	}
 }
@@ -102,7 +102,7 @@ func GetRecordBuffer(c *gin.Context) {
 			desc = "compressed "
 		}
 
-		log.Debugf("Streaming %s (%d b) of %sbuffer to %s.", utils.FormatBytes(meta.Size), meta.Size, desc, c.Request.RemoteAddr)
+		log.Debug("Streaming %s (%d b) of %sbuffer to %s.", utils.FormatBytes(meta.Size), meta.Size, desc, c.Request.RemoteAddr)
 
 		// Let the client handle the decompression :P
 		if meta.Compressed {
@@ -132,7 +132,7 @@ func DeleteRecord(c *gin.Context) {
 	} else if _, err = store.Del(id); err != nil {
 		utils.NotFound(c)
 	} else {
-		log.Api(log.DEBUG, c, "Deleted record %s of store %s.", record_id, store_id)
+		utils.Api(log.DEBUG, c, "Deleted record %s of store %s.", record_id, store_id)
 		c.JSON(200, gin.H{"msg": "Record deleted."})
 	}
 }
@@ -158,7 +158,7 @@ func UpdateRecord(c *gin.Context) {
 	raw := c.Request.Form.Get("meta")
 	nbytes := int64(len(raw))
 	if nbytes > config.Conf.MaxReqSize {
-		log.Warningf("Request meta field is %d bytes, while max request size is %d.", nbytes, config.Conf.MaxReqSize)
+		log.Warning("Request meta field is %d bytes, while max request size is %d.", nbytes, config.Conf.MaxReqSize)
 		utils.BadRequest(c)
 		return
 	}
@@ -184,6 +184,6 @@ func UpdateRecord(c *gin.Context) {
 	store, _ := db.GetStore(store_id)
 	store.MarkUpdated()
 
-	log.Api(log.DEBUG, c, "Updated record %s of store %s.", record_id, store_id)
+	utils.Api(log.DEBUG, c, "Updated record %s of store %s.", record_id, store_id)
 	c.JSON(200, record.Meta())
 }

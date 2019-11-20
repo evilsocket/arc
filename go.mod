@@ -5,6 +5,7 @@ go 1.13
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/elazarl/go-bindata-assetfs v1.0.0
+	github.com/evilsocket/islazy v1.10.6
 	github.com/gin-gonic/contrib v0.0.0-20190923054218-35076c1b2bea
 	github.com/gin-gonic/gin v1.4.0
 	github.com/jteeuwen/go-bindata v3.0.7+incompatible // indirect

@@ -9,7 +9,7 @@ package events
 
 import (
 	"bytes"
-	"github.com/evilsocket/arc/log"
+	"github.com/evilsocket/islazy/log"
 	"html/template"
 )
 
@@ -21,7 +21,7 @@ func T(name, value string) *template.Template {
 func Populate(t *template.Template, data interface{}) string {
 	var b bytes.Buffer
 	if err := t.Execute(&b, data); err != nil {
-		log.Fatal(err)
+		log.Fatal("%v", err)
 	}
 	return b.String()
 }

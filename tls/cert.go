@@ -17,7 +17,8 @@ import (
 	"encoding/pem"
 	"errors"
 	"github.com/evilsocket/arc/config"
-	"github.com/evilsocket/arc/log"
+	"github.com/evilsocket/islazy/log"
+	"github.com/evilsocket/islazy/tui"
 	"io/ioutil"
 	"math/big"
 	"os"
@@ -37,14 +38,14 @@ func Generate(conf *config.Configuration) error {
 	}
 	defer certfile.Close()
 
-	log.Debugf("Generating RSA key ...")
+	log.Debug("Generating RSA key ...")
 
 	priv, err := rsa.GenerateKey(rand.Reader, 4096)
 	if err != nil {
 		return err
 	}
 
-	log.Debugf("Creating X509 certificate ...")
+	log.Debug("Creating X509 certificate ...")
 
 	notBefore := time.Now()
 	notAfter := notBefore.Add(time.Duration(24*365) * time.Hour)
@@ -73,12 +74,12 @@ func Generate(conf *config.Configuration) error {
 		return err
 	}
 
-	log.Importantf("Saving key to %s ...", log.Bold(conf.Key))
+	log.Warning("Saving key to %s ...", tui.Bold(conf.Key))
 	if err := pem.Encode(keyfile, &pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(priv)}); err != nil {
 		return err
 	}
 
-	log.Importantf("Saving certificate to %s ...", log.Bold(conf.Certificate))
+	log.Warning("Saving certificate to %s ...", tui.Bold(conf.Certificate))
 	return pem.Encode(certfile, &pem.Block{Type: "CERTIFICATE", Bytes: cert_raw})
 }
 
