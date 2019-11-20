@@ -228,6 +228,7 @@ app.controller('PMController', ['$scope', function (scope) {
     scope.errorHandler = function(error) {
         scope.hideLoader();
         scope.setError(error);
+        scope.setLoginEnabled(true);
         scope.$apply();
     };
 
@@ -461,6 +462,13 @@ app.controller('PMController', ['$scope', function (scope) {
         }
     };
 
+    scope.setLoginEnabled = function(enabled) {
+        $('#loginButton').text(enabled ? 'Login' : 'Logging in ...');
+        $('#formLogin *').filter(':input').each(function(){
+            $(this).prop('disabled', !enabled);
+        });
+    };
+
     scope.doLogin = function() {
         scope.setStatus("Logging in ...");
 
@@ -468,7 +476,9 @@ app.controller('PMController', ['$scope', function (scope) {
         var username = $('#username').val();
         var password = $('#password').val();
 
-        if( scope.setKey( $('#key').val(), persist ) == true ) { 
+        if( scope.setKey( $('#key').val(), persist ) == true ) {
+            scope.setLoginEnabled(false);
+
             scope.arc.Login( username, password, persist, function(token) {
                 scope.setError(null);
                 scope.$apply();

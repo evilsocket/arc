@@ -63,7 +63,7 @@
     <div ng-include src="'/views/modals/loader.html?v=7'"></div>
 
     <!-- if user is not logged, show login -->
-    <div id="login" class="container" ng-if="!arc.IsLogged()" ng-include src="'/views/login.html?v=4'"></div>
+    <div id="login" class="container" ng-if="!arc.IsLogged()" ng-include src="'/views/login.html?v=5'"></div>
 
     <!-- user logged but empty encryption key -->
     <div ng-if="arc.IsLogged() && !key" style="margin-bottom:-10px; margin-top:10px;" class="alert alert-warning">
