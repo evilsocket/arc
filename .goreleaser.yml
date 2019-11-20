@@ -1,6 +1,8 @@
 builds:
-  - main: cmd/arc/*.go
+  - main: ./cmd/arc
     binary: arc
+    ldflags:
+      - -s -w
     env:
       - CGO_ENABLED=0
     goos:
