@@ -31,6 +31,8 @@ install:
 	@cp build/$(TARGET) /usr/local/bin/
 	@setcap 'cap_net_bind_service=+ep' /usr/local/bin/$(TARGET)
 	@mkdir -p /usr/local/etc/$(TARGET)
-	@cp sample_config.json /usr/local/etc/$(TARGET)/config.json
+	@test -s /usr/local/etc/$(TARGET)/config.json || { cp sample_config.json /usr/local/etc/$(TARGET)/config.json }
 	@cp arc.service /etc/systemd/system/
 	@systemctl daemon-reload
+	@systemctl enable arc
+	@service arc restart
