@@ -505,6 +505,7 @@ ul li.placeholder:before {
 
 #loader_modal {
     margin-top: 5%;
+    z-index: 9001;
 }
 
 .loader {

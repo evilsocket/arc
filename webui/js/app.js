@@ -298,6 +298,10 @@ app.controller('PMController', ['$scope', function (scope) {
             .text( percentage + '%' );
     };
 
+    scope.blinkMeta = function() {
+        $('#secret_meta').fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+    };
+
     scope.showLoader = function(message, callback) {
         $('#loader_message').text(message);
         if( !scope.isLoading() ) {
@@ -682,8 +686,6 @@ app.controller('PMController', ['$scope', function (scope) {
     scope.onAdd = function() {
         scope.setStatus("Adding secret ...");
 
-        $('#secret_modal').modal('hide');
-
         scope.showLoader("Encrypting record ...", function(){
             // Execute asynchronously to not block the ui.
             setTimeout( function() {
@@ -705,7 +707,11 @@ app.controller('PMController', ['$scope', function (scope) {
                         };
 
                         scope.arc.AddRecord( r, data, function(record) {
-                            scope.getStore(function() {});
+                            scope.hideLoader();
+                            scope.onShowStore(scope.store_id, function(){
+                                scope.onShowSecret(record.id);
+                                scope.blinkMeta();
+                            });;
                         },
                         scope.errorHandler ).uploadProgress(scope.trackProgress);
                     });
@@ -779,8 +785,6 @@ app.controller('PMController', ['$scope', function (scope) {
             return;
         }
 
-        $('#secret_modal').modal('hide');
-
         scope.showLoader("Encrypting record ...", function(){
             var [ expire_at, prune, pinned, record ] = scope.buildRecord();
             record.Encrypt(scope.key).then(function(data){
@@ -799,9 +803,11 @@ app.controller('PMController', ['$scope', function (scope) {
                         'size': size
                     };
                     scope.arc.UpdateRecord( r, data, function() {
-                        scope.setSecret(null);
-                        scope.setError(null);
-                        scope.getStore(function(){});
+                        scope.hideLoader();
+                        scope.onShowStore(scope.store_id, function(){
+                            scope.onShowSecret(scope.secret.id);
+                            scope.blinkMeta();
+                        });
                     },
                     scope.errorHandler ).uploadProgress(scope.trackProgress);
                 });
