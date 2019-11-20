@@ -1,0 +1,41 @@
+{
+    "address": "0.0.0.0",
+    "port": 8443,
+    "secret": "",
+    "certificate": "~/arc-certificate.pem",
+    "key": "~/arc-key.pem",
+    "username": "arc",
+    "password": "$2a$10$RuOcSEwPNNFlA/lxjpRY3.3J0tR0LG/FyfG/IXolgdDxPh7.urgGe",
+    "database": "~/db",
+    "token_duration": 60,
+    "compression": true,
+    "scheduler": {
+        "enabled": true,
+        "period": 10,
+        "reports": {
+            "enabled": false,
+            "rate_limit": 60,
+            "filter": [ "login_ok", "login_ko", "token_ko", "update", "record_expired" ],
+            "to": "youremail@gmail.com",
+            "smtp":{
+                "address": "smtp.gmail.com",
+                "port": 587,
+                "username": "youremail@gmail.com",
+                "password": "your smtp password"
+            },
+            "pgp": {
+                "enabled": true,
+                "keys":{
+                    "private": "~/server.private.key.asc",
+                    "public": "~/my.public.key.asc"
+                }
+            }
+        }
+    },
+    "backups": {
+        "enabled": false,
+        "period": 1800,
+        "folder": "/some/backup/path/",
+        "run": "scp arc-backup.tar user@backup-server:/media/arc_backup/"
+    }
+}

@@ -27,7 +27,7 @@ test:
 clean:
 	@rm -rf build
 
-install: build
+install:
 	@cp build/$(TARGET) /usr/local/bin/
 	@setcap 'cap_net_bind_service=+ep' /usr/local/bin/$(TARGET)
 	@mkdir -p /usr/local/etc/$(TARGET)
