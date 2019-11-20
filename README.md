@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="Arc Logo" src="https://raw.githubusercontent.com/evilsocket/arc/master/arc/img/logo.png" height="140" />
+  <img alt="Arc Logo" src="https://raw.githubusercontent.com/evilsocket/arc/master/webui/img/logo.png" height="140" />
   <h3 align="center">Arc</h3>
   <p align="center">A manager for your secrets.</p>
   <p align="center">
