@@ -1,10 +1,9 @@
 builds:
-  - main: ./cmd/arc
-    binary: arc
+  - env:
+      - CGO_ENABLED=0
     ldflags:
       - -s -w
-    env:
-      - CGO_ENABLED=0
+    binary: arc
     goos:
       - linux
       - darwin
@@ -21,6 +20,7 @@ builds:
       - mipsle
       - mips64
       - mips64le
+    main: ./cmd/arc
 
 changelog:
   sort: asc
@@ -32,13 +32,14 @@ changelog:
       - Merge branch
       - Releasing v
 
-archive:
-  format: tar.gz
-  format_overrides:
-    - goos: windows
-      format: zip
-  files:
-      - LICENSE
-      - README.md
-      - Dockerfile
-      - sample_config.json
+archives:
+  -
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+        - LICENSE
+        - README.md
+        - Dockerfile
+        - sample_config.json
