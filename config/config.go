@@ -42,6 +42,10 @@ type SMTPConfig struct {
 	Password string `json:"password"`
 }
 
+func (c SMTPConfig) Filled() bool {
+	return c.Address != ""
+}
+
 type KeyPair struct {
 	Public  string `json:"public"`
 	Private string `json:"private"`

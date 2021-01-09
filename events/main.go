@@ -8,13 +8,10 @@
 package events
 
 import (
-	"crypto/tls"
-	"fmt"
 	"github.com/evilsocket/arc/config"
-	"github.com/evilsocket/islazy/log"
 	"github.com/evilsocket/arc/pgp"
 	"github.com/evilsocket/arc/utils"
-	"gopkg.in/gomail.v2"
+	"github.com/evilsocket/islazy/log"
 	"sync"
 	"time"
 )
@@ -62,36 +59,8 @@ func Report(event Event) {
 		return
 	}
 
-	repotype := "plaintext"
-	if pgpConf.Enabled {
-		repotype = "PGP encrypted"
-	}
-
-	log.Info("Reporting %s event '%s' to %s ...", repotype, event.Title, config.Conf.Scheduler.Reports.To)
-
-	smtp := config.Conf.Scheduler.Reports.SMTP
-	d := gomail.NewDialer(smtp.Address, smtp.Port, smtp.Username, smtp.Password)
-	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
-
-	m := gomail.NewMessage()
-	m.SetHeader("From", fmt.Sprintf("Arc Reporting System <%s>", smtp.Username))
-	m.SetHeader("To", config.Conf.Scheduler.Reports.To)
-	m.SetHeader("Subject", event.Title)
-
-	var err error
-	ctype := "text/html"
-	body := event.Description
-	if pgpConf.Enabled {
-		ctype = "text/plain"
-		if err, body = pgp.Encrypt(body); err != nil {
-			log.Error("Could not PGP encrypt the message: %s.", err)
-		}
-	}
-
-	m.SetBody(ctype, body)
-
-	if err := d.DialAndSend(m); err != nil {
-		log.Error("Error: %s.", err)
+	if err := doEmailReport(event); err != nil {
+		log.Error("%v", err)
 	}
 }
 
