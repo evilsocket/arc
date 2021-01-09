@@ -9,5 +9,5 @@ package config
 
 const (
 	APP_NAME    = "arc"
-	APP_VERSION = "1.3.4"
+	APP_VERSION = "1.3.5"
 )
