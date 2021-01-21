@@ -27,16 +27,20 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
+var logFuncs = map[log.Verbosity]func(format string, args ...interface{}){
+	log.DEBUG:     log.Debug,
+	log.INFO:      log.Info,
+	log.IMPORTANT: log.Important,
+	log.WARNING:   log.Warning,
+	log.ERROR:     log.Error,
+	log.FATAL:     log.Fatal,
+}
+
 func Api(level log.Verbosity, c *gin.Context, format string, args ...interface{}) {
 	who := strings.Split(c.Request.RemoteAddr, ":")[0]
 	req := fmt.Sprintf("%s %s", c.Request.Method, c.Request.URL.Path)
 	format = fmt.Sprintf("%s '%s' > %s", who, req, format)
-	if level == log.WARNING {
-		log.Warning(format, args...)
-
-	} else {
-		log.Error(format, args...)
-	}
+	logFuncs[level](format, args...)
 }
 
 func jError(level log.Verbosity, c *gin.Context, code int, message string) {
