@@ -1,0 +1,7 @@
+#!/usr/bin/env stork -f
+
+version:parser "APP_VERSION\\s*=\\s*['\"]([\\d\\.ab]+)[\"']"
+version:file "config/version.go"
+version:from_user
+
+git:create_tag $VERSION
