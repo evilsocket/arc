@@ -46,7 +46,7 @@ The idea is to use Arc as a single storage and manager for your passwords, encry
 
 You can find binary releases of Arc [here](https://github.com/evilsocket/arc/releases), if instead you want to build it from source, make sure you have Go >= 1.8 installed and configured correctly, then clone this repository, install the dependencies and compile the `arc` server component:
 
-    go get github.com/evilsocket/arc/cmd/arc
+    go install github.com/evilsocket/arc/cmd/arc@latest
 
 Once you either extracted the release archive or compiled it yourself, copy `sample_config.json` to a new `config.json` file and customize it. The most important fields to change are the `secret` ( a key used for token authentication ), the `username` and the `password`, which is the `bcrypt` hash of the authentication password you want to use, you can generate a new one with:
 
