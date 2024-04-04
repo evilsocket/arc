@@ -5,7 +5,7 @@
   <p align="center">
     <a href="https://github.com/evilsocket/arc/releases/latest"><img alt="Release" src="https://img.shields.io/github/release/evilsocket/arc.svg?style=flat-square"></a>
     <a href="/LICENSE"><img alt="Software License" src="https://img.shields.io/badge/license-GPL3-brightgreen.svg?style=flat-square"></a>
-    <a href="https://travis-ci.org/evilsocket/arc"><img alt="Travis" src="https://img.shields.io/travis/evilsocket/arc/master.svg?style=flat-square"></a>
+    <img alt="Build" src="https://github.com/evilsocket/arc/actions/workflows/go.yml/badge.svg">
     <a href="https://goreportcard.com/report/github.com/evilsocket/arc"><img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/evilsocket/arc?style=flat-square"></a>
   </p>
 </p>
