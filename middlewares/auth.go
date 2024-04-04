@@ -8,15 +8,16 @@
 package middlewares
 
 import (
-	"github.com/dgrijalva/jwt-go"
+	"regexp"
+	"strings"
+	"time"
+
 	"github.com/evilsocket/arc/config"
 	"github.com/evilsocket/arc/events"
 	"github.com/evilsocket/arc/utils"
 	"github.com/evilsocket/islazy/log"
 	"github.com/gin-gonic/gin"
-	"regexp"
-	"strings"
-	"time"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 var authTokenParser = regexp.MustCompile("^(?i)Bearer:\\s*(.+)$")
