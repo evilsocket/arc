@@ -10,11 +10,12 @@ SERVICE_LN_DIR=/etc/systemd/system
 
 all: build
 
-build: webui/compiled.go
+build:
 	@mkdir -p build
 	@go build $(FLAGS) -o build/$(TARGET) $(SRC_PATH)
 
-webui/compiled.go: bindata
+assets: bindata
+	@rm -rf webui/compiled.go
 	@go-bindata -o webui/compiled.go -pkg webui webui/...
 
 bindata:
