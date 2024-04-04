@@ -48,13 +48,13 @@ You can find binary releases of Arc [here](https://github.com/evilsocket/arc/rel
 
     go install github.com/evilsocket/arc/cmd/arc@latest
 
-Once you either extracted the release archive or compiled it yourself, copy `sample_config.json` to a new `config.json` file and customize it. The most important fields to change are the `secret` ( a key used for token authentication ), the `username` and the `password`, which is the `bcrypt` hash of the authentication password you want to use, you can generate a new one with:
+Once you either extracted the release archive or compiled it yourself, copy `sample_config.toml` to a new `config.toml` file and customize it. The most important fields to change are the `secret` ( a key used for token authentication ), the `username` and the `password`, which is the `bcrypt` hash of the authentication password you want to use, you can generate a new one with:
 
     arc password "your-new-password" <optional-cost>
 
 Once everything is ready, youn can finally start the `arc` server:
 
-    arc -config config.json -app arc
+    arc -config config.toml -app arc
 
 Now browse `https://localhost:8443/` ( or the address and port you configured ) and login with the configured credentials (make sure to add the generated HTTPS certificate as an exception in your browser).
 
@@ -196,11 +196,11 @@ Email reports can be optionally encrypted by the server using PGP, in this case 
 
 You can export stores and their encrypted records to a TAR file:
 
-    ./arc -config config.json -output ~/backup.tar -export
+    ./arc -config config.toml -output ~/backup.tar -export
 
 Exported archives can be later imported with:
 
-    ./arc -config config.json -import ~/backup.tar
+    ./arc -config config.toml -import ~/backup.tar
 
 ## Useful Commands
 
@@ -215,7 +215,7 @@ Allow the `arc` binary to bind to privileged ports without having root privilege
 Lines to add to `/etc/rc.local` in order to make arc start at boot (running as `pi` user, configuration, logs and and ui are in the home folder):
 
     export ARC=/home/pi/
-    sudo -H -u pi bash -c "$ARC/arc -config $ARC/config.json -log-file $ARC/arc.log &"
+    sudo -H -u pi bash -c "$ARC/arc -config $ARC/config.toml -log-file $ARC/arc.log &"
 
 ## Bugs
 
