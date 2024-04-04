@@ -66,49 +66,46 @@ Other than the username and the password, during login you need to specify an ad
 
 This is the example configuration file you need to customize the first time.
 
-```json
-{
-    "address": "127.0.0.1",
-    "port": 8443,
-    "max_req_size": 524288,
-    "username": "arc",
-    "password": "$2a$10$eyt99XOsVnATorza8PjqkOtJJdw1/Skr6LSps7JT4heYficAOdEhq",
-    "secret": "s0m3c0mpl3xs7r1ng",
-    "certificate": "/some/certificate.pem",
-    "key": "/some/key.pem",
-    "database": "~/arcdb",
-    "token_duration": 60,
-    "compression": true,
-    "scheduler": {
-        "enabled": true,
-        "period": 10,
-        "reports": {
-            "enabled": false,
-            "rate_limit": 60,
-            "filter": [ "login_ok", "login_ko", "token_ko", "update", "record_expired" ],
-            "to": "youremail@gmail.com",
-            "smtp":{
-                "address": "smtp.gmail.com",
-                "port": 587,
-                "username": "youremail@gmail.com",
-                "password": "your smtp password"
-            },
-            "pgp": {
-                "enabled": true,
-                "keys":{
-                    "private": "~/server.key",
-                    "public": "~/my.public.key"
-                }
-            }
-        }
-    },
-    "backups": {
-        "enabled": false,
-        "period": 1800,
-        "folder": "/some/backup/path/",
-        "run": "scp arc-backup.tar user@backup-server:/media/arc_backup/"
-    }
-}
+```toml
+address = "0.0.0.0"
+port = 8_443
+secret = ""
+certificate = "~/arc-certificate.pem"
+key = "~/arc-key.pem"
+username = "arc"
+password = "$2a$10$RuOcSEwPNNFlA/lxjpRY3.3J0tR0LG/FyfG/IXolgdDxPh7.urgGe"
+database = "~/db"
+token_duration = 60
+compression = true
+
+[scheduler]
+enabled = true
+period = 10
+
+[scheduler.reports]
+enabled = false
+rate_limit = 60
+filter = ["login_ok", "login_ko", "token_ko", "update", "record_expired"]
+to = "youremail@gmail.com"
+
+[scheduler.reports.smtp]
+address = "smtp.gmail.com"
+port = 587
+username = "youremail@gmail.com"
+password = "your smtp password"
+
+[scheduler.reports.pgp]
+enabled = true
+
+[scheduler.reports.pgp.keys]
+private = "~/server.private.key.asc"
+public = "~/my.public.key.asc"
+
+[backups]
+enabled = false
+period = 1_800
+folder = "/some/backup/path/"
+run = "scp arc-backup.tar user@backup-server:/media/arc_backup/"
 ```
 
 It is necessary to change only the `username` and `password` access parameters of Arc, while the others can be left to their default values.
