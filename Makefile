@@ -24,6 +24,9 @@ bindata:
 test:
 	@go test ./...
 
+run_dev: build
+	./build/$(TARGET) -config dev_config.toml
+
 clean:
 	@rm -rf build
 

@@ -31,3 +31,7 @@ gomake.json
 
 .DS_Store
 .idea
+
+dev_config.*
+arc-tls-cert.pem
+arc-tls-key.pem

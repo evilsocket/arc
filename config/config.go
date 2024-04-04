@@ -10,11 +10,12 @@ package config
 import (
 	"encoding/json"
 	"errors"
+	"os"
+
 	"github.com/evilsocket/arc/utils"
 	"github.com/evilsocket/islazy/log"
 	"github.com/evilsocket/islazy/tui"
 	"golang.org/x/crypto/bcrypt"
-	"io/ioutil"
 )
 
 const (
@@ -130,7 +131,7 @@ var Conf = Configuration{
 // return err if secret param is empty
 func Load(filename string) error {
 	log.Info("Loading configuration from %s ...", tui.Bold(filename))
-	raw, err := ioutil.ReadFile(filename)
+	raw, err := os.ReadFile(filename)
 	if err != nil {
 		return err
 	}
@@ -141,7 +142,7 @@ func Load(filename string) error {
 	}
 
 	if Conf.Secret == "" {
-		return errors.New("HMAC secret not found, please fill the 'secret' configuration field.")
+		return errors.New("HMAC secret not found, please fill the 'secret' configuration field")
 	}
 
 	// fix path
