@@ -9,6 +9,7 @@ require (
 	github.com/gin-gonic/contrib v0.0.0-20190923054218-35076c1b2bea
 	github.com/gin-gonic/gin v1.4.0
 	github.com/jteeuwen/go-bindata v3.0.7+incompatible // indirect
+	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/stretchr/testify v1.4.0
 	github.com/theckman/go-flock v0.7.1
 	golang.org/x/crypto v0.0.0-20191117063200-497ca9f6d64f

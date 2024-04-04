@@ -11,10 +11,13 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
+	"path"
+	"strings"
 
 	"github.com/evilsocket/arc/utils"
 	"github.com/evilsocket/islazy/log"
 	"github.com/evilsocket/islazy/tui"
+	"github.com/pelletier/go-toml"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -130,15 +133,23 @@ var Conf = Configuration{
 // Load function convert a loaded JSON config file to a config struct
 // return err if secret param is empty
 func Load(filename string) error {
-	log.Info("Loading configuration from %s ...", tui.Bold(filename))
+	log.Info("loading configuration from %s ...", tui.Bold(filename))
 	raw, err := os.ReadFile(filename)
 	if err != nil {
 		return err
 	}
 
-	err = json.Unmarshal(raw, &Conf)
-	if err != nil {
-		return err
+	ext := strings.ToLower(path.Ext(filename))
+	if ext == ".json" {
+		log.Warning("the use of a json configuration file is deprecated, please migrate to toml")
+		if err = json.Unmarshal(raw, &Conf); err != nil {
+			return err
+		}
+	} else {
+		// default to toml
+		if err = toml.Unmarshal(raw, &Conf); err != nil {
+			return err
+		}
 	}
 
 	if Conf.Secret == "" {
