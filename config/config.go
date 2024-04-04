@@ -22,6 +22,7 @@ import (
 )
 
 const (
+	defTailscale       = false
 	defAddress         = "127.0.0.1"
 	defPort            = 8443
 	defMaxReqSize      = int64(512 * 1024)
@@ -86,6 +87,12 @@ type BackupsConfig struct {
 	Run     string `json:"run"`
 }
 
+// Tailscale optional configuration.
+type TailscaleConfig struct {
+	Enabled  bool   `json:"enabled"`
+	Hostname string `json:"hostname"`
+}
+
 // Arc server configuration.
 // swagger:response
 type Configuration struct {
@@ -103,9 +110,14 @@ type Configuration struct {
 	CheckExpired  int             `json:"check_expired"`
 	Scheduler     SchedulerConfig `json:"scheduler"`
 	Backups       BackupsConfig   `json:"backups"`
+	Tailscale     TailscaleConfig `json:"tailscale"`
 }
 
 var Conf = Configuration{
+	Tailscale: TailscaleConfig{
+		Enabled:  defTailscale,
+		Hostname: "",
+	},
 	Address:       defAddress,
 	Port:          defPort,
 	MaxReqSize:    defMaxReqSize,

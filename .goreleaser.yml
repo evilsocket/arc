@@ -42,4 +42,4 @@ archives:
         - LICENSE
         - README.md
         - Dockerfile
-        - sample_config.json
+        - sample_config.toml

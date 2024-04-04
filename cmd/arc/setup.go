@@ -2,6 +2,11 @@ package main
 
 import (
 	"flag"
+	"net/http"
+	"os"
+	"strings"
+	"time"
+
 	assetfs "github.com/elazarl/go-bindata-assetfs"
 	"github.com/evilsocket/arc/backup"
 	"github.com/evilsocket/arc/config"
@@ -18,10 +23,6 @@ import (
 	"github.com/evilsocket/islazy/tui"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
-	"net/http"
-	"os"
-	"strings"
-	"time"
 )
 
 var (
@@ -58,7 +59,7 @@ func setupLogging() {
 		log.Output = logfile
 	}
 
-	if debug == true {
+	if debug {
 		log.Level = log.DEBUG
 	} else {
 		log.Level = log.INFO
@@ -81,7 +82,7 @@ func setupDatabase() {
 		log.Fatal("%v", err)
 	}
 
-	if export == true {
+	if export {
 		started := time.Now()
 		if err = db.Export(output); err != nil {
 			log.Fatal("%v", err)
@@ -121,7 +122,7 @@ func setupBackups() {
 }
 
 func setupUpdates() {
-	if noUpdates == false {
+	if !noUpdates {
 		updater.Start(config.APP_VERSION)
 	}
 }
@@ -135,7 +136,7 @@ func setupTLS() {
 		log.Fatal("%v", err)
 	}
 
-	if utils.Exists(config.Conf.Certificate) == false || utils.Exists(config.Conf.Key) == false {
+	if !utils.Exists(config.Conf.Certificate) || !utils.Exists(config.Conf.Key) {
 		log.Warning("TLS certificate files not found, generating new ones ...")
 		if err = tls.Generate(&config.Conf); err != nil {
 			log.Fatal("%v", err)
@@ -193,7 +194,7 @@ func setupRouter() *gin.Engine {
 	api := router.Group("/api")
 	router.POST("/auth", controllers.Auth)
 
-	if noAuth == false {
+	if !noAuth {
 		api.Use(middlewares.AuthHandler())
 	} else {
 		log.Warning("API authentication is disabled.")
