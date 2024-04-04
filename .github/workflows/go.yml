@@ -17,4 +17,4 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
       - name: Run Tests and Build
-        run: go test ./... && make
+        run: go test ./... && make build
