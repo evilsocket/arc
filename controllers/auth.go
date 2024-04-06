@@ -44,15 +44,17 @@ type AuthResponse struct {
 // Handler authenticating a user and returning a bearer token for API requests.
 //
 // Consumes:
-//     - application/json
+//   - application/json
+//
 // Produces:
-//     - application/json
+//   - application/json
 //
 // Responses:
-//        200: authResponse
-//		  400: errorResponse
-//		  403: errorResponse
-//		  500: errorResponse
+//
+//	       200: authResponse
+//			  400: errorResponse
+//			  403: errorResponse
+//			  500: errorResponse
 func Auth(c *gin.Context) {
 	var auth AuthRequest
 

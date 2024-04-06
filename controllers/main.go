@@ -69,10 +69,11 @@ func SafeBind(c *gin.Context, obj interface{}) error {
 // Handler returning the current server status.
 //
 // Produces:
-//     - application/json
+//   - application/json
 //
 // Responses:
-//        200: Status
+//
+//	200: Status
 func GetStatus(c *gin.Context) {
 	// utils.Api(log.DEBUG, c, "Requested status.")
 	c.JSON(200, ServerStatus)
@@ -88,10 +89,11 @@ func ClearEvents(c *gin.Context) {
 // Handler returning the current server configuration.
 //
 // Produces:
-//     - application/json
+//   - application/json
 //
 // Responses:
-//        200: Configuration
+//
+//	200: Configuration
 func GetConfig(c *gin.Context) {
 	utils.Api(log.DEBUG, c, "Requested configuration.")
 	c.JSON(200, config.Conf)

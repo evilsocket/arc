@@ -12,8 +12,8 @@ import (
 	"fmt"
 	"github.com/evilsocket/arc/config"
 	"github.com/evilsocket/arc/db"
-	"github.com/evilsocket/islazy/log"
 	"github.com/evilsocket/arc/utils"
+	"github.com/evilsocket/islazy/log"
 	"github.com/gin-gonic/gin"
 )
 

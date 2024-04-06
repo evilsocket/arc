@@ -8,8 +8,8 @@
 package db
 
 import (
-	"github.com/evilsocket/islazy/log"
 	"github.com/evilsocket/arc/utils"
+	"github.com/evilsocket/islazy/log"
 	"github.com/theckman/go-flock"
 	"path/filepath"
 	"strings"

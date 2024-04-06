@@ -58,9 +58,9 @@ func doEmailReport(event Event) (err error) {
 		cmd := exec.Command(sendmailPath, "-t")
 
 		body = "From: arc@localhost\n" +
-			fmt.Sprintf("To: %s", config.Conf.Scheduler.Reports.To ) + "\n" +
-			fmt.Sprintf("Subject: %s", event.Title ) + "\n" +
-			fmt.Sprintf("Content-Type: %s", contentType ) + "\n" +
+			fmt.Sprintf("To: %s", config.Conf.Scheduler.Reports.To) + "\n" +
+			fmt.Sprintf("Subject: %s", event.Title) + "\n" +
+			fmt.Sprintf("Content-Type: %s", contentType) + "\n" +
 			"Content-Transfer-Encoding: 7BIT\n" +
 			"Content-Disposition: inline\n" +
 			"MIME-Version: 1.0\n" +
