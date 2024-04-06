@@ -52,6 +52,8 @@ The most important fields to change are the `secret` ( a key used for token auth
 docker run -it evilsocket/arc:latest password "your-new-password" <optional-cost>
 ```
 
+Where <optional-cost> is an integer in the interval 4..31 determining the bcrypt cost.
+
 **NOTE**
 
 Other than the username and the password, during login you need to specify an additional encryption key. This second key is not used to login to the system itself but to encrypt and decrypt your records client side. You can specify different keys each time you login, as long as you remember which key you used to encrypt which record :)
