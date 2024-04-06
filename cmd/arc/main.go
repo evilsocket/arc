@@ -83,6 +83,8 @@ func main() {
 
 		tsListener := new(tsnet.Server)
 		tsListener.Hostname = config.Conf.Tailscale.Hostname
+		tsListener.ControlURL = config.Conf.Tailscale.URL
+
 		defer tsListener.Close()
 
 		tcpListener, err := tsListener.ListenTLS("tcp", justPort)

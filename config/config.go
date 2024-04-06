@@ -91,6 +91,7 @@ type BackupsConfig struct {
 type TailscaleConfig struct {
 	Enabled  bool   `json:"enabled"`
 	Hostname string `json:"hostname"`
+	URL      string `json:"url"`
 }
 
 // Arc server configuration.

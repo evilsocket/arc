@@ -158,6 +158,8 @@ enabled = false
 # NOTE: Make sure that HTTPS certificates are enabled for this tailscale host and that the hostname
 # matches the certificate.
 hostname = "stevie"
+# If set, it overrides the Tailscale control URL, can be used for Headscale and alikes.
+url = ''
 # .... snippet ....
 ```
 
