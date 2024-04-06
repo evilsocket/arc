@@ -1,0 +1,53 @@
+<div class="modal modal-full" id="settings_modal" role="dialog" aria-hidden="true" tabindex="-1">
+    <div class="modal-dialog modal-dialog-full" role="document">
+        <div class="modal-content modal-content-full">
+
+            <div class="modal-body modal-body-full" id="settings_body">
+                <form id="settings_form">
+                    <div class="form-group">
+                        <h1>Defaults</h1>
+                        <div style="clear:both"></div>
+                        <small class="form-text text-muted" id="cleartext-warning">
+                            You can optionally define default values to be used in secret templates.
+                        </small>
+
+                        <br />
+
+                        <div class="form-group">
+                            <h5 class="editable label label-default entry-title label-0">Login</h5>
+                            <div style="clear:both"></div>
+                            <div class="input-group mif">
+                                <input class="form-control" data-entry-type="0" type="text" name="arc_default_login"
+                                    id="arc_default_login" value="">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <h5 class="editable label label-default entry-title label-0">Username</h5>
+                            <div style="clear:both"></div>
+                            <div class="input-group mif">
+                                <input class="form-control" data-entry-type="0" type="text" name="arc_default_username"
+                                    id="arc_default_username" value="">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <h5 class="editable label label-default entry-title label-0">Full Name</h5>
+                            <div style="clear:both"></div>
+                            <div class="input-group mif">
+                                <input class="form-control" data-entry-type="0" type="text" name="arc_default_full_name"
+                                    id="arc_default_full_name" value="">
+                            </div>
+                        </div>
+
+                        <br />
+
+                        <button type="submit" class="btn btn-secondary float-right" ng-click="doSaveSettings()"
+                            id="saveSettingsButton">Save</button>
+                    </div>
+                </form>
+            </div>
+
+        </div> <!-- content -->
+    </div> <!-- dialog -->
+</div>

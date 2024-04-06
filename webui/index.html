@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <title>Arc</title>
 
@@ -9,8 +10,8 @@
   <meta name="description" content="Arc Secrets Manager">
   <meta name="author" content="Simone 'evilsocket' Margaritelli">
 
-  <link rel="shortcut icon" type="image/png" href="/img/logo.png?v=2.3"/>
-  <link rel="apple-touch-icon" href="/img/logo.png?v=2.3"/>
+  <link rel="shortcut icon" type="image/png" href="/img/logo.png?v=2.3" />
+  <link rel="apple-touch-icon" href="/img/logo.png?v=2.3" />
 
   <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
   <link rel="stylesheet" href="/css/bootstrap/bootstrap-datetimepicker.min.css">
@@ -56,6 +57,7 @@
   <script type="text/javascript" src="/js/notify.js"></script>
   <script type="text/javascript" src="/js/app.js"></script>
 </head>
+
 <body id="ngscope" ng-app="PM" ng-controller="PMController">
   <div class="main-container container-fluid">
 
@@ -74,7 +76,8 @@
     <!-- if user is logged instead -->
     <span ng-if="arc.IsLogged()" ng-switch on="arc.HasStore()">
 
-      <div class="notifications badge badge-pill badge-warning" ng-if="status.events.length" ng-include src="'/views/notifications.html'">
+      <div class="notifications badge badge-pill badge-warning" ng-if="status.events.length" ng-include
+        src="'/views/notifications.html'">
       </div>
 
       <!-- no store selected, show available stores -->
@@ -82,12 +85,17 @@
         <ul id="stores_list" class="list-group stores-list">
           <li class="list-group-item">
             <div class="row">
-              <div class="col-6">
+              <div class="col-4">
                 <center class="action-button" ng-click="doLogout()">
                   <i class="fa fa-sign-out" aria-hidden="true"></i>
-                </center>    
+                </center>
               </div>
-              <div class="col-6" style="border-left: 1px solid #eee">
+              <div class="col-4">
+                <center class="action-button" ng-click="onSettings()">
+                  <i class="fa fa-cog" aria-hidden="true"></i>
+                </center>
+              </div>
+              <div class="col-4" style="border-left: 1px solid #eee">
                 <center class="action-button" ng-click="onNewStore()">
                   <i class="fa fa-file" aria-hidden="true"></i>
                 </center>
@@ -101,12 +109,14 @@
             <small class="action-label">
               No stores found, create one using the <i class="fa fa-file" aria-hidden="true"></i> icon.
             </small>
-          </li>          
+          </li>
 
           <li class="list-group-item store-list-item" ng-repeat="s in stores" ng-click="onShowStore(s.id)">
             <span ng-include src="'/views/store_list_item.html'"></span>
           </li>
         </ul>
+
+        <div ng-include src="'/views/modals/settings.html'"></div>
       </div>
 
       <!-- store selected, load records from it -->
@@ -121,19 +131,14 @@
                 </div>
                 <h5 class="editable" id="store_title">{{ arc.store.title }}</h5>
                 <script type="text/javascript">
-                  $('#store_title').editable(function(v){
+                  $('#store_title').editable(function (v) {
                     $('#ngscope').scope().onStoreTitleChanged(v);
                   });
                 </script>
               </div>
               <div class="col-6 input-group">
-                <input 
-                   type="text" 
-                   id="search_filter" 
-                   class="search-filter form-control border" 
-                   ng-model="search" 
-                   ng-change="updateFilter()" 
-                   placeholder="Search ..."/>
+                <input type="text" id="search_filter" class="search-filter form-control border" ng-model="search"
+                  ng-change="updateFilter()" placeholder="Search ..." />
               </div>
             </div>
             <!-- will show session expire time when approaching 5 minutes left -->
@@ -145,7 +150,7 @@
               <div class="col-4">
                 <center class="action-button" ng-click="onBack()">
                   <i class="fa fa-chevron-left" aria-hidden="true"></i>
-                </center>    
+                </center>
               </div>
               <div class="col-4" style="border-left: 1px solid #eee">
                 <center class="action-button" ng-click="onDeleteStore()">
@@ -164,15 +169,11 @@
             <small class="action-label">
               No records found, create one using the <i class="fa fa-file" aria-hidden="true"></i> icon.
             </small>
-          </li>       
+          </li>
 
-          <li 
-             ng-repeat="r in arc.records | orderBy:['pinned','updated_at']:true" 
-             class="list-group-item" 
-             id="secret_list_item_{{ r.id }}" 
-             ng-if="filterSecret(r)" 
-             ng-click="onShowSecret(r.id)" 
-             ng-class="{'expired': isExpired(r), 'expiring': isExpiring(r), 'pinned': isPinned(r) }">
+          <li ng-repeat="r in arc.records | orderBy:['pinned','updated_at']:true" class="list-group-item"
+            id="secret_list_item_{{ r.id }}" ng-if="filterSecret(r)" ng-click="onShowSecret(r.id)"
+            ng-class="{'expired': isExpired(r), 'expiring': isExpiring(r), 'pinned': isPinned(r) }">
             <span ng-include src="'/views/secret_list_item.html?v=17'"></span>
           </li>
         </ul>
@@ -203,10 +204,11 @@
         </span>
 
         <a href="https://github.com/evilsocket/arc">Arc</a> was made with <span style="color:red">♥</span> by
-        <a href="https://www.evilsocket.net/" target="_blank" >Simone 'evilsocket' Margaritelli</a> 
+        <a href="https://www.evilsocket.net/" target="_blank">Simone 'evilsocket' Margaritelli</a>
       </small>
     </center>
   </footer>
 
 </body>
+
 </html>

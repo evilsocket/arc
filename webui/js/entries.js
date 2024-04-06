@@ -9,51 +9,61 @@
 var g_EntryCounter = 0;
 
 var REGISTERED_TYPES = [
-    new URLEntry( "URL", "" ),
-    new InputEntry( "Text Input", "" ),
-    new CheckboxEntry( "Checkbox", "" ),
-    new PasswordEntry( "Password", "" ),
-    new TOTPEntry( "2FA", "" ),
-    new TextEntry( "Text", "" ),
-    new MarkdownEntry( "Markdown", "" ),
-    new HTMLEntry( "HTML", "" ),
-    new CodeEntry( "Source Code", "" ),
-    new FileEntry( "File(s)", "" ),
-    new BTCAddressEntry( "Bitcoin Address", "" ),
+  new URLEntry("URL", ""),
+  new InputEntry("Text Input", ""),
+  new CheckboxEntry("Checkbox", ""),
+  new PasswordEntry("Password", ""),
+  new TOTPEntry("2FA", ""),
+  new TextEntry("Text", ""),
+  new MarkdownEntry("Markdown", ""),
+  new HTMLEntry("HTML", ""),
+  new CodeEntry("Source Code", ""),
+  new FileEntry("File(s)", ""),
+  new BTCAddressEntry("Bitcoin Address", ""),
 ];
 
 var REGISTERED_TEMPLATES = [
-    { name: "Web Login", fields:[ 
-        new URLEntry( "URL", "https://" ),  
-        new InputEntry( "Login", "" ),
-        new PasswordEntry( "Password", "" )
-    ]},
-    { name: "Email Account", fields:[
-        new InputEntry( "Provider", "" ),
-        new InputEntry( "SMTP Server", "" ),
-        new PasswordEntry( "SMTP Password", "" ),
-        new InputEntry( "IMAP Server", "" ),
-        new PasswordEntry( "IMAP Password", "" )
-    ]},
-    { name: "SSH / FTP Account", fields:[
-        new URLEntry( "Hostname", "" ),  
-        new InputEntry( "Username", "" ),
-        new PasswordEntry( "Password", "" )
-    ]},
-    { name: "Credit Card", fields:[
-        new InputEntry( "Bank Name", "" ),
-        new InputEntry( "Owner Name", "" ),
-        new InputEntry( "Card Number", "" ),
-        new InputEntry( "Valid Until", "" ),
-        new PasswordEntry( "CVV", "" )
-    ]},
-    { name: "Simple List", fields:[
-        new CheckboxEntry( "Option A", "" ),
-        new CheckboxEntry( "Option B", "" ),
-        new CheckboxEntry( "Option C", "" ),
-        new CheckboxEntry( "Option D", "" ),
-        new CheckboxEntry( "Option E", "" ),
-    ]}
+  {
+    name: "Web Login", fields: [
+      new URLEntry("URL", "https://"),
+      new InputEntry("Login", "<default_login>"),
+      new PasswordEntry("Password", "")
+    ]
+  },
+  {
+    name: "Email Account", fields: [
+      new InputEntry("Provider", ""),
+      new InputEntry("SMTP Server", ""),
+      new PasswordEntry("SMTP Password", ""),
+      new InputEntry("IMAP Server", ""),
+      new PasswordEntry("IMAP Password", "")
+    ]
+  },
+  {
+    name: "SSH / FTP Account", fields: [
+      new URLEntry("Hostname", ""),
+      new InputEntry("Username", "<default_username>"),
+      new PasswordEntry("Password", "")
+    ]
+  },
+  {
+    name: "Credit Card", fields: [
+      new InputEntry("Bank Name", ""),
+      new InputEntry("Owner Name", "<default_full_name>"),
+      new InputEntry("Card Number", ""),
+      new InputEntry("Valid Until", ""),
+      new PasswordEntry("CVV", "")
+    ]
+  },
+  {
+    name: "Simple List", fields: [
+      new CheckboxEntry("Option A", ""),
+      new CheckboxEntry("Option B", ""),
+      new CheckboxEntry("Option C", ""),
+      new CheckboxEntry("Option D", ""),
+      new CheckboxEntry("Option E", ""),
+    ]
+  }
 ];
 
 /*
@@ -110,34 +120,47 @@ function escapeHtml(string) {
 
 // Get a registered entry given its type.
 function TypeProto(type) {
-    for( var i = 0; i < REGISTERED_TYPES.length; i++ ) {
-        var registered = REGISTERED_TYPES[i];
-        if( registered.type == type ) {
-            return registered;
-        }
+  for (var i = 0; i < REGISTERED_TYPES.length; i++) {
+    var registered = REGISTERED_TYPES[i];
+    if (registered.type == type) {
+      return registered;
     }
+  }
 
-    return null;
+  return null;
 }
 
 // Clone a registered entry and make the instance id unique.
 function TypeClone(e) {
-    var clone = $.extend( true, {}, e );
+  var clone = $.extend(true, {}, e);
 
-    clone.id += '_' + g_EntryCounter++;
+  clone.id += '_' + g_EntryCounter++;
+
+  if (clone.value.indexOf('<default') == 0) {
+    var def_value_name = 'arc_' + clone.value.replaceAll('<', '').replaceAll('>', '');
+    // lookup default value from local storage
+    if (window.localStorage.hasOwnProperty(def_value_name)) {
+      clone.value = window.localStorage[def_value_name];
+    } else {
+      // no default value has been defined yet for this, fallback to empty clone
+      clone.value = '';
+    }
+  } else {
+    // create an empty clone
     clone.value = "";
+  }
 
-    return clone;
+  return clone;
 }
 
 // Create an Entry derived object from the 'o' JSON object.
 function TypeFactory(o) {
-    var proto = TypeProto(o.type);
-    var entry = TypeClone(proto);
+  var proto = TypeProto(o.type);
+  var entry = TypeClone(proto);
 
-    entry.Populate(o);
+  entry.Populate(o);
 
-    return entry;
+  return entry;
 }
 
 
