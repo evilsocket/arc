@@ -44,7 +44,7 @@ The idea is to use Arc as a single storage and manager for your passwords, encry
 
 ## Usage
 
-You can find binary releases of Arc [here](https://github.com/evilsocket/arc/releases), if instead you want to build it from source, make sure you have Go >= 1.8 installed and configured correctly, then clone this repository, install the dependencies and compile the `arc` server component:
+You can find binary releases of Arc [here](https://github.com/evilsocket/arc/releases), if instead you want to build it from source, make sure you have Go >= 1.22.x installed and configured correctly, then clone this repository, install the dependencies and compile the `arc` server component:
 
     go install github.com/evilsocket/arc/cmd/arc@latest
 
