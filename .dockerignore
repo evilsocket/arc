@@ -1,0 +1,6 @@
+/.github
+/.vscode
+/*.pem
+/dev_config.toml
+/config.toml
+/build
