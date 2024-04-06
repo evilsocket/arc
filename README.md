@@ -144,9 +144,11 @@ folder = "/some/backup/path/"
 
 It is necessary to change only the `secret`, `username` and `password` access parameters of Arc, while the others can be left to their default values.
 
-## Tailscale Integration
+## Tailscale / Headscale Integration
 
-In order to run an ARC instance that's only visible on a [Tailscale](https://tailscale.com/) (WireGuard) network you can use the `[tailscale]` configuration block:
+In order to run an ARC instance that's only visible on a [Tailscale](https://tailscale.com/) (WireGuard) network you can use the `[tailscale]` configuration block. 
+
+By setting the `url` field, it is possible to override the control API URL and use free alternatives such as [Headscale](https://headscale.net/).
 
 ```toml
 # .... snippet ....
