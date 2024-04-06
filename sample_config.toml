@@ -6,17 +6,17 @@
 address = "0.0.0.0"
 port = 8443
 # Secret key to use for authentication token signing and verification.
-secret = ""
+secret = "p9ry34908fh34890fgh8934ghr8934hgr9834r9h8349hf9348hf94h"
 # HTTPS certificate PEM file (if it does not exist, it will be automatically generated).
-certificate = "~/arc-certificate.pem"
+certificate = "/arc/arc-certificate.pem"
 # HTTPS private key PEM file (if it does not exist, it will be automatically generated).
-key = "~/arc-key.pem"
+key = "/arc/arc-key.pem"
 #  API access username.
 username = "arc"
-# API access password `bcrypt` hash.
-password = "$2a$10$RuOcSEwPNNFlA/lxjpRY3.3J0tR0LG/FyfG/IXolgdDxPh7.urgGe"
+# API access password `bcrypt` hash. CHANGE THIS.
+password = "$2a$10$LxGzW9Nrp9PHQFd6ijtP5O0XGHr61Yj6jhCBDmBCfe/PETnxAVZVq"
 # Database root directory.
-database = "~/db"
+database = "/arc/db"
 # Validity in minutes of a JWT API token after it's being generated.
 token_duration = 60
 # If true, records bigger than 1024 bytes will be asynchronously gzipped and served as compressed streams to the client.
@@ -62,9 +62,9 @@ enabled = true
 # PGP Keys.
 [scheduler.reports.pgp.keys]
 # The ARC server PGP private key.
-private = "~/server.private.key.asc"
+private = "/arc/pgp-server.private.key.asc"
 # The emails recipient PGP public key.
-public = "~/my.public.key.asc"
+public = "/arc/pgp-my.public.key.asc"
 
 # Backup configuration.
 [backups]

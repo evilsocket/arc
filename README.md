@@ -44,105 +44,35 @@ The idea is to use Arc as a single storage and manager for your passwords, encry
 
 ## Usage
 
-You can find binary releases of Arc [here](https://github.com/evilsocket/arc/releases), if instead you want to build it from source, make sure you have Go >= 1.22.x installed and configured correctly, then clone this repository, install the dependencies and compile the `arc` server component:
+The simplest way to run `arc` is as a Docker container. First, make sure to copy `sample_config.toml` into your own `config.toml`. 
 
-    go install github.com/evilsocket/arc/cmd/arc@latest
+The most important fields to change are the `secret` ( a key used for token authentication ), the `username` and the `password`, which is the `bcrypt` hash of the authentication password you want to use, you can generate a new one with:
 
-Once you either extracted the release archive or compiled it yourself, copy `sample_config.toml` to a new `config.toml` file and customize it. The most important fields to change are the `secret` ( a key used for token authentication ), the `username` and the `password`, which is the `bcrypt` hash of the authentication password you want to use, you can generate a new one with:
-
-    arc password "your-new-password" <optional-cost>
-
-Once everything is ready, youn can finally start the `arc` server:
-
-    arc -config config.toml -app arc
-
-Now browse `https://localhost:8443/` ( or the address and port you configured ) and login with the configured credentials (make sure to add the generated HTTPS certificate as an exception in your browser).
+```sh
+docker run -it evilsocket/arc:latest password "your-new-password" <optional-cost>
+```
 
 **NOTE**
 
 Other than the username and the password, during login you need to specify an additional encryption key. This second key is not used to login to the system itself but to encrypt and decrypt your records client side. You can specify different keys each time you login, as long as you remember which key you used to encrypt which record :)
 
-## Configuration
+Once everything is ready and you updated the configuration file, you can finally start the `arc` server:
 
-This is the example configuration file you need to customize the first time.
-
-```toml
-##
-# Core configuration.
-##
-# address and port to bind the API to
-# NOTE: if tailscale is enabled, the address will be ignored.
-address = "0.0.0.0"
-port = 8443
-# Secret key to use for authentication token signing and verification.
-secret = ""
-# HTTPS certificate PEM file (if it does not exist, it will be automatically generated).
-certificate = "~/arc-certificate.pem"
-# HTTPS private key PEM file (if it does not exist, it will be automatically generated).
-key = "~/arc-key.pem"
-#  API access username.
-username = "arc"
-# API access password `bcrypt` hash.
-password = "$2a$10$RuOcSEwPNNFlA/lxjpRY3.3J0tR0LG/FyfG/IXolgdDxPh7.urgGe"
-# Database root directory.
-database = "~/db"
-# Validity in minutes of a JWT API token after it's being generated.
-token_duration = 60
-# If true, records bigger than 1024 bytes will be asynchronously gzipped and served as compressed streams to the client.
-compression = true
-
-# Tailscale specific configuration.
-[tailscale]
-# If true, will run this as a tailscale server node and won't be visible outside the tailscale network.
-# In order to authenticate the node, set the TS_AUTHKEY environment variable or follow the onscreen instructions.
-enabled = false
-# Tailscale hostname, if left empty the system hostname will be used.
-# NOTE: Make sure that HTTPS certificates are enabled for this tailscale host and that the hostname
-# matches the certificate.
-hostname = "stevie"
-
-# Periodic tasks.
-[scheduler]
-# Scheduler is enabled by default.
-enabled = true
-# Period in seconds of the scheduler.
-period = 10
-
-# Report system events.
-[scheduler.reports]
-enabled = false
-rate_limit = 60
-filter = ["login_ok", "login_ko", "token_ko", "update", "record_expired"]
-to = "youremail@gmail.com"
-
-# If reports are enabled, this SMTP configuration is required for email notifications.
-[scheduler.reports.smtp]
-address = "smtp.gmail.com"
-port = 587
-username = "youremail@gmail.com"
-password = "your smtp password"
-
-# Email notifications can be optionally encrypted with PGP.
-[scheduler.reports.pgp]
-enabled = true
-
-# PGP Keys.
-[scheduler.reports.pgp.keys]
-# The ARC server PGP private key.
-private = "~/server.private.key.asc"
-# The emails recipient PGP public key.
-public = "~/my.public.key.asc"
-
-# Backup configuration.
-[backups]
-enabled = false
-# Every 1800 run the command on that folder.
-period = 1800
-run = "scp arc-backup.tar user@backup-server:/media/arc_backup/"
-folder = "/some/backup/path/"
+```sh
+docker run -it --network host \
+    -v /path/to/your/config.toml:/etc/arc/config.toml \
+    -v /path/to/data:/arc \
+    -v $HOME/.config/tsnet-arc:/root/.config/tsnet-arc \
+    evilsocket/arc:latest
 ```
 
-It is necessary to change only the `secret`, `username` and `password` access parameters of Arc, while the others can be left to their default values.
+Now browse `https://localhost:8443/` ( or the address and port you configured ) and login with the configured credentials (make sure to add the generated HTTPS certificate as an exception in your browser).
+
+Alternatively, you can find binary releases of Arc [here](https://github.com/evilsocket/arc/releases). 
+
+If instead you want to build it from source, make sure you have Go >= 1.22.x installed and configured correctly, then clone this repository, install the dependencies and compile the `arc` server component:
+
+    go install github.com/evilsocket/arc/cmd/arc@latest
 
 ## Tailscale / Headscale Integration
 

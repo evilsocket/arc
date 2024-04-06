@@ -42,7 +42,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&confFile, "config", "", "JSON configuration file.")
+	flag.StringVar(&confFile, "config", "/etc/arc/config.toml", "Configuration file.")
 	flag.BoolVar(&noAuth, "no-auth", noAuth, "Disable authentication.")
 	flag.BoolVar(&noUpdates, "no-updates", noUpdates, "Disable updates check.")
 
