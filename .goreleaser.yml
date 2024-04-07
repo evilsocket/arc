@@ -18,6 +18,10 @@ builds:
       - mipsle
       - mips64
       - mips64le
+    ignore:
+      # gocode/pkg/mod/github.com/dblohm7/wingoes@v0.0.0-20240119213807-a09d6be7affa/com/stream.go:127:10: maxStreamRWLen (untyped int constant 4294967295) overflows int
+      - goos: windows
+        goarch: arm
     main: ./cmd/arc
 
 changelog:
