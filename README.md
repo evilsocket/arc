@@ -1,4 +1,13 @@
 <p align="center">
+  <small>Join the project community on our server!</small>
+  <br/><br/>
+  <a href="https://discord.gg/https://discord.gg/btZpkp45gQ" target="_blank" title="Join our community!">
+    <img src="https://dcbadge.limes.pink/api/server/https://discord.gg/btZpkp45gQ"/>
+  </a>
+</p>
+<hr/>
+
+<p align="center">
   <img alt="Arc Logo" src="https://raw.githubusercontent.com/evilsocket/arc/master/webui/img/logo.png" height="140" />
   <h3 align="center">Arc</h3>
   <p align="center">A manager for your secrets.</p>
