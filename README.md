@@ -21,9 +21,9 @@
 
 ---
 
-Arc is a manager for your secrets made of `arc`, a RESTful API server written in Go which exposes read and write primitives for encrypted records, and `arc`, the client application implemented in HTML5 and javascript, which runs in every modern browser and  it is served by `arc` itself.
+Arc is a manager for your secrets. It's made of `arc`, a RESTful API server written in Go which exposes read and write primitives for encrypted records, and `arc`, the client application implemented in HTML5 and JavaScript, which runs in every modern browser and is served by `arc` itself.
 
-Records are generated, encrypted and decrypted **client side** by `arc` (with AES256 in GCM mode, using 10000 iterations for the PBKDF2 key derivation function, everything [WebCrypto](https://www.w3.org/TR/WebCryptoAPI/) based ), which offers an intuitive management system equipped with UI widgets including:
+Records are generated, encrypted and decrypted **client side** by `arc` (with AES256 in GCM mode, using 10000 iterations for the PBKDF2 key derivation function, everything [WebCrypto](https://www.w3.org/TR/WebCryptoAPI/)-based), which offers an intuitive management system equipped with UI widgets including:
 
 - Simple text inputs.
 - Simple text areas.
@@ -32,7 +32,7 @@ Records are generated, encrypted and decrypted **client side** by `arc` (with AE
 - A HTML editor with preview and full screen mode.
 - A password field with password strength estimation and a random password generator. 
 - Custom lists.
-- Bitcoin wallet address with auto updating balance.
+- Bitcoin wallet address with auto-updating balance.
 - Manager for [Time-based One-time Password Algorithm (TOTP) codes](http://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm) as per the [TOTP RFC Draft](http://tools.ietf.org/id/draft-mraihi-totp-timebased-06.html). This component produces the same codes as the Google Authenticator app and can be used for 2FA.
 
 Elements can be created (with optional expiration dates), arranged and edited using `arc` and are stored on `arc` as AES256 encrypted (and compressed) raw data.
@@ -55,13 +55,13 @@ The idea is to use Arc as a single storage and manager for your passwords, encry
 
 The simplest way to run `arc` is as a Docker container. First, make sure to copy `sample_config.toml` into your own `config.toml`. 
 
-The most important fields to change are the `secret` ( a key used for token authentication ), the `username` and the `password`, which is the `bcrypt` hash of the authentication password you want to use, you can generate a new one with:
+The most important fields to change are the `secret` (a key used for token authentication), the `username` and the `password`, which is the `bcrypt` hash of the authentication password you want to use, you can generate a new one with:
 
 ```sh
 docker run -it evilsocket/arc:latest password "your-new-password" <optional-cost>
 ```
 
-Where <optional-cost> is an integer in the interval 4..31 determining the bcrypt cost.
+Where `<optional-cost>` is an integer in the interval 4..31 determining the bcrypt cost.
 
 **NOTE**
 
@@ -77,7 +77,7 @@ docker run -it --network host \
     evilsocket/arc:latest
 ```
 
-Now browse `https://localhost:8443/` ( or the address and port you configured ) and login with the configured credentials (make sure to add the generated HTTPS certificate as an exception in your browser).
+Now browse `https://localhost:8443/` (or the address and port you configured) and login with the configured credentials (make sure to add the generated HTTPS certificate as an exception in your browser).
 
 Alternatively, you can find binary releases of Arc [here](https://github.com/evilsocket/arc/releases). 
 
@@ -108,7 +108,7 @@ url = ''
 
 ## Realtime Notifications
 
-Different type of events can happen during Arc lifecycle:
+Different types of events can happen during the Arc lifecycle:
 
 - `login_ok` someone succesfully authenticated to the system.
 - `login_ko` someone tried to authenticate to the system with the wrong credentials.
@@ -149,7 +149,7 @@ Exported archives can be later imported with:
 
 ## Useful Commands
 
-Generate self signed certificate in order to use Arc on HTTPS:
+Generate-self signed certificate in order to use Arc over HTTPS:
 
     openssl req -new -x509 -sha256 -key key.pem -out certificate-pem -days 365  
 
@@ -157,7 +157,7 @@ Allow the `arc` binary to bind to privileged ports without having root privilege
 
     sudo setcap 'cap_net_bind_service=+ep' arc
 
-Lines to add to `/etc/rc.local` in order to make arc start at boot (running as `pi` user, configuration, logs and and ui are in the home folder):
+Lines to add to `/etc/rc.local` in order to make `arc` start at boot (running as `pi` user, configuration, logs and and ui are in the home folder):
 
     export ARC=/home/pi/
     sudo -H -u pi bash -c "$ARC/arc -config $ARC/config.toml -log-file $ARC/arc.log &"
