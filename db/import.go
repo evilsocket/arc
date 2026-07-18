@@ -9,10 +9,12 @@ package db
 
 import (
 	"archive/tar"
+	"fmt"
 	"github.com/evilsocket/islazy/log"
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func Import(filename string) error {
@@ -41,6 +43,14 @@ func Import(filename string) error {
 
 		// the target location where the dir/file should be created
 		target := filepath.Join(dbIndex.path, header.Name)
+
+		// make sure the resolved target stays within the database directory
+		// and refuse any tar entry that tries to escape it (CWE-22, tar-slip)
+		base := filepath.Clean(dbIndex.path)
+		if target != base && !strings.HasPrefix(target, base+string(os.PathSeparator)) {
+			return fmt.Errorf("illegal file path in archive: %s", header.Name)
+		}
+
 		log.Info("Creating %s ...", target)
 
 		// check the file type
